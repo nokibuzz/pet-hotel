@@ -84,7 +84,6 @@ const ListingCard = ({
         {onAction && actionLabel && (
           <Button
             disabled={disabled}
-            small
             label={actionLabel}
             onClick={handleCancel}
           />
