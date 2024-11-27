@@ -28,6 +28,7 @@ model User {
     accounts     Account[]
     listings     Listing[]
     reservations Reservation[]
+    pet          Pet[]
 }
 
 model Account {
@@ -77,6 +78,20 @@ model Reservation {
 
     user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
     listing Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model Pet {
+    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    breed       String
+    age         Int
+    friendly    Boolean
+    vaccinated  Boolean
+    imageSrc    String
+    description String?
+    userId      String  @db.ObjectId
+
+    owner User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // username:dogohotel
