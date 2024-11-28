@@ -71,7 +71,10 @@ const UserMenu = ({ currentUser }) => {
                   onClick={() => router.push("/reservations")}
                   label="Booked Reservations (my place)"
                 />
-                <MenuItem onClick={() => {}} label="My pets" />
+                <MenuItem
+                  onClick={() => router.push("/pets")}
+                  label="My pets"
+                />
                 <MenuItem
                   onClick={() => router.push("/properties")}
                   label="My properties"

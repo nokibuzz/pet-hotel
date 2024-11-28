@@ -1,51 +1,46 @@
 "use client";
 
 import React, { useState } from "react";
+import Tooltip from "../Tooltip";
 
-const EditableField = ({ label, value, onSave }) => {
+const EditableField = ({ label, value, onFieldChange }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value);
 
-  const handleSave = () => {
-    onSave(tempValue);
+  const handleBlur = () => {
     setIsEditing(false);
+    onFieldChange(tempValue);
   };
 
-  //   TODO: fix this shit to components
+  const handleChange = (val) => {
+    setTempValue(val);
+    onFieldChange(val);
+  };
+
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-gray-600 text-sm">{label}</label>
+    <div className="flex flex-col w-full items-center">
+      <label className="text-sm font-semibold text-gray-600 mb-1 inset-10">
+        {label}
+      </label>
+
       {isEditing ? (
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            className="border border-gray-300 rounded px-2 py-1 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={tempValue}
-            onChange={(e) => setTempValue(e.target.value)}
-          />
-          <button
-            className="text-sm text-white bg-green-500 px-3 py-1 rounded hover:bg-green-600"
-            onClick={handleSave}
-          >
-            Save
-          </button>
-          <button
-            className="text-sm text-white bg-red-500 px-3 py-1 rounded hover:bg-red-600"
-            onClick={() => setIsEditing(false)}
-          >
-            Cancel
-          </button>
-        </div>
+        <input
+          type="text"
+          value={tempValue}
+          onChange={(e) => handleChange(e.target.value)}
+          onBlur={handleBlur}
+          autoFocus
+          className="text-center w-full md:w-2/3 px-3 py-2 border-b-2 border-black focus:outline-none focus:border-black transition-colors duration-300"
+        />
       ) : (
-        <div className="flex items-center justify-between">
-          <span>{value}</span>
-          <button
-            className="text-sm text-blue-500 hover:underline"
+        <Tooltip text={`Click on text to edit ${label}`}>
+          <span
+            className="w-full md:w-auto text-lg font-semibold text-gray-700 cursor-pointer border-neutral-500 hover:text-blue-500 transition"
             onClick={() => setIsEditing(true)}
           >
-            Edit
-          </button>
-        </div>
+            {value || "-"}
+          </span>
+        </Tooltip>
       )}
     </div>
   );
