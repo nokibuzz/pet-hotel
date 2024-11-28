@@ -15,6 +15,9 @@ import Input from "../inputs/Input";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import TextArea from "../inputs/TextArea";
+import Dropdown from "../inputs/Dropdown";
+import Toggle from "../inputs/Toggle";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
@@ -22,7 +25,9 @@ const STEPS = Object.freeze({
   INFO: 2,
   IMAGES: 3,
   DESCRIPTION: 4,
-  PRICE: 5,
+  HOUSE_RULES: 5,
+  ADDIONAL_OPTIONS: 6,
+  PRICE: 7,
 });
 
 const RentModal = () => {
@@ -31,6 +36,9 @@ const RentModal = () => {
 
   const [step, setStep] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState(false);
+  const hours = Array.from({ length: 24 }, (_, index) =>
+    index < 10 ? `0${index}:00` : `${index}:00`
+  );
 
   const {
     register,
@@ -49,6 +57,16 @@ const RentModal = () => {
       price: 1,
       title: "",
       description: "",
+      checkInTime: "12:00",
+      checkOutTime: "12:00",
+      hasCancelation: false,
+      allowBooking: true,
+      paymentMethodsCards: true,
+      paymentMethodsCash: true,
+      hasFood: false,
+      hasGrooming: false,
+      hasVet: false,
+      addionalInformation: "",
     },
   });
 
@@ -222,14 +240,127 @@ const RentModal = () => {
           required
         />
         <hr />
-        <Input
+        <TextArea
           id="description"
           label="Description"
+          defaultNumberOfRows={5}
           disabled={isLoading}
           register={register}
           errors={errors}
           required
         />
+      </div>
+    );
+  }
+
+  if (step === STEPS.HOUSE_RULES) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="House rules"
+          subtitle="House rules are a set of guidelines or regulations that outline expected behaviors, responsibilities, and standards within a specific property or environment to ensure a respectful, safe, and harmonious experience for all occupants or visitors."
+        />
+        <div className="flex flex-row gap-4">
+          <Dropdown
+            id="checkInTime"
+            label="Check-In"
+            placeholder="Select time..."
+            onChange={(value) => setCustomValue("checkInTime", value)}
+            options={hours}
+            register={register}
+            errors={errors}
+            required
+          />
+          <Dropdown
+            id="checkOutTime"
+            label="Check-Out"
+            placeholder="Select time..."
+            onChange={(value) => setCustomValue("checkOutTime", value)}
+            options={hours}
+            register={register}
+            errors={errors}
+            required
+          />
+        </div>
+        <hr />
+        <div className="flex flex-row gap-4">
+          <Toggle
+            id="hasCancelation"
+            label="Has cancelation policy"
+            defaultChecked={true}
+            register={register}
+            errors={errors}
+          />
+          <Toggle
+            id="allowBooking"
+            label="Allow booking"
+            defaultChecked={true}
+            register={register}
+            errors={errors}
+          />
+        </div>
+        <hr />
+        <div className="flex flex-row gap-4">
+          <Toggle
+            id="paymentMethodsCards"
+            label="Accept cards"
+            defaultChecked={true}
+            register={register}
+            errors={errors}
+          />
+          <Toggle
+            id="paymentMethodsCash"
+            label="Accept cash"
+            defaultChecked={true}
+            register={register}
+            errors={errors}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (step === STEPS.ADDIONAL_OPTIONS) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Addional options"
+          subtitle="Extra customizable services or amenities for pets, such as grooming, feeding, and extended care, enhancing the overall experience and comfort during stay."
+        />
+        <Toggle
+          id="hasFood"
+          label="Has food option (alergies)"
+          defaultChecked={false}
+          register={register}
+          errors={errors}
+        />
+        <hr />
+        <Toggle
+          id="hasGrooming"
+          label="Has grooming"
+          defaultChecked={false}
+          register={register}
+          errors={errors}
+        />
+        <hr />
+        <Toggle
+          id="hasVet"
+          label="Has veterinarian"
+          defaultChecked={false}
+          register={register}
+          errors={errors}
+        />
+        <hr />
+        <div className="flex flex-row gap-4">
+          <TextArea
+            id="addionalInformation"
+            label="Addional information"
+            defaultNumberOfRows={2}
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+          />
+        </div>
       </div>
     );
   }
