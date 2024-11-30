@@ -76,6 +76,13 @@ const RentModal = () => {
   const guestCount = watch("guestCount");
   const roomCount = watch("roomCount");
   const imageSrc = watch("imageSrc");
+  const hasCancelation = watch("hasCancelation");
+  const allowBooking = watch("allowBooking");
+  const paymentMethodsCards = watch("paymentMethodsCards");
+  const paymentMethodsCash = watch("paymentMethodsCash");
+  const hasFood = watch("hasFood");
+  const hasGrooming = watch("hasGrooming");
+  const hasVet = watch("hasVet");
 
   // this is the hack way to import map to work fine
   const Map = useMemo(
@@ -287,15 +294,15 @@ const RentModal = () => {
           <Toggle
             id="hasCancelation"
             label="Has cancelation policy"
-            defaultChecked={true}
-            register={register}
+            value={hasCancelation}
+            onChange={(value) => setCustomValue("hasCancelation", value)}
             errors={errors}
           />
           <Toggle
             id="allowBooking"
             label="Allow booking"
-            defaultChecked={true}
-            register={register}
+            value={allowBooking}
+            onChange={(value) => setCustomValue("allowBooking", value)}
             errors={errors}
           />
         </div>
@@ -304,15 +311,15 @@ const RentModal = () => {
           <Toggle
             id="paymentMethodsCards"
             label="Accept cards"
-            defaultChecked={true}
-            register={register}
+            value={paymentMethodsCards}
+            onChange={(value) => setCustomValue("paymentMethodsCards", value)}
             errors={errors}
           />
           <Toggle
             id="paymentMethodsCash"
             label="Accept cash"
-            defaultChecked={true}
-            register={register}
+            value={paymentMethodsCash}
+            onChange={(value) => setCustomValue("paymentMethodsCash", value)}
             errors={errors}
           />
         </div>
@@ -330,24 +337,24 @@ const RentModal = () => {
         <Toggle
           id="hasFood"
           label="Has food option (alergies)"
-          defaultChecked={false}
-          register={register}
+          value={hasFood}
+          onChange={(value) => setCustomValue("hasFood", value)}
           errors={errors}
         />
         <hr />
         <Toggle
           id="hasGrooming"
           label="Has grooming"
-          defaultChecked={false}
-          register={register}
+          value={hasGrooming}
+          onChange={(value) => setCustomValue("hasGrooming", value)}
           errors={errors}
         />
         <hr />
         <Toggle
           id="hasVet"
           label="Has veterinarian"
-          defaultChecked={false}
-          register={register}
+          value={hasVet}
+          onChange={(value) => setCustomValue("hasVet", value)}
           errors={errors}
         />
         <hr />

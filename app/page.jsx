@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import getCurrentUser from "./actions/getCurrentUser";
 import getListings from "./actions/getListings";
 import ClientOnly from "./components/ClientOnly";
@@ -5,8 +7,7 @@ import Container from "./components/Container";
 import EmptyState from "./components/EmptyState";
 import ListingCard from "./components/listings/ListingCard";
 
-const Home = async ({ params }) => {
-  const { searchParams } = await params;
+const Home = async ({ searchParams }) => {
   const listings = await getListings(searchParams);
   const currentUser = await getCurrentUser();
 
