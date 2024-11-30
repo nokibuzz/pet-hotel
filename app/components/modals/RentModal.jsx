@@ -18,6 +18,12 @@ import { useRouter } from "next/navigation";
 import TextArea from "../inputs/TextArea";
 import Dropdown from "../inputs/Dropdown";
 import Toggle from "../inputs/Toggle";
+import LocationSelector from "../LocationSelector";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import AddressModal from "../AddressModal";
+import AddressSuggestions from "../AddressSuggestions";
+import AddressInput from "../inputs/AddressInput";
+import DraggableMap from "../DraggableMap";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
@@ -175,6 +181,75 @@ const RentModal = () => {
     </div>
   );
 
+  const [address, setAddress] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [markerPosition, setMarkerPosition] = useState([51.505, -0.09]); // Default to London
+  const [zoomLevel, setZoomLevel] = useState(13);
+
+  const fetchSuggestions = async (query) => {
+    if (!query) {
+      setSuggestions([]);
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1`
+      );
+      setSuggestions(
+        response.data.map((result) => ({
+          address: result.address,
+          display_name: result.display_name,
+          lat: parseFloat(result.lat),
+          lon: parseFloat(result.lon),
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
+
+  const fetchAddressFromCoordinates = async (lat, lon) => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`
+      );
+      if (response.data && response.data.display_name) {
+        setAddress(response.data.display_name);
+      }
+    } catch (error) {
+      console.error("Error fetching address:", error);
+    }
+  };
+
+  // Handle input change
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    console.log("v", JSON.stringify(e.target.value));
+    setAddress(value);
+    fetchSuggestions(value);
+  };
+
+  // Handle suggestion selection
+  const handleSuggestionSelect = (suggestion) => {
+    console.log("sug", JSON.stringify(suggestion));
+    setAddress(suggestion.display_name);
+    setMarkerPosition([suggestion.lat, suggestion.lon]);
+    setSuggestions([]);
+  };
+
+  // Handle marker drag
+  const handleMarkerDragEnd = (e) => {
+    console.log(
+      "lat",
+      JSON.stringify(e.target.value),
+      "latlng",
+      JSON.stringify(e.target.getLatLng())
+    );
+    const { lat, lng } = e.target.getLatLng();
+    setMarkerPosition([lat, lng]);
+    fetchAddressFromCoordinates(lat, lng);
+  };
+
   if (step === STEPS.LOCATION) {
     bodyContent = (
       <div className="flex flex-col gap-8">
@@ -182,11 +257,30 @@ const RentModal = () => {
           title="Where is your pet house located?"
           subtitle="Help dog lovers find you"
         />
-        <CountrySelect
+        <div>
+          <AddressInput value={address} onChange={handleInputChange} />
+          <AddressSuggestions
+            suggestions={suggestions}
+            onSelect={handleSuggestionSelect}
+          />
+          <div className="rounded-lg overflow-hidden">
+            <DraggableMap
+              center={markerPosition}
+              onMarkerDragEnd={handleMarkerDragEnd}
+              zoomLevel={zoomLevel}
+              setZoomLevel={setZoomLevel}
+            />
+          </div>
+        </div>
+        {/* <CountrySelect
           value={location}
           onChange={(value) => setCustomValue("location", value)}
         />
-        <Map center={location?.latlng} />
+
+        <LocationSelector
+          countryCode={location?.value}
+          onSelect={handleLocationSelect}
+        /> */}
       </div>
     );
   }

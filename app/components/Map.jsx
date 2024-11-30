@@ -4,6 +4,8 @@ import L from "leaflet";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 import "leaflet/dist/leaflet.css";
+import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css";
+import "leaflet-defaulticon-compatibility";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -20,7 +22,7 @@ L.Icon.Default.mergeOptions({
 const Map = ({ center }) => {
   return (
     <MapContainer
-      center={center || [51, -0.09]}
+      center={center}
       zoom={center ? 4 : 2}
       scrollWheelZoom={false}
       className="h-[35vh] rounded-lg"
@@ -30,7 +32,7 @@ const Map = ({ center }) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {center && (
-        <Marker position={center} icon={icon}>
+        <Marker position={center}>
           <Popup>
             Location <br /> TODO: add country name here or stg else if needed
           </Popup>
