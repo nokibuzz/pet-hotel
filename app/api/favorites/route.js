@@ -35,37 +35,35 @@ export async function POST(request) {
   }
 }
 
-export async function DELETE(request, params) {
-  console.log(
-    "Not working!",
-    JSON.stringify(request),
-    "params",
-    JSON.stringify(params)
-  );
-  // const currentUser = await getCurrentUser();
+export async function DELETE(request) {
+  try {
+    const currentUser = await getCurrentUser();
+    const body = await request.json();
+    const { listingId } = body;
 
-  // if (!currentUser) {
-  //   return NextResponse.error();
-  // }
+    if (!currentUser) {
+      return NextResponse.error();
+    }
+    
+    if (!listingId || typeof listingId !== "string") {
+      throw new Error("Invalid Listing ID");
+    }
 
-  // const body = await request.json();
-  // const { listingId } = body;
+    let favouriteIds = [...(currentUser.favouriteIds || [])];
+    favouriteIds = favouriteIds.filter((id) => id !== listingId);
 
-  // if (!listingId || typeof listingId !== "string") {
-  //   throw new Error("Invalid Listing ID");
-  // }
+    const user = await prisma.user.update({
+      where: {
+        id: currentUser.id,
+      },
+      data: {
+        favouriteIds,
+      },
+    });
 
-  // let favouriteIds = [...(currentUser.favouriteIds || [])];
-  // favouriteIds = favouriteIds.filter((id) => id !== listingId);
-
-  // const user = await prisma.user.update({
-  //   where: {
-  //     id: currentUser.id,
-  //   },
-  //   data: {
-  //     favouriteIds,
-  //   },
-  // });
-
-  // return NextResponse.json(user);
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json("Something went wrong!");
+  }
 }
