@@ -24,7 +24,9 @@ const ListingClient = ({ listing, reservations = [], currentUser }) => {
   const router = useRouter();
 
   const disabledDates = useMemo(() => {
-    let dates = [];
+    let result = [];
+
+    let reservedDates = {};
 
     reservations.forEach((reservation) => {
       const range = eachDayOfInterval({
@@ -32,10 +34,19 @@ const ListingClient = ({ listing, reservations = [], currentUser }) => {
         end: new Date(reservation.endDate),
       });
 
-      dates = [...dates, ...range];
+      range.forEach((date) => {
+        const formattedDate = date.toISOString().split('T')[0];
+        reservedDates[formattedDate] = (reservedDates[formattedDate] || 0) + 1;
+      });
+    });  
+
+    Object.entries(reservedDates).forEach(([date, count]) => {
+      if (count >= listing.guestCount) {
+        result.push(date);
+      }
     });
 
-    return dates;
+    return result;
   }, [reservations]);
 
   const [isLoading, setIsLoading] = useState(false);
