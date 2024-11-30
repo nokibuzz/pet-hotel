@@ -33,21 +33,29 @@ const UserMenu = ({ currentUser }) => {
     rentModal.onOpen();
   }, [currentUser, loginModal, rentModal]);
 
+  const closeMenu = () => {
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 500);
+  };
+
   return (
     <div className="relative">
       <div className="flex flex-row items-center">
-        {/* TODO: remove from main window */}
-        <div
-          onClick={onRent}
-          className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
-        >
-          Add accomodation
-        </div>
+        {currentUser?.hotelOwner == true && (
+          <div
+            onClick={onRent}
+            className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
+          >
+            Add accomodation
+          </div>
+        )}
         <div
           onClick={toggleOpen}
-          className="p-4 md:py-1 md:px-2 border-[1px] border-neutral-200 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+          className="p-4 md:py-1 md:px-2 border-[1px] border-neutral-200 flex flex-row items-center justify-between gap-3 rounded-full cursor-pointer hover:shadow-md transition"
         >
           <AiOutlineMenu />
+          {currentUser?.name}
           <div className="hidden md:block">
             <Avatar src={currentUser?.image} />
           </div>
@@ -55,37 +63,78 @@ const UserMenu = ({ currentUser }) => {
       </div>
 
       {isOpen && (
-        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
-          <div className="flex flex-col cursor-pointer">
+        <div className="absolute rounded-xl shadow-md w-[35vw] bg-white overflow-hidden right-0 top-12 text-sm">
+          <div className="flex flex-col cursor-pointer ">
             {currentUser ? (
               <>
                 <MenuItem
-                  onClick={() => router.push("/profile")}
+                  onClick={() => {
+                    router.push("/profile");
+                    closeMenu();
+                  }}
                   label="Profile"
                 />
                 <MenuItem
-                  onClick={() => router.push("/stays")}
+                  onClick={() => {
+                    router.push("/stays");
+                    closeMenu();
+                  }}
                   label="My reservations"
                 />
                 <MenuItem
-                  onClick={() => router.push("/reservations")}
+                  onClick={() => {
+                    router.push("/reservations");
+                    closeMenu();
+                  }}
                   label="Booked Reservations (my place)"
                 />
                 <MenuItem
-                  onClick={() => router.push("/pets")}
+                  onClick={() => {
+                    router.push("/pets");
+                    closeMenu();
+                  }}
                   label="My pets"
                 />
                 <MenuItem
-                  onClick={() => router.push("/properties")}
+                  onClick={() => {
+                    router.push("/properties");
+                    closeMenu();
+                  }}
                   label="My properties"
                 />
-                <MenuItem onClick={rentModal.onOpen} label="Add accomodation" />
-                <MenuItem onClick={() => signOut()} label="Logout" />
+                {currentUser?.hotelOwner && (
+                  <MenuItem
+                    onClick={() => {
+                      rentModal.onOpen();
+                      closeMenu();
+                    }}
+                    label="Add accomodation"
+                  />
+                )}
+                <MenuItem
+                  onClick={() => {
+                    signOut();
+                    closeMenu();
+                  }}
+                  label="Logout"
+                />
               </>
             ) : (
               <>
-                <MenuItem onClick={loginModal.onOpen} label="Login" />
-                <MenuItem onClick={registerModal.onOpen} label="Sign Up" />
+                <MenuItem
+                  onClick={() => {
+                    loginModal.onOpen();
+                    closeMenu();
+                  }}
+                  label="Login"
+                />
+                <MenuItem
+                  onClick={() => {
+                    registerModal.onOpen();
+                    closeMenu();
+                  }}
+                  label="Sign Up"
+                />
               </>
             )}
           </div>

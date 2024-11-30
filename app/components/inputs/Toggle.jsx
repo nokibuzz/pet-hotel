@@ -1,25 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import ReactToggle from "react-toggle";
 import "react-toggle/style.css";
 
 const Toggle = ({
   id,
   label,
-  register,
+  value,
+  onChange,
   errors,
-  defaultChecked = false,
+  col = false,
   required = false,
 }) => {
-  const [isChecked, setIsChecked] = useState(defaultChecked);
-
-  const handleChange = (e) => {
-    setIsChecked(e.target.checked);
-  };
-
   return (
-    <div className="w-full flex items-center gap-4">
+    <div
+      className={`w-full flex ${
+        col ? "flex-col" : "flex-row"
+      } items-center gap-4`}
+    >
       <label
         className={`text-md ${errors[id] ? "text-red-700" : "text-zinc-400"}`}
       >
@@ -27,10 +26,9 @@ const Toggle = ({
       </label>
 
       <ReactToggle
-        id={id}
-        {...register(id, { required })}
-        checked={isChecked}
-        onChange={handleChange}
+        checked={value}
+        onChange={() => onChange(!value)}
+        required={required}
         className={`react-toggle ${
           errors[id] ? "border-red-700" : "border-neutral-300"
         }`}

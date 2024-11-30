@@ -11,6 +11,7 @@ import Input from "../inputs/Input";
 import toast from "react-hot-toast";
 import Button from "../Button";
 import useLoginModal from "@/app/hooks/useLoginModal";
+import Toggle from "../inputs/Toggle";
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
@@ -20,14 +21,28 @@ const RegisterModal = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      businessName: "",
+      hotelOwner: false,
     },
   });
+
+  const hotelOwner = watch("hotelOwner");
+
+  const setCustomValue = (id, value) => {
+    setValue(id, value, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  };
 
   const onSubmit = (data) => {
     setIsLoading(true);
@@ -36,7 +51,6 @@ const RegisterModal = () => {
       .post("/api/register", data)
       .then(() => {
         toast.success("Successfully registered!");
-        // saveAccount(data);
         registerModal.onClose();
         loginModal.onOpen();
       })
@@ -44,20 +58,21 @@ const RegisterModal = () => {
       .finally(() => setIsLoading(false));
   };
 
-  const saveAccount = (data) => {
-    axios
-      .post("/api/user", data)
-      .then(() => {
-        console.log("Saved account data!");
-      })
-      .catch(() => toast.error("Woof, woof, error on saving account data!"));
-  };
-
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading
         title="Welcome to Hotels for dogs"
         subtitle="Create an account!"
+        rightComponent={
+          <Toggle
+            id="hotelOwner"
+            label="Register hotel"
+            value={hotelOwner}
+            onChange={(value) => setCustomValue("hotelOwner", value)}
+            col={true}
+            errors={errors}
+          />
+        }
       />
       <Input
         id="email"
@@ -75,6 +90,16 @@ const RegisterModal = () => {
         errors={errors}
         required
       />
+      {hotelOwner && (
+        <Input
+          id="businessName"
+          label="Business Name"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      )}
       <Input
         id="password"
         type="password"
