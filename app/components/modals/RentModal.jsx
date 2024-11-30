@@ -236,7 +236,7 @@ const RentModal = () => {
       <div className="flex flex-col gap-8">
         <Heading
           title="Describe your object"
-          subtitle="Simple explanation works the best!"
+          subtitle="Simple explanation works the best"
         />
         <Input
           id="title"
