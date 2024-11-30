@@ -1,5 +1,3 @@
-// export const dynamic = "force-dynamic";
-
 import bcrypt from "bcrypt";
 import { prisma } from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
