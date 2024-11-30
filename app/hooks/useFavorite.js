@@ -28,15 +28,13 @@ const useFavorite = ({ listingId, currentUser }) => {
         let toastMessage = "";
 
         if (hasFavorited) {
-          request = () => axios.delete(`/api/favorites?listingId=${listingId}`);
+          request = () => axios.delete("/api/favorites", { data: { listingId } });
           toastMessage = "Removed from favorites!";
         } else {
-          request = () =>
-            axios.post("/api/favorites", { listingId: `${listingId}` });
+          request = () => axios.post("/api/favorites", { listingId: `${listingId}` });
           toastMessage = "Added to favorites!";
         }
-
-        await request();
+        await request();        
         router.refresh();
         toast.success(toastMessage);
       } catch (error) {
