@@ -28,6 +28,7 @@ const Home = async ({ searchParams }) => {
                 key={listing.id}
                 data={listing}
                 currentUser={currentUser}
+                currentSearchParams={searchParams}
               />
             );
           })}
