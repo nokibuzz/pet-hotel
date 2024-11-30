@@ -12,19 +12,16 @@ import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-
-const initialDateRange = {
-  startDate: new Date(),
-  endDate: new Date(),
-  key: "selection",
-};
+import { useSearchParams } from "next/navigation";
 
 const ListingClient = ({ listing, reservations = [], currentUser }) => {
   const loginModal = useLoginModal();
   const router = useRouter();
 
   const disabledDates = useMemo(() => {
-    let dates = [];
+    let result = [];
+
+    let reservedDates = {};
 
     reservations.forEach((reservation) => {
       const range = eachDayOfInterval({
@@ -32,11 +29,27 @@ const ListingClient = ({ listing, reservations = [], currentUser }) => {
         end: new Date(reservation.endDate),
       });
 
-      dates = [...dates, ...range];
+      range.forEach((date) => {
+        const formattedDate = date.toISOString().split('T')[0];
+        reservedDates[formattedDate] = (reservedDates[formattedDate] || 0) + 1;
+      });
+    });  
+
+    Object.entries(reservedDates).forEach(([date, count]) => {
+      if (count >= listing.guestCount) {
+        result.push(date);
+      }
     });
 
-    return dates;
+    return result;
   }, [reservations]);
+
+  const searchParams = useSearchParams();
+  const initialDateRange = {
+    startDate: searchParams?.get('startDate') ? searchParams.get('startDate') : new Date(),
+    endDate: searchParams?.get('endDate') ? searchParams.get('endDate') : new Date(),
+    key: "selection",
+  };
 
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);

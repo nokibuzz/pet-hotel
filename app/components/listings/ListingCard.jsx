@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import HeartButton from "../HeartButton";
 import Button from "../Button";
+import qs from "query-string";
+
 
 const ListingCard = ({
   data,
@@ -16,6 +18,7 @@ const ListingCard = ({
   actionLabel,
   actionId = "",
   currentUser,
+  currentSearchParams = undefined
 }) => {
   const router = useRouter();
   const { getByValue } = useCountries();
@@ -54,9 +57,30 @@ const ListingCard = ({
     return `${format(start, "PP")} - ${format(end, "PP")}`;
   }, [reservation]);
 
+  const onSelect = useCallback(async () => {
+
+    let currentQuery = {};
+
+    if (currentSearchParams) {
+      currentQuery = JSON.parse(currentSearchParams.value);
+    }
+
+    const url = qs.stringifyUrl(
+      {
+        url: `/listing/${data.id}`,
+        query: currentQuery,
+      },
+      { skipNull: true }
+    );
+
+    router.push(url);
+  }, [
+    currentSearchParams
+  ]);
+
   return (
     <div
-      onClick={() => router.push(`/listing/${data.id}`)}
+      onClick={onSelect}
       className="col-span-1 cursor-pointer group"
     >
       <div className="flex flex-col gap-2 w-full">
