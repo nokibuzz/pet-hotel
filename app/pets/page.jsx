@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import getCurrentUser from "../actions/getCurrentUser";
 import getPets from "../actions/getPets";
 import ClientOnly from "../components/ClientOnly";
