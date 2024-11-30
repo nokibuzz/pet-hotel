@@ -22,7 +22,7 @@ const Tooltip = ({ text, children }) => {
 
   return (
     <div
-      className="relative"
+      className="relative ml-4"
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

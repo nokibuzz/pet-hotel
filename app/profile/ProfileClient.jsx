@@ -13,7 +13,7 @@ const ProfileClient = ({ currentUser }) => {
 
   return (
     <Container>
-      <div className="flex flex-col min-h-screen rounded-lg md:flex-row gap-6">
+      <div className="flex flex-col h-max rounded-lg md:flex-row gap-6">
         <div className="flex-1 p-3">
           <TabContent activeTab={activeTab} currentUser={currentUser} />
         </div>

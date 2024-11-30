@@ -18,7 +18,7 @@ const EditableField = ({ label, value, onFieldChange }) => {
   };
 
   return (
-    <div className="flex flex-col w-full items-center">
+    <div className="flex flex-col w-full items-start">
       <label className="text-sm font-semibold text-gray-600 mb-1 inset-10">
         {label}
       </label>
@@ -30,7 +30,7 @@ const EditableField = ({ label, value, onFieldChange }) => {
           onChange={(e) => handleChange(e.target.value)}
           onBlur={handleBlur}
           autoFocus
-          className="text-center w-full md:w-2/3 px-3 py-2 border-b-2 border-black focus:outline-none focus:border-black transition-colors duration-300"
+          className="text-center w-full ml-4 md:w-2/3 px-3 py-2 border-b-2 border-black focus:outline-none focus:border-black transition-colors duration-300"
         />
       ) : (
         <Tooltip text={`Click on text to edit ${label}`}>

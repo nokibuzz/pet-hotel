@@ -26,14 +26,11 @@ const SearchModal = () => {
   const [step, setStep] = useState(STEPS.LOCATION);
   const [location, setLocation] = useState();
   const [guestCount, setGuestCount] = useState(1);
-  const [dateRange, setDateRange] =
-    useState <
-    Range >
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    };
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
 
   const Map = useMemo(
     () => dynamic(() => import("../Map"), { ssr: false }),
