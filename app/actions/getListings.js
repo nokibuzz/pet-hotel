@@ -3,7 +3,7 @@ import { prisma } from "@/app/libs/prismadb";
 export default async function getListings(params) {
   try {
     const { userId, guestCount, startDate, endDate, locationValue, category } =
-      params;
+      await params;
 
     const query = {};
 
