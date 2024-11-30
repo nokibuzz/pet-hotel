@@ -12,12 +12,7 @@ import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-
-const initialDateRange = {
-  startDate: new Date(),
-  endDate: new Date(),
-  key: "selection",
-};
+import { useSearchParams } from "next/navigation";
 
 const ListingClient = ({ listing, reservations = [], currentUser }) => {
   const loginModal = useLoginModal();
@@ -37,6 +32,13 @@ const ListingClient = ({ listing, reservations = [], currentUser }) => {
 
     return dates;
   }, [reservations]);
+
+  const searchParams = useSearchParams();
+  const initialDateRange = {
+    startDate: searchParams?.get('startDate') ? searchParams.get('startDate') : new Date(),
+    endDate: searchParams?.get('endDate') ? searchParams.get('endDate') : new Date(),
+    key: "selection",
+  };
 
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);
