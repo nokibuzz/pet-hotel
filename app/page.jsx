@@ -5,8 +5,7 @@ import Container from "./components/Container";
 import EmptyState from "./components/EmptyState";
 import ListingCard from "./components/listings/ListingCard";
 
-const Home = async ({ params }) => {
-  const { searchParams } = await params;
+const Home = async ({ searchParams }) => {
   const listings = await getListings(searchParams);
   const currentUser = await getCurrentUser();
 

@@ -55,6 +55,14 @@ const ProfileCard = ({ currentUser }) => {
             detectChanges(name, newEmail);
           }}
         />
+        <EditableField
+          label="Email"
+          value={email}
+          onFieldChange={(newEmail) => {
+            setEmail(newEmail);
+            detectChanges(name, newEmail);
+          }}
+        />
 
         {/* Save Button */}
         {hasChanged && (
