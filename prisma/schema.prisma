@@ -74,6 +74,8 @@ model Listing {
     hasGrooming         Boolean
     hasVet              Boolean
     addionalInformation String?
+    address             String
+    latlng              Float[]
     reservations        Reservation[]
 
     user User? @relation(fields: [userId], references: [id], onDelete: Cascade)

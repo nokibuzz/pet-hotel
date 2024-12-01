@@ -10,8 +10,6 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-const icon = L.icon({ iconUrl: "/images/marker-icon.png" });
-
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon.src,
@@ -23,7 +21,7 @@ const Map = ({ center }) => {
   return (
     <MapContainer
       center={center}
-      zoom={center ? 4 : 2}
+      zoom={center ? 20 : 2}
       scrollWheelZoom={false}
       className="h-[35vh] rounded-lg"
     >
