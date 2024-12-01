@@ -7,7 +7,7 @@ import getCurrentUser from "../actions/getCurrentUser";
 import getReservations from "../actions/getReservations";
 import ReservationsClient from "./ReservationsClient";
 
-const ReservationsPage = async () => {
+const ListReservationsPage = async () => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -18,9 +18,18 @@ const ReservationsPage = async () => {
     );
   }
 
-  const reservations = await getReservations({
-    authorId: currentUser.id,
-  });
+  let reservations = [];
+
+  if (currentUser.hotelOwner){
+    reservations = await getReservations({
+      authorId: currentUser.id,
+    });
+  } 
+  else {
+    reservations = await getReservations({
+      userId: currentUser.id,
+    });
+  }
 
   if (reservations.length === 0) {
     return (
@@ -43,4 +52,4 @@ const ReservationsPage = async () => {
   );
 };
 
-export default ReservationsPage;
+export default ListReservationsPage;

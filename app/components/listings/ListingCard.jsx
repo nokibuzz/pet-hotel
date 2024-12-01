@@ -1,6 +1,5 @@
 "use client";
 
-import useCountries from "@/app/hooks/useCountries";
 import { format } from "date-fns";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -15,9 +14,10 @@ const ListingCard = ({
   onAction,
   disabled,
   actionLabel,
-  actionId = "",
+  actionId,
   currentUser,
   currentSearchParams = undefined,
+  nextPage = "listing",
 }) => {
   const router = useRouter();
 
@@ -62,14 +62,14 @@ const ListingCard = ({
 
     const url = qs.stringifyUrl(
       {
-        url: `/listing/${data.id}`,
+        url: `/${nextPage}/${actionId}`,
         query: currentQuery,
       },
       { skipNull: true }
     );
 
     router.push(url);
-  }, [currentSearchParams]);
+  }, [nextPage, currentSearchParams]);
 
   return (
     <div onClick={onSelect} className="col-span-1 cursor-pointer group">
