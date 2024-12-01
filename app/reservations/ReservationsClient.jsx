@@ -32,9 +32,11 @@ const ReservationsClient = ({ reservations, currentUser }) => {
     [router]
   );
 
+  const subtitle = currentUser.hotelOwner ? "Bookings on your place" : "Your pet care experience";
+
   return (
     <Container>
-      <Heading title="Reservations" subtitle="Bookings on your place" />
+      <Heading title="Reservations" subtitle={subtitle}/>
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
         {reservations.map((reservation) => (
           <ListingCard
@@ -44,8 +46,9 @@ const ReservationsClient = ({ reservations, currentUser }) => {
             actionId={reservation.id}
             onAction={onCancel}
             disabled={deletingId === reservation.id}
-            actionLabel="Cancel pet reservation"
+            actionLabel="Cancel reservation"
             currentUser={currentUser}
+            nextPage="reservations"
           />
         ))}
       </div>

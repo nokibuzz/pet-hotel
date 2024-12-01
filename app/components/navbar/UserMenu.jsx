@@ -74,34 +74,42 @@ const UserMenu = ({ currentUser }) => {
                   }}
                   label="Profile"
                 />
-                <MenuItem
-                  onClick={() => {
-                    router.push("/stays");
-                    closeMenu();
-                  }}
-                  label="My reservations"
-                />
-                <MenuItem
+                 {currentUser?.hotelOwner === false && (
+                  <MenuItem
                   onClick={() => {
                     router.push("/reservations");
                     closeMenu();
                   }}
-                  label="Booked Reservations (my place)"
+                  label="My reservations"
                 />
-                <MenuItem
+                )}
+                {currentUser?.hotelOwner && (
+                   <MenuItem
+                   onClick={() => {
+                     router.push("/reservations");
+                     closeMenu();
+                   }}
+                   label="Booked Reservations (my place)"
+                 />
+                )}
+                {currentUser?.hotelOwner === false && (
+                  <MenuItem
                   onClick={() => {
                     router.push("/pets");
                     closeMenu();
                   }}
                   label="My pets"
                 />
-                <MenuItem
+                )}
+                {currentUser?.hotelOwner && (
+                  <MenuItem
                   onClick={() => {
                     router.push("/properties");
                     closeMenu();
                   }}
                   label="My properties"
                 />
+                )}
                 {currentUser?.hotelOwner && (
                   <MenuItem
                     onClick={() => {
