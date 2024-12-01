@@ -9,7 +9,6 @@ import HeartButton from "../HeartButton";
 import Button from "../Button";
 import qs from "query-string";
 
-
 const ListingCard = ({
   data,
   reservation,
@@ -18,12 +17,9 @@ const ListingCard = ({
   actionLabel,
   actionId = "",
   currentUser,
-  currentSearchParams = undefined
+  currentSearchParams = undefined,
 }) => {
   const router = useRouter();
-  const { getByValue } = useCountries();
-
-  const location = getByValue(data.locationValue);
 
   const handleCancel = useCallback(
     (e) => {
@@ -58,7 +54,6 @@ const ListingCard = ({
   }, [reservation]);
 
   const onSelect = useCallback(async () => {
-
     let currentQuery = {};
 
     if (currentSearchParams) {
@@ -74,15 +69,10 @@ const ListingCard = ({
     );
 
     router.push(url);
-  }, [
-    currentSearchParams
-  ]);
+  }, [currentSearchParams]);
 
   return (
-    <div
-      onClick={onSelect}
-      className="col-span-1 cursor-pointer group"
-    >
+    <div onClick={onSelect} className="col-span-1 cursor-pointer group">
       <div className="flex flex-col gap-2 w-full">
         <div className="aspect-square w-full relative overflow-hidden rounded-xl">
           <Image
@@ -96,7 +86,8 @@ const ListingCard = ({
           </div>
         </div>
         <div className="font-semibold text-lg">
-          {location?.region}, {location?.label}
+          {/* {location?.region}, {location?.label} */}
+          Add location, parse from map, =address: result.address=
         </div>
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}

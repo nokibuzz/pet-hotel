@@ -7,7 +7,6 @@ import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
-import CountrySelect from "../inputs/CountrySelect";
 import dynamic from "next/dynamic";
 import Counter from "../inputs/Counter";
 import ImageUpload from "../inputs/ImageUpload";
@@ -18,6 +17,9 @@ import { useRouter } from "next/navigation";
 import TextArea from "../inputs/TextArea";
 import Dropdown from "../inputs/Dropdown";
 import Toggle from "../inputs/Toggle";
+import AddressSuggestions from "../AddressSuggestions";
+import AddressInput from "../inputs/AddressInput";
+import useAddress from "@/app/hooks/useAddress";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
@@ -67,6 +69,8 @@ const RentModal = () => {
       hasGrooming: false,
       hasVet: false,
       addionalInformation: "",
+      address: "",
+      latlng: [],
     },
   });
 
@@ -85,9 +89,9 @@ const RentModal = () => {
   const hasVet = watch("hasVet");
 
   // this is the hack way to import map to work fine
-  const Map = useMemo(
+  const DraggableMap = useMemo(
     () =>
-      dynamic(() => import("../Map"), {
+      dynamic(() => import("../DraggableMap"), {
         ssr: false,
       }),
     [location]
@@ -175,6 +179,40 @@ const RentModal = () => {
     </div>
   );
 
+  const [markerPosition, setMarkerPosition] = useState([51.505, -0.09]); // Default to London
+  const [zoomLevel, setZoomLevel] = useState(13);
+
+  const {
+    fetchSuggestions,
+    fetchAddressFromCoordinates,
+    address,
+    suggestions,
+    setAddress,
+    setSuggestions,
+  } = useAddress();
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setAddress(value);
+    fetchSuggestions(value);
+  };
+
+  const handleSuggestionSelect = (suggestion) => {
+    setAddress(suggestion.display_name);
+    setMarkerPosition([suggestion.lat, suggestion.lon]);
+    setSuggestions([]);
+    setCustomValue("address", suggestion.display_name);
+    setCustomValue("latlng", [suggestion.lat, suggestion.lon]);
+  };
+
+  const handleMarkerDragEnd = (e) => {
+    const { lat, lng } = e.target.getLatLng();
+    setMarkerPosition([lat, lng]);
+    fetchAddressFromCoordinates(lat, lng);
+    setCustomValue("address", address);
+    setCustomValue("latlng", [lat, lng]);
+  };
+
   if (step === STEPS.LOCATION) {
     bodyContent = (
       <div className="flex flex-col gap-8">
@@ -182,11 +220,21 @@ const RentModal = () => {
           title="Where is your pet house located?"
           subtitle="Help dog lovers find you"
         />
-        <CountrySelect
-          value={location}
-          onChange={(value) => setCustomValue("location", value)}
-        />
-        <Map center={location?.latlng} />
+        <div>
+          <AddressInput value={address} onChange={handleInputChange} />
+          <AddressSuggestions
+            suggestions={suggestions}
+            onSelect={handleSuggestionSelect}
+          />
+          <div className="rounded-lg overflow-hidden">
+            <DraggableMap
+              center={markerPosition}
+              onMarkerDragEnd={handleMarkerDragEnd}
+              zoomLevel={zoomLevel}
+              setZoomLevel={setZoomLevel}
+            />
+          </div>
+        </div>
       </div>
     );
   }
