@@ -30,10 +30,10 @@ const ListingClient = ({ listing, reservations = [], currentUser }) => {
       });
 
       range.forEach((date) => {
-        const formattedDate = date.toISOString().split('T')[0];
+        const formattedDate = date.toISOString().split("T")[0];
         reservedDates[formattedDate] = (reservedDates[formattedDate] || 0) + 1;
       });
-    });  
+    });
 
     Object.entries(reservedDates).forEach(([date, count]) => {
       if (count >= listing.guestCount) {
@@ -46,8 +46,12 @@ const ListingClient = ({ listing, reservations = [], currentUser }) => {
 
   const searchParams = useSearchParams();
   const initialDateRange = {
-    startDate: searchParams?.get('startDate') ? searchParams.get('startDate') : new Date(),
-    endDate: searchParams?.get('endDate') ? searchParams.get('endDate') : new Date(),
+    startDate: searchParams?.get("startDate")
+      ? searchParams.get("startDate")
+      : new Date(),
+    endDate: searchParams?.get("endDate")
+      ? searchParams.get("endDate")
+      : new Date(),
     key: "selection",
   };
 
@@ -119,7 +123,7 @@ const ListingClient = ({ listing, reservations = [], currentUser }) => {
               description={listing.description}
               roomCount={listing.roomCount}
               guestCount={listing.guestCount}
-              locationValue={listing.locationValue}
+              latlng={listing.latlng}
               houseRules={{
                 checkInTime: listing.checkInTime,
                 checkOutTime: listing.checkOutTime,
