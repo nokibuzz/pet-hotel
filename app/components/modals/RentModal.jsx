@@ -7,7 +7,6 @@ import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
-import CountrySelect from "../inputs/CountrySelect";
 import dynamic from "next/dynamic";
 import Counter from "../inputs/Counter";
 import ImageUpload from "../inputs/ImageUpload";
@@ -18,12 +17,9 @@ import { useRouter } from "next/navigation";
 import TextArea from "../inputs/TextArea";
 import Dropdown from "../inputs/Dropdown";
 import Toggle from "../inputs/Toggle";
-import LocationSelector from "../LocationSelector";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import AddressModal from "../AddressModal";
 import AddressSuggestions from "../AddressSuggestions";
 import AddressInput from "../inputs/AddressInput";
-import DraggableMap from "../DraggableMap";
+import useAddress from "@/app/hooks/useAddress";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
@@ -73,6 +69,8 @@ const RentModal = () => {
       hasGrooming: false,
       hasVet: false,
       addionalInformation: "",
+      address: "",
+      latlng: [],
     },
   });
 
@@ -91,9 +89,9 @@ const RentModal = () => {
   const hasVet = watch("hasVet");
 
   // this is the hack way to import map to work fine
-  const Map = useMemo(
+  const DraggableMap = useMemo(
     () =>
-      dynamic(() => import("../Map"), {
+      dynamic(() => import("../DraggableMap"), {
         ssr: false,
       }),
     [location]
@@ -181,73 +179,38 @@ const RentModal = () => {
     </div>
   );
 
-  const [address, setAddress] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
   const [markerPosition, setMarkerPosition] = useState([51.505, -0.09]); // Default to London
   const [zoomLevel, setZoomLevel] = useState(13);
 
-  const fetchSuggestions = async (query) => {
-    if (!query) {
-      setSuggestions([]);
-      return;
-    }
-    try {
-      const response = await axios.get(
-        `https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1`
-      );
-      setSuggestions(
-        response.data.map((result) => ({
-          address: result.address,
-          display_name: result.display_name,
-          lat: parseFloat(result.lat),
-          lon: parseFloat(result.lon),
-        }))
-      );
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
-    }
-  };
+  const {
+    fetchSuggestions,
+    fetchAddressFromCoordinates,
+    address,
+    suggestions,
+    setAddress,
+    setSuggestions,
+  } = useAddress();
 
-  const fetchAddressFromCoordinates = async (lat, lon) => {
-    try {
-      const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`
-      );
-      if (response.data && response.data.display_name) {
-        setAddress(response.data.display_name);
-      }
-    } catch (error) {
-      console.error("Error fetching address:", error);
-    }
-  };
-
-  // Handle input change
   const handleInputChange = (e) => {
     const value = e.target.value;
-    console.log("v", JSON.stringify(e.target.value));
     setAddress(value);
     fetchSuggestions(value);
   };
 
-  // Handle suggestion selection
   const handleSuggestionSelect = (suggestion) => {
-    console.log("sug", JSON.stringify(suggestion));
     setAddress(suggestion.display_name);
     setMarkerPosition([suggestion.lat, suggestion.lon]);
     setSuggestions([]);
+    setCustomValue("address", suggestion.display_name);
+    setCustomValue("latlng", [suggestion.lat, suggestion.lon]);
   };
 
-  // Handle marker drag
   const handleMarkerDragEnd = (e) => {
-    console.log(
-      "lat",
-      JSON.stringify(e.target.value),
-      "latlng",
-      JSON.stringify(e.target.getLatLng())
-    );
     const { lat, lng } = e.target.getLatLng();
     setMarkerPosition([lat, lng]);
     fetchAddressFromCoordinates(lat, lng);
+    setCustomValue("address", address);
+    setCustomValue("latlng", [lat, lng]);
   };
 
   if (step === STEPS.LOCATION) {
@@ -272,15 +235,6 @@ const RentModal = () => {
             />
           </div>
         </div>
-        {/* <CountrySelect
-          value={location}
-          onChange={(value) => setCustomValue("location", value)}
-        />
-
-        <LocationSelector
-          countryCode={location?.value}
-          onSelect={handleLocationSelect}
-        /> */}
       </div>
     );
   }
