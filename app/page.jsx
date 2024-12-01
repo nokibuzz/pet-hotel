@@ -26,6 +26,7 @@ const Home = async ({ searchParams }) => {
             return (
               <ListingCard
                 key={listing.id}
+                actionId={listing.id}
                 data={listing}
                 currentUser={currentUser}
                 currentSearchParams={searchParams}

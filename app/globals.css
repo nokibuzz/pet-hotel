@@ -23,3 +23,9 @@ body,
   width: 100% !important;
   font-size: 16px !important;
 }
+
+
+.readonly-date-range {
+  pointer-events: none;
+  cursor: default;
+}

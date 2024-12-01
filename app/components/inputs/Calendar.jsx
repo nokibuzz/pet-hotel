@@ -5,9 +5,10 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-const Calendar = ({ value, onChange, disabledDates }) => {
+const Calendar = ({ value, onChange, disabledDates, readonly=false }) => {
   return (
     <DateRange
+      className={readonly ? "readonly-date-range" : ""}
       rangeColors={["#383838"]}
       ranges={[value]}
       date={new Date()}
