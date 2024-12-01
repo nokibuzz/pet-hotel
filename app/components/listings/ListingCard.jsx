@@ -87,7 +87,7 @@ const ListingCard = ({
         </div>
         <div className="font-semibold text-lg">
           {/* {location?.region}, {location?.label} */}
-          Add location, parse from map, "address: result.address"
+          Add location, parse from map, =address: result.address=
         </div>
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
