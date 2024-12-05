@@ -19,6 +19,8 @@ npm run build
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+Dummy
+
 ## Prisma
 
 https://authjs.dev/getting-started/adapters/prisma
