@@ -12,11 +12,11 @@ const Logo = () => {
     {
       url: `/`,
       query: {
-        startDate: searchParams?.get('startDate'),
-        endDate: searchParams?.get('endDate'),
-        locationValue: searchParams?.get('locationValue'),
-        guestCount: searchParams?.get('guestCount')
-      }
+        startDate: searchParams?.get("startDate"),
+        endDate: searchParams?.get("endDate"),
+        locationValue: searchParams?.get("locationValue"),
+        guestCount: searchParams?.get("guestCount"),
+      },
     },
     { skipNull: true }
   );

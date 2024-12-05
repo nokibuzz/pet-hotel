@@ -74,41 +74,41 @@ const UserMenu = ({ currentUser }) => {
                   }}
                   label="Profile"
                 />
-                 {currentUser?.hotelOwner === false && (
+                {currentUser?.hotelOwner === false && (
                   <MenuItem
-                  onClick={() => {
-                    router.push("/reservations");
-                    closeMenu();
-                  }}
-                  label="My reservations"
-                />
+                    onClick={() => {
+                      router.push("/reservations");
+                      closeMenu();
+                    }}
+                    label="My reservations"
+                  />
                 )}
                 {currentUser?.hotelOwner && (
-                   <MenuItem
-                   onClick={() => {
-                     router.push("/reservations");
-                     closeMenu();
-                   }}
-                   label="Booked Reservations (my place)"
-                 />
+                  <MenuItem
+                    onClick={() => {
+                      router.push("/reservations");
+                      closeMenu();
+                    }}
+                    label="Booked Reservations (my place)"
+                  />
                 )}
                 {currentUser?.hotelOwner === false && (
                   <MenuItem
-                  onClick={() => {
-                    router.push("/pets");
-                    closeMenu();
-                  }}
-                  label="My pets"
-                />
+                    onClick={() => {
+                      router.push("/pets");
+                      closeMenu();
+                    }}
+                    label="My pets"
+                  />
                 )}
                 {currentUser?.hotelOwner && (
                   <MenuItem
-                  onClick={() => {
-                    router.push("/properties");
-                    closeMenu();
-                  }}
-                  label="My properties"
-                />
+                    onClick={() => {
+                      router.push("/properties");
+                      closeMenu();
+                    }}
+                    label="My properties"
+                  />
                 )}
                 {currentUser?.hotelOwner && (
                   <MenuItem
