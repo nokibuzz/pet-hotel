@@ -13,8 +13,16 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
+import Reviews from "@/app/components/reviews/Reviews";
+import Avatar from "@/app/components/Avatar";
 
-const ListingClient = ({ listing, reservations = [], currentUser }) => {
+const ListingClient = ({
+  listing,
+  reservations = [],
+  reviews,
+  totalReviews,
+  currentUser,
+}) => {
   const loginModal = useLoginModal();
   const router = useRouter();
 
@@ -116,23 +124,20 @@ const ListingClient = ({ listing, reservations = [], currentUser }) => {
             locationValue={listing.locationValue}
             currentUser={currentUser}
           />
-          <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-10">
-            <ListingInfo
-              user={listing.user}
-              category={category}
-              description={listing.description}
-              roomCount={listing.roomCount}
-              guestCount={listing.guestCount}
-              latlng={listing.latlng}
-              houseRules={{
-                checkInTime: listing.checkInTime,
-                checkOutTime: listing.checkOutTime,
-                hasCancelation: listing.hasCancelation,
-                paymentMethodsCards: listing.paymentMethodsCards,
-                paymentMethodsCash: listing.paymentMethodsCash,
-              }}
-            />
-            <div className="order-first mb-10 md:order-last md:col-span-3">
+          <div className="grid grid-cols-1 lg:grid-cols-7 lg:gap-10 mt-10">
+            {/* Left Content */}
+            <div className="order-first lg:col-span-3 mb-10 lg:mb-0">
+              <div className="flex flex-col gap-2">
+                <div className="text-xl font-semibold flex flex-row items-center gap-2">
+                  <Avatar src={listing.user?.image} />
+                  <div>Pet house owner {listing.user?.name}</div>
+                </div>
+                <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
+                  <div>{listing.guestCount} pets</div>|
+                  <div>{listing.roomCount} rooms</div>
+                </div>
+              </div>
+              <hr className="my-6" />
               <ListingReservation
                 price={listing.price}
                 totalPrice={totalPrice}
@@ -148,6 +153,32 @@ const ListingClient = ({ listing, reservations = [], currentUser }) => {
                 hasVet={listing.hasVet}
                 addionalInformation={listing.addionalInformation}
               />
+            </div>
+            {/* Right Content */}
+            <div className="lg:col-span-4 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto hide-scrollbar">
+              <div className="space-y-10">
+                <ListingInfo
+                  user={listing.user}
+                  category={category}
+                  description={listing.description}
+                  roomCount={listing.roomCount}
+                  guestCount={listing.guestCount}
+                  latlng={listing.latlng}
+                  houseRules={{
+                    checkInTime: listing.checkInTime,
+                    checkOutTime: listing.checkOutTime,
+                    hasCancelation: listing.hasCancelation,
+                    paymentMethodsCards: listing.paymentMethodsCards,
+                    paymentMethodsCash: listing.paymentMethodsCash,
+                  }}
+                />
+                <hr className="my-2" />
+                <Reviews
+                  reviews={reviews}
+                  totalReviews={totalReviews}
+                  currentUser={currentUser}
+                />
+              </div>
             </div>
           </div>
         </div>

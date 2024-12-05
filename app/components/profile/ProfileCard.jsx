@@ -19,9 +19,6 @@ const ProfileCard = ({ currentUser }) => {
     setOriginalName(name);
     setOriginalEmail(email);
     setHasChanged(false);
-    console.log("Saved Name:", name);
-    console.log("Saved Email:", email);
-    console.log("submit");
   };
 
   return (

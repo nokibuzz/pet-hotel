@@ -6,11 +6,17 @@ import getReservations from "@/app/actions/getReservations";
 import ListingClient from "@/app/listing/[listingId]/ListingClient";
 import ClientOnly from "@/app/components/ClientOnly";
 import EmptyState from "@/app/components/EmptyState";
+import getReviews from "@/app/actions/getReviews";
 
 const ListingPage = async ({ params }) => {
   const listing = await getListingById(params);
   const reservations = await getReservations(params);
   const currentUser = await getCurrentUser();
+  const awaitedParams = await params;
+  const { reviews, totalReviews } = await getReviews({
+    ...awaitedParams,
+    userId: currentUser?.id,
+  });
 
   if (!listing) {
     return (
@@ -26,6 +32,8 @@ const ListingPage = async ({ params }) => {
         listing={listing}
         currentUser={currentUser}
         reservations={reservations}
+        reviews={reviews}
+        totalReviews={totalReviews}
       />
     </ClientOnly>
   );
