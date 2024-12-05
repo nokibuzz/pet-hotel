@@ -24,8 +24,42 @@ body,
   font-size: 16px !important;
 }
 
-
 .readonly-date-range {
   pointer-events: none;
   cursor: default;
+}
+
+/* Hide scrollbar for Webkit browsers (Chrome, Edge, Safari) */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Ensure scrollable functionality remains */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE 10+ */
+  overflow-y: auto;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px; /* Narrow scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Light gray scrollbar */
+  border-radius: 10px; /* Rounded scrollbar */
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin; /* Thin scrollbar */
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Gray thumb on transparent track */
 }

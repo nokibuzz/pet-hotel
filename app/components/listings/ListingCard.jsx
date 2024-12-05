@@ -69,7 +69,7 @@ const ListingCard = ({
     );
 
     router.push(url);
-  }, [nextPage, currentSearchParams]);
+  }, [nextPage, actionId, router, currentSearchParams]);
 
   return (
     <div onClick={onSelect} className="col-span-1 cursor-pointer group">

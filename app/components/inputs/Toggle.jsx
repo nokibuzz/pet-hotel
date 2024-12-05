@@ -17,10 +17,12 @@ const Toggle = ({
     <div
       className={`w-full flex ${
         col ? "flex-col" : "flex-row"
-      } items-center gap-4`}
+      } items-center gap-6`}
     >
       <label
-        className={`text-md ${errors[id] ? "text-red-700" : "text-zinc-400"}`}
+        className={`text-md ${
+          errors[id] ? "text-red-700" : "text-neutral-500"
+        }`}
       >
         {label}
       </label>

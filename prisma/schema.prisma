@@ -15,22 +15,26 @@ datasource db {
 
 // password and other stuffs are optional cause of social login option
 model User {
-    id             String    @id @default(auto()) @map("_id") @db.ObjectId
-    name           String?
-    businessName   String?
-    email          String?   @unique
-    emailVerified  DateTime?
-    hotelOwner     Boolean   @default(false)
-    image          String?
-    hashedPassword String?
-    createdAt      DateTime  @default(now())
-    updatedAt      DateTime  @updatedAt
-    favouriteIds   String[]  @db.ObjectId
+    id              String    @id @default(auto()) @map("_id") @db.ObjectId
+    name            String?
+    businessName    String?
+    email           String?   @unique
+    emailVerified   DateTime?
+    hotelOwner      Boolean   @default(false)
+    image           String?
+    hashedPassword  String?
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
+    favouriteIds    String[]  @db.ObjectId
+    totalReviews    Int       @default(0)
+    likedReviews    Int       @default(0)
+    dislikedReviews Int       @default(0)
 
     accounts     Account[]
     listings     Listing[]
     reservations Reservation[]
     pet          Pet[]
+    reviews      Review[]
 }
 
 model Account {
@@ -77,8 +81,11 @@ model Listing {
     address             String
     latlng              Float[]
     reservations        Reservation[]
+    totalReviews        Int           @default(0)
+    // TODO: add accomulated ratings
 
-    user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    reviews Review[]
 }
 
 model Reservation {
@@ -106,6 +113,29 @@ model Pet {
     userId      String  @db.ObjectId
 
     owner User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    userId    String @db.ObjectId
+    listingId String @db.ObjectId
+
+    overallRating  Int
+    locationRating Int
+    serviceRating  Int
+    checkInRating  Int
+    suggestUs      Boolean @default(false)
+
+    title          String
+    positiveReview String
+    negativeReview String
+
+    likes     Int      @default(0)
+    dislikes  Int      @default(0)
+    createdAt DateTime @default(now())
+
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 }
 
 // username:dogohotel
