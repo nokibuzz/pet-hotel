@@ -1,15 +1,6 @@
 "use client";
 
-import { IconType } from "react-icons";
-
-const Button = ({
-  label,
-  onClick,
-  disabled,
-  outline,
-  small,
-  icon: Icon,
-}) => {
+const Button = ({ label, onClick, disabled, outline, small, icon: Icon }) => {
   return (
     <button
       onClick={onClick}

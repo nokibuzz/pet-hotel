@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useCallback, useState } from "react";
 import { TbPhotoPlus } from "react-icons/tb";
 import toast from "react-hot-toast";
+import { checkIsOnDemandRevalidate } from "next/dist/server/api-utils";
 
 const ImageUpload = ({ onChange, value }) => {
   const [isValid, setIsValid] = useState(true);
@@ -15,7 +16,7 @@ const ImageUpload = ({ onChange, value }) => {
         onChange(result.info.secure_url);
       }
     },
-    [onChange]
+    [onChange, checkIsOnDemandRevalidate]
   );
 
   const handleValidation = (event) => {
