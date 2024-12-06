@@ -7,11 +7,9 @@ export default async function getReviews(params) {
       listingId,
       sortBy = "createdAt",
       sortOrder = "desc",
-      page = 1,
+      skip = 0,
+      take = 5,
     } = await params;
-
-    // const PAGE_SIZE = 5;
-    // const skip = (page - 1) * PAGE_SIZE;
 
     const query = {};
 
@@ -19,18 +17,21 @@ export default async function getReviews(params) {
       query.listingId = listingId;
     }
 
-    // if (userId) {
-    //   query.userId = userId;
-    // }
+    if (userId) {
+      query.userId = userId;
+    }
 
     const reviews = await prisma.review.findMany({
       where: query,
       orderBy: { [sortBy]: sortOrder },
-      // skip,
-      // take: PAGE_SIZE,
+      skip,
+      take,
+      include: {
+        user: true,
+      },
     });
 
-    const totalReviews = await prisma.review.count({ where: query });
+    const totalReviews = await prisma.review.count();
 
     return { reviews, totalReviews };
   } catch (error) {
