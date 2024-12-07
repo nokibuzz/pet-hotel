@@ -34,12 +34,13 @@ const ListingAddionalInformation = ({
         />
       </div>
       {addionalInformation && (
-        <div className="mt-4">
+        <div className="mt-4 grid grid-rows-5 overflow-y-auto">
           <div className="text-neutral-500 font-light">
             {addionalInformation}
           </div>
         </div>
       )}
+      <hr />
     </div>
   );
 };

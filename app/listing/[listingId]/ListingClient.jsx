@@ -84,7 +84,7 @@ const ListingClient = ({
       .then(() => {
         toast.success("Successfully reserved pet stay!");
         setDateRange(initialDateRange);
-        router.push("/stays");
+        router.push("/reservations");
       })
       .catch(() => {
         toast.error("Something went wrong on reservation!");
