@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-
 import { prisma } from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 
-export async function PATCH(request) {
+export async function POST(request) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -19,22 +18,89 @@ export async function PATCH(request) {
 
   const review = await prisma.review.findUnique({ where: { id } });
 
-  if (!review) {
+  if (!review || review.userId === currentUser.id) {
     return NextResponse.error();
   }
 
-  const incrementField = action === "like" ? "likedReviews" : "dislikedReviews";
-  const reviewField = action === "like" ? "likes" : "dislikes";
-
-  const rev = await prisma.review.update({
-    where: { id },
-    data: { [reviewField]: { increment: 1 } },
+  const existingReaction = await prisma.reviewReaction.findUnique({
+    where: {
+      reviewId_userId: {
+        reviewId: id,
+        userId: currentUser.id,
+      },
+    },
   });
 
-  const user = await prisma.user.update({
-    where: { id: userId },
-    data: { [incrementField]: { increment: 1 } },
-  });
+  if (existingReaction) {
+    if (existingReaction.reaction === action) {
+      // Remove the reaction
+      await prisma.reviewReaction.delete({
+        where: {
+          id: existingReaction.id,
+        },
+      });
+      await prisma.review.update({
+        where: { id },
+        data: {
+          [action === "like" ? "likes" : "dislikes"]: { decrement: 1 },
+        },
+      });
+      await prisma.user.update({
+        where: { id: review.userId },
+        data: {
+          [action === "like" ? "likedReviews" : "dislikedReviews"]: {
+            decrement: 1,
+          },
+        },
+      });
+    } else {
+      // Update reaction
+      await prisma.reviewReaction.update({
+        where: {
+          id: existingReaction.id,
+        },
+        data: { reaction: action },
+      });
+      await prisma.review.update({
+        where: { id },
+        data: {
+          likes: action === "like" ? { increment: 1 } : { decrement: 1 },
+          dislikes: action === "dislike" ? { increment: 1 } : { decrement: 1 },
+        },
+      });
+      await prisma.user.update({
+        where: { id: review.userId },
+        data: {
+          likedReviews: action === "like" ? { increment: 1 } : { decrement: 1 },
+          dislikedReviews:
+            action === "dislike" ? { increment: 1 } : { decrement: 1 },
+        },
+      });
+    }
+  } else {
+    // Create new reaction
+    await prisma.reviewReaction.create({
+      data: {
+        reviewId: id,
+        userId: currentUser.id,
+        reaction: action,
+      },
+    });
+    await prisma.review.update({
+      where: { id },
+      data: {
+        [action === "like" ? "likes" : "dislikes"]: { increment: 1 },
+      },
+    });
+    await prisma.user.update({
+      where: { id: review.userId },
+      data: {
+        [action === "like" ? "likedReviews" : "dislikedReviews"]: {
+          increment: 1,
+        },
+      },
+    });
+  }
 
-  return NextResponse.json(rev);
+  return NextResponse.json({ success: true });
 }

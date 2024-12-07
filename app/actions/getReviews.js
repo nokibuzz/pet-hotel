@@ -17,9 +17,10 @@ export default async function getReviews(params) {
       query.listingId = listingId;
     }
 
-    if (userId) {
-      query.userId = userId;
-    }
+    // will be used for my reviews only checkbox
+    // if (userId) {
+    //   query.userId = userId;
+    // }
 
     const reviews = await prisma.review.findMany({
       where: query,

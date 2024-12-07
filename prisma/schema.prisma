@@ -15,20 +15,21 @@ datasource db {
 
 // password and other stuffs are optional cause of social login option
 model User {
-    id              String    @id @default(auto()) @map("_id") @db.ObjectId
+    id              String           @id @default(auto()) @map("_id") @db.ObjectId
     name            String?
     businessName    String?
-    email           String?   @unique
+    email           String?          @unique
     emailVerified   DateTime?
-    hotelOwner      Boolean   @default(false)
+    hotelOwner      Boolean          @default(false)
     image           String?
     hashedPassword  String?
-    createdAt       DateTime  @default(now())
-    updatedAt       DateTime  @updatedAt
-    favouriteIds    String[]  @db.ObjectId
-    totalReviews    Int       @default(0)
-    likedReviews    Int       @default(0)
-    dislikedReviews Int       @default(0)
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @updatedAt
+    favouriteIds    String[]         @db.ObjectId
+    totalReviews    Int              @default(0)
+    likedReviews    Int              @default(0)
+    dislikedReviews Int              @default(0)
+    reactions       ReviewReaction[]
 
     accounts     Account[]
     listings     Listing[]
@@ -134,8 +135,22 @@ model Review {
     dislikes  Int      @default(0)
     createdAt DateTime @default(now())
 
-    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    listing   Listing          @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    reactions ReviewReaction[]
+}
+
+model ReviewReaction {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    reviewId  String   @db.ObjectId
+    userId    String   @db.ObjectId
+    reaction  String // "like" or "dislike"
+    createdAt DateTime @default(now())
+
+    review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([reviewId, userId]) // Ensure one reaction per user per review
 }
 
 // username:dogohotel

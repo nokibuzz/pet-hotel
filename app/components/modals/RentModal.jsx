@@ -20,6 +20,7 @@ import Toggle from "../inputs/Toggle";
 import AddressSuggestions from "../AddressSuggestions";
 import AddressInput from "../inputs/AddressInput";
 import useAddress from "@/app/hooks/useAddress";
+import { useDebouncedFunction } from "@/app/hooks/useDebouncedFunction";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
@@ -70,6 +71,7 @@ const RentModal = () => {
       hasVet: false,
       addionalInformation: "",
       address: "",
+      locationValue: "",
       latlng: [],
     },
   });
@@ -186,6 +188,7 @@ const RentModal = () => {
     fetchSuggestions,
     fetchAddressFromCoordinates,
     address,
+    locationValue,
     suggestions,
     setAddress,
     setSuggestions,
@@ -194,14 +197,21 @@ const RentModal = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setAddress(value);
-    fetchSuggestions(value);
+    debouncedSuggestionFetch(value);
   };
+
+  const debouncedSuggestionFetch = useDebouncedFunction((value) => {
+    if (value) {
+      fetchSuggestions(value);
+    }
+  }, 500);
 
   const handleSuggestionSelect = (suggestion) => {
     setAddress(suggestion.display_name);
     setMarkerPosition([suggestion.lat, suggestion.lon]);
     setSuggestions([]);
     setCustomValue("address", suggestion.display_name);
+    setCustomValue("locationValue", suggestion.locationValue);
     setCustomValue("latlng", [suggestion.lat, suggestion.lon]);
   };
 
@@ -210,6 +220,7 @@ const RentModal = () => {
     setMarkerPosition([lat, lng]);
     fetchAddressFromCoordinates(lat, lng);
     setCustomValue("address", address);
+    setCustomValue("locationValue", locationValue);
     setCustomValue("latlng", [lat, lng]);
   };
 

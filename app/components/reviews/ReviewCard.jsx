@@ -8,7 +8,7 @@ import LikeDislikeActions from "./LikeDislikeActions";
 const ReviewCard = ({ review, currentUser }) => {
   return (
     <div className="bg-white rounded-lg border shadow-md p-6 md:p-8 max-w-2xl mx-auto mb-6">
-      <ReviewUserInfo user={review.user} />
+      <ReviewUserInfo user={review.user} currentUser={currentUser} />
       <hr className="my-4 border-gray-300" />
       <ReviewDetails review={review} />
       <LikeDislikeActions review={review} currentUser={currentUser} />
