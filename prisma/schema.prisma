@@ -138,5 +138,14 @@ model Review {
     listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
 }
 
+model Message {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  senderId      String
+  receiverId    String
+  content       String
+  timestamp     DateTime @default(now())
+  chatId        String
+}
+
 // username:dogohotel
 // password:dogohoteltest0
