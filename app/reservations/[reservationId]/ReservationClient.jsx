@@ -6,7 +6,8 @@ import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ReservationInfo from "@/app/components/reservations/ReservationInfo";
 import { categories } from "@/app/components/navbar/Categories";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
+import Conversation from "@/app/components/conversation/Conversation";
 
 const ReservationClient = ({ reservation, currentUser }) => {
   const listing = reservation.listing;
@@ -15,6 +16,24 @@ const ReservationClient = ({ reservation, currentUser }) => {
     endDate: reservation.endDate,
     key: "selection",
   };
+  const [otherUser, setOtherUser] = useState(undefined);
+
+  useEffect(() => {
+    const id = currentUser.id === reservation.userId ? reservation.listing.userId : reservation.userId;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/user/${id}`);
+        if (!response.ok) throw new Error('User not found!');
+        const user = await response.json();
+        setOtherUser(user);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const category = useMemo(() => {
     return categories.find((item) => item.label === listing.category);
@@ -59,6 +78,11 @@ const ReservationClient = ({ reservation, currentUser }) => {
                 hasGrooming={listing.hasGrooming}
                 hasVet={listing.hasVet}
                 addionalInformation={listing.addionalInformation}
+              />
+              <Conversation 
+                reservationId={reservation.id}
+                currentUser={currentUser}
+                otherUser={otherUser}
               />
             </div>
           </div>
