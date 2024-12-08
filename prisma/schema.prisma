@@ -153,5 +153,14 @@ model ReviewReaction {
     @@unique([reviewId, userId]) // Ensure one reaction per user per review
 }
 
+model Message {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  senderId      String
+  receiverId    String
+  content       String
+  timestamp     DateTime @default(now())
+  chatId        String
+}
+
 // username:dogohotel
 // password:dogohoteltest0
