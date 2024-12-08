@@ -30,11 +30,11 @@ const MessageInput = ({
   }, [text]);
 
   return (
-    <div className="flex items-center gap-x-2 bg-white border-t-[1px] border-neutral-200 p-2">
+    <div className="flex items-center gap-x-2 border-neutral-200">
       <textarea
         id="message-input"
         placeholder='Write a message...'
-        className={`w-full border-[1px] border-neutral-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-amber-500 flex w-full resize-none bg-background px-3 py-2 text-sm ring-offset-background overflow-hidden`}
+        className={`w-full border-[1px] border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 flex w-full resize-none bg-background px-3 py-2 text-sm ring-offset-background overflow-hidden`}
         value={text}
         onChange={handleInputChange}
         rows={1}

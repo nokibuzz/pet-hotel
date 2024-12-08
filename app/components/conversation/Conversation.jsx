@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import MessageInput from "./MessageInput";
 import Message from "./Message";
 import { pusherClient } from "./../../libs/pusher";
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 const Conversation = ({ reservationId, currentUser, otherUser }) => {
   const [messages, setMessages] = useState([]);
   const chatId = `reservation-chat-${reservationId}`;
+  const messagesEndRef = useRef(null);
 
   const loadMessages = async () => {
     try {
@@ -17,6 +18,12 @@ const Conversation = ({ reservationId, currentUser, otherUser }) => {
       setMessages(response.data); 
     } catch (error) {
       console.error("Error loading messages", error);
+    }
+  };
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -42,6 +49,10 @@ const Conversation = ({ reservationId, currentUser, otherUser }) => {
   );
 
   useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
     loadMessages();
 
     pusherClient.subscribe(chatId);
@@ -60,7 +71,7 @@ const Conversation = ({ reservationId, currentUser, otherUser }) => {
           {otherUser?.name}
         </h1>
         
-        <div className="w-full h-[40vh] overflow-y-auto p-4 flex flex-col gap-y-4 bg-slate-50">
+        <div className="w-full h-[40vh] overflow-y-auto p-2 flex flex-col gap-y-4 bg-slate-50">
           {!uniqueMessages.length ? (
             <div className="text-center text-gray-500">No messages yet</div>
           ) : (
@@ -68,11 +79,13 @@ const Conversation = ({ reservationId, currentUser, otherUser }) => {
               <Message key={index} message={message.content} owner={currentUser.id === message.senderId}/>
             ))
           )}
+          <div ref={messagesEndRef} />
+          <div className="sticky bottom-0 -mt-4">
+            <MessageInput 
+              onSend={(message) => onSendMessageHandler(message)}
+            />
+          </div>
         </div>
-
-        <MessageInput 
-          onSend={(message) => onSendMessageHandler(message)}
-        />
       </div>
     </div>
   );
