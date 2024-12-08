@@ -7,14 +7,10 @@ import HeartButton from "../HeartButton";
 
 const ListingHead = ({ id, imageSrc, locationValue, title, currentUser }) => {
   const { getByValue } = useCountries();
-  const location = getByValue(locationValue);
 
   return (
     <>
-      <Heading
-        title={title}
-        subtitle={`${location?.region}, ${location?.label}`}
-      />
+      <Heading title={title} subtitle={locationValue} />
       <div className="w-full h-[60vh] overflow-hidden rounded-xl relative">
         <Image
           alt="Picture"

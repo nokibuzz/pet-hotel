@@ -3,6 +3,7 @@ import axios from "axios";
 
 const useAddress = () => {
   const [address, setAddress] = useState("");
+  const [locationValue, setLocationValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const fetchSuggestions = async (query) => {
@@ -16,6 +17,10 @@ const useAddress = () => {
       );
       setSuggestions(
         response.data.map((result) => ({
+          locationValue:
+            (result.address?.city ?? "no city") +
+            " · " +
+            (result.address?.country ?? "no country"),
           address: result.address,
           display_name: result.display_name,
           lat: parseFloat(result.lat),
@@ -34,6 +39,8 @@ const useAddress = () => {
       );
       if (response.data && response.data.display_name) {
         setAddress(response.data.display_name);
+        if (response.data.city && response.data.country)
+          setLocationValue(response.data.city + " · " + response.data.country);
       }
     } catch (error) {
       console.error("Error fetching address:", error);
@@ -44,6 +51,7 @@ const useAddress = () => {
     fetchSuggestions,
     fetchAddressFromCoordinates,
     address,
+    locationValue,
     suggestions,
     setAddress,
     setSuggestions,

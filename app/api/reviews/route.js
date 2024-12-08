@@ -55,12 +55,12 @@ export async function POST(request) {
       },
     });
 
-    const user = await prisma.user.update({
+    await prisma.user.update({
       where: { id: userId },
       data: { totalReviews: { increment: 1 } },
     });
 
-    const listing = await prisma.listing.update({
+    await prisma.listing.update({
       where: { id: listingId },
       data: { totalReviews: { increment: 1 } },
     });

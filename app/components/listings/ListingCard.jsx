@@ -85,10 +85,7 @@ const ListingCard = ({
             <HeartButton listingId={data.id} currentUser={currentUser} />
           </div>
         </div>
-        <div className="font-semibold text-lg">
-          {/* {location?.region}, {location?.label} */}
-          Add location, parse from map, =address: result.address=
-        </div>
+        <div className="font-semibold text-lg">{data.locationValue}</div>
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
         </div>
