@@ -177,6 +177,7 @@ const ListingClient = ({
                   reviews={reviews}
                   totalReviews={totalReviews}
                   currentUser={currentUser}
+                  listingUser={listing.userId}
                 />
               </div>
             </div>
