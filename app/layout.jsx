@@ -16,8 +16,8 @@ const font = Nunito({
 });
 
 export const metadata = {
-  title: "Dog Hotel",
-  description: "Dog Hotel manager",
+  title: "Pet Hotel",
+  description: "Pet Hotel manager",
 };
 
 export default async function RootLayout({ children }) {
@@ -30,8 +30,8 @@ export default async function RootLayout({ children }) {
           <ToasterProvider />
           <LoginModal />
           <RegisterModal />
-          <RentModal />
-          <SearchModal />
+          <RentModal currentUser={currentUser}/>
+          <SearchModal currentUser={currentUser}/>
           <PetModal />
           <ReviewModal currentUser={currentUser} />
           <Navbar currentUser={currentUser} />

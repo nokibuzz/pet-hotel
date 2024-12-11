@@ -2,7 +2,7 @@ import { prisma } from "@/app/libs/prismadb";
 
 export default async function getListings(params) {
   try {
-    const { userId, guestCount, startDate, endDate, locationValue, category } =
+    const { userId, guestCount, startDate, endDate, latitude, longitude, category } =
       await params;
 
     const query = {};
@@ -16,25 +16,21 @@ export default async function getListings(params) {
     }
 
     if (guestCount) {
-      query.guestCount = { gte: +guestCount };
-    }
-
-    if (locationValue) {
-      query.locationValue = locationValue;
+      query.guestCount = { $gte: parseInt(guestCount, 10) };
     }
 
     if (startDate && endDate) {
-      query.NOT = {
-        reservations: {
-          some: {
-            OR: [
+      query.reservations = {
+        $not: {
+          $elemMatch: {
+            $or: [
               {
-                endDate: { gte: startDate },
-                startDate: { lte: startDate },
+                endDate: { $gte: new Date(startDate) },
+                startDate: { $lte: new Date(startDate) },
               },
               {
-                startDate: { lte: endDate },
-                endDate: { gte: endDate },
+                startDate: { $lte: new Date(endDate) },
+                endDate: { $gte: new Date(endDate) },
               },
             ],
           },
@@ -42,17 +38,51 @@ export default async function getListings(params) {
       };
     }
 
-    const listings = await prisma.listing.findMany({
-      where: query,
-      orderBy: {
-        createdAt: "desc",
+    const pipeline = [];
+
+    if (latitude && longitude) {
+      pipeline.push({
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: [parseFloat(longitude), parseFloat(latitude)]
+          },
+          distanceField: "distance",
+          spherical: true,
+          maxDistance: 10000
+        }
+      });
+    }
+
+    if (query) {
+      pipeline.push({
+        $match: query,
+      });
+    }
+    
+    pipeline.push({
+      $addFields: {
+        id: { $toString: "$_id" },
+        userId: { $toString: "$userId" }
       },
     });
 
-    const safeListings = listings.map((listing) => ({
+    pipeline.push({
+      $sort: {
+        createdAt: -1,
+      },
+    });
+
+    const listings = await prisma.$runCommandRaw({
+      aggregate: "Listing",
+      pipeline: pipeline,
+      cursor: {}
+    });
+
+    const safeListings = listings.cursor?.firstBatch?.map((listing) => ({
       ...listing,
-      createdAt: listing.createdAt.toISOString(),
-    }));
+      createdAt: listing.createdAt?.$date || null,
+    })) || [];
 
     return safeListings;
   } catch (error) {

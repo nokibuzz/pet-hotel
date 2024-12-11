@@ -23,6 +23,7 @@ model User {
     hotelOwner      Boolean          @default(false)
     image           String?
     hashedPassword  String?
+    defaultLocation Json?
     createdAt       DateTime         @default(now())
     updatedAt       DateTime         @updatedAt
     favouriteIds    String[]         @db.ObjectId
@@ -67,7 +68,6 @@ model Listing {
     category            String
     roomCount           Int
     guestCount          Int
-    locationValue       String
     price               Int
     checkInTime         String
     checkOutTime        String
@@ -79,8 +79,7 @@ model Listing {
     hasGrooming         Boolean
     hasVet              Boolean
     addionalInformation String?
-    address             String
-    latlng              Float[]
+    location            Json
     reservations        Reservation[]
     totalReviews        Int           @default(0)
     // TODO: add accomulated ratings
@@ -164,3 +163,5 @@ model Message {
 
 // username:dogohotel
 // password:dogohoteltest0
+
+//create index on listings { "location": "2dsphere" }
