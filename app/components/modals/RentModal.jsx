@@ -7,7 +7,6 @@ import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
-import dynamic from "next/dynamic";
 import Counter from "../inputs/Counter";
 import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
@@ -17,10 +16,7 @@ import { useRouter } from "next/navigation";
 import TextArea from "../inputs/TextArea";
 import Dropdown from "../inputs/Dropdown";
 import Toggle from "../inputs/Toggle";
-import AddressSuggestions from "../AddressSuggestions";
-import AddressInput from "../inputs/AddressInput";
-import useAddress from "@/app/hooks/useAddress";
-import { useDebouncedFunction } from "@/app/hooks/useDebouncedFunction";
+import MapSelect from "../MapSelect";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
@@ -33,7 +29,7 @@ const STEPS = Object.freeze({
   PRICE: 7,
 });
 
-const RentModal = () => {
+const RentModal = ({ currentUser }) => {
   const router = useRouter();
   const rentModal = useRentModal();
 
@@ -53,7 +49,6 @@ const RentModal = () => {
   } = useForm({
     defaultValues: {
       category: "",
-      location: null,
       roomCount: 1,
       guestCount: 1,
       imageSrc: "",
@@ -70,15 +65,13 @@ const RentModal = () => {
       hasGrooming: false,
       hasVet: false,
       addionalInformation: "",
-      address: "",
-      locationValue: "",
-      latlng: [],
+      locationLongitude: "", 
+      locationLatitude: ""
     },
   });
 
   // cause we have customer categoryInput, we need to check if the category value is valid
   const category = watch("category");
-  const location = watch("location");
   const guestCount = watch("guestCount");
   const roomCount = watch("roomCount");
   const imageSrc = watch("imageSrc");
@@ -89,15 +82,6 @@ const RentModal = () => {
   const hasFood = watch("hasFood");
   const hasGrooming = watch("hasGrooming");
   const hasVet = watch("hasVet");
-
-  // this is the hack way to import map to work fine
-  const DraggableMap = useMemo(
-    () =>
-      dynamic(() => import("../DraggableMap"), {
-        ssr: false,
-      }),
-    [location]
-  );
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -181,72 +165,20 @@ const RentModal = () => {
     </div>
   );
 
-  const [markerPosition, setMarkerPosition] = useState([51.505, -0.09]); // Default to London
-  const [zoomLevel, setZoomLevel] = useState(13);
-
-  const {
-    fetchSuggestions,
-    fetchAddressFromCoordinates,
-    address,
-    locationValue,
-    suggestions,
-    setAddress,
-    setSuggestions,
-  } = useAddress();
-
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setAddress(value);
-    debouncedSuggestionFetch(value);
-  };
-
-  const debouncedSuggestionFetch = useDebouncedFunction((value) => {
-    if (value) {
-      fetchSuggestions(value);
-    }
-  }, 500);
-
-  const handleSuggestionSelect = (suggestion) => {
-    setAddress(suggestion.display_name);
-    setMarkerPosition([suggestion.lat, suggestion.lon]);
-    setSuggestions([]);
-    setCustomValue("address", suggestion.display_name);
-    setCustomValue("locationValue", suggestion.locationValue);
-    setCustomValue("latlng", [suggestion.lat, suggestion.lon]);
-  };
-
-  const handleMarkerDragEnd = (e) => {
-    const { lat, lng } = e.target.getLatLng();
-    setMarkerPosition([lat, lng]);
-    fetchAddressFromCoordinates(lat, lng);
-    setCustomValue("address", address);
-    setCustomValue("locationValue", locationValue);
-    setCustomValue("latlng", [lat, lng]);
+  const onLocationSelect = (event) => {
+    const { location } = event;
+    setCustomValue("locationLongitude", location.longitude);
+    setCustomValue("locationLatitude", location.latitude);
   };
 
   if (step === STEPS.LOCATION) {
     bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Where is your pet house located?"
-          subtitle="Help dog lovers find you"
-        />
-        <div>
-          <AddressInput value={address} onChange={handleInputChange} />
-          <AddressSuggestions
-            suggestions={suggestions}
-            onSelect={handleSuggestionSelect}
-          />
-          <div className="rounded-lg overflow-hidden">
-            <DraggableMap
-              center={markerPosition}
-              onMarkerDragEnd={handleMarkerDragEnd}
-              zoomLevel={zoomLevel}
-              setZoomLevel={setZoomLevel}
-            />
-          </div>
-        </div>
-      </div>
+      <MapSelect 
+        title="Where is your pet house located?"
+        subtitle="Help dog lovers find you"
+        defaultCoordinates={currentUser?.defaultLocation}
+        onSelect={(location) => onLocationSelect(location)}
+    />
     );
   }
 
