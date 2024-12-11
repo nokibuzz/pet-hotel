@@ -42,7 +42,8 @@ const MapSelect = ( {
                 location: {
                     latitude: markerPosition[0],
                     longitude: markerPosition[1]
-                }
+                },
+                addressLabel: address
             });
         }
     }, [city]);
@@ -71,14 +72,14 @@ const MapSelect = ( {
         setMarkerPosition([suggestion.latitude, suggestion.longitude]);
         setCity(suggestion.city);
         setSuggestions([]);
-        onSelect({ city: suggestion.city, location: { latitude: suggestion.latitude, longitude: suggestion.longitude } });
+        onSelect({ city: suggestion.city, location: { latitude: suggestion.latitude, longitude: suggestion.longitude, addressLabel: suggestion.address } });
     };
 
     const handleMarkerDragEnd = (e) => {
         const { lat, lng } = e.target.getLatLng();
         setMarkerPosition([lat, lng]);
         fetchAddressFromCoordinates(lat, lng);
-        onSelect({ city: city, location: { latitude: lat, longitude: lng } });
+        onSelect({ city: city, location: { latitude: lat, longitude: lng }, addressLabel: address });
     };
 
     return (

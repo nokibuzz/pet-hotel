@@ -82,6 +82,7 @@ model Listing {
     location            Json
     reservations        Reservation[]
     totalReviews        Int           @default(0)
+    addressLabel        String
     // TODO: add accomulated ratings
 
     user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)

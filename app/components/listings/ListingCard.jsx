@@ -20,7 +20,7 @@ const ListingCard = ({
   nextPage = "listing",
 }) => {
   const router = useRouter();
-
+  
   const handleCancel = useCallback(
     (e) => {
       e.stopPropagation();
@@ -85,7 +85,8 @@ const ListingCard = ({
             <HeartButton listingId={data.id} currentUser={currentUser} />
           </div>
         </div>
-        <div className="font-semibold text-lg">{data.locationValue}</div>
+        <div className="font-semibold text-lg">{data.title}</div>
+        <div className="font-light text-neutral-500">{data.addressLabel}</div>
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
         </div>
