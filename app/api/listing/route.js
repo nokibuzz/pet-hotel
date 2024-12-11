@@ -30,15 +30,14 @@ export async function POST(request) {
     hasVet,
     addionalInformation,
     locationLongitude,
-    locationLatitude
+    locationLatitude,
+    addressLabel
   } = body;
 
   const location = {
     type: "Point",
     coordinates: [locationLongitude, locationLatitude]
   }
-
-  console.log(location);
 
   const listing = await prisma.listing.create({
     data: {
@@ -60,7 +59,8 @@ export async function POST(request) {
       hasGrooming,
       hasVet,
       addionalInformation,
-      location
+      location,
+      addressLabel
     },
   });
 

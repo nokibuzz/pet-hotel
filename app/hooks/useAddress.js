@@ -33,6 +33,7 @@ const useAddress = () => {
           display_name: calculateDisplayName(result),
           latitude: parseFloat(result.lat),
           longitude: parseFloat(result.lon),
+          address: calculateDisplayName(result)
         }))
       );
     } catch (error) {

@@ -66,7 +66,8 @@ const RentModal = ({ currentUser }) => {
       hasVet: false,
       addionalInformation: "",
       locationLongitude: "", 
-      locationLatitude: ""
+      locationLatitude: "",
+      addressLabel: ""
     },
   });
 
@@ -166,9 +167,10 @@ const RentModal = ({ currentUser }) => {
   );
 
   const onLocationSelect = (event) => {
-    const { location } = event;
+    const { location, addressLabel } = event;
     setCustomValue("locationLongitude", location.longitude);
     setCustomValue("locationLatitude", location.latitude);
+    setCustomValue("addressLabel", addressLabel);
   };
 
   if (step === STEPS.LOCATION) {
