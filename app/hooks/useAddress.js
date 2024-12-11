@@ -3,8 +3,19 @@ import axios from "axios";
 
 const useAddress = () => {
   const [address, setAddress] = useState("");
-  const [locationValue, setLocationValue] = useState("");
+  const [city, setCity] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+
+  const calculateDisplayName = (data) => {
+    const parts = [
+      data.address?.road,
+      data.address?.house_number,
+      data.address?.city,
+      data.address?.country,
+    ];
+  
+    return parts.filter(Boolean).join(" - ");
+  };
 
   const fetchSuggestions = async (query) => {
     if (!query) {
@@ -15,16 +26,13 @@ const useAddress = () => {
       const response = await axios.get(
         `https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1`
       );
+
       setSuggestions(
         response.data.map((result) => ({
-          locationValue:
-            (result.address?.city ?? "no city") +
-            " · " +
-            (result.address?.country ?? "no country"),
-          address: result.address,
-          display_name: result.display_name,
-          lat: parseFloat(result.lat),
-          lon: parseFloat(result.lon),
+          city: result.address?.city ?? result.address?.country ?? "",
+          display_name: calculateDisplayName(result),
+          latitude: parseFloat(result.lat),
+          longitude: parseFloat(result.lon),
         }))
       );
     } catch (error) {
@@ -38,9 +46,8 @@ const useAddress = () => {
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`
       );
       if (response.data && response.data.display_name) {
-        setAddress(response.data.display_name);
-        if (response.data.city && response.data.country)
-          setLocationValue(response.data.city + " · " + response.data.country);
+          setAddress(calculateDisplayName(response.data));
+          setCity(response.data.address?.city ?? response.data.address?.country ?? "");
       }
     } catch (error) {
       console.error("Error fetching address:", error);
@@ -51,8 +58,9 @@ const useAddress = () => {
     fetchSuggestions,
     fetchAddressFromCoordinates,
     address,
-    locationValue,
     suggestions,
+    city,
+    setCity,
     setAddress,
     setSuggestions,
   };

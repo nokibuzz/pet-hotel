@@ -14,7 +14,8 @@ export async function GET(request, { params }) {
         name: true,
         businessName: true,
         email: true,
-        hotelOwner: true
+        hotelOwner: true,
+        defaultLocation: true
       },
     });
     

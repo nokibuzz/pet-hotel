@@ -4,13 +4,13 @@ import qs from "query-string";
 import useSearchModal from "@/app/hooks/useSearchModal";
 import Modal from "./Modal";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
-import CountrySelect, { CountrySelectValue } from "../inputs/CountrySelect";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { formatISO } from "date-fns";
 import Heading from "../Heading";
 import Calendar from "../inputs/Calendar";
 import Counter from "../inputs/Counter";
+import axios from "axios";
+import MapSelect from "../MapSelect";
 
 const STEPS = Object.freeze({
   LOCATION: 0,
@@ -18,7 +18,7 @@ const STEPS = Object.freeze({
   INFO: 2,
 });
 
-const SearchModal = () => {
+const SearchModal = ({ currentUser }) => {
   const router = useRouter();
   const params = useSearchParams();
   const searchModal = useSearchModal();
@@ -31,11 +31,7 @@ const SearchModal = () => {
     endDate: new Date(),
     key: "selection",
   });
-
-  const Map = useMemo(
-    () => dynamic(() => import("../Map"), { ssr: false }),
-    [location]
-  );
+  const [city, setCity] = useState("");
 
   const onBack = useCallback(() => {
     setStep((value) => value - 1);
@@ -58,9 +54,14 @@ const SearchModal = () => {
 
     const updatedQuery = {
       ...currentQuery,
-      locationValue: location?.value,
       guestCount,
     };
+
+    if (location) {
+      updatedQuery.latitude = location.latitude;
+      updatedQuery.longitude = location.longitude;
+      updatedQuery.city = city;
+    }
 
     if (dateRange.startDate) {
       updatedQuery.startDate = formatISO(dateRange.startDate);
@@ -109,19 +110,52 @@ const SearchModal = () => {
     return "Back";
   }, [step]);
 
+  const sendLocationToServer = async (latitude, longitude) => {
+    try {
+      const userId = currentUser?.id;
+      await axios
+        .post(`/api/location`, { userId, latitude, longitude })
+        .catch(() => {
+            toast.error("Woof, woof, something went wrong!")
+        })
+        .finally(() => {
+        });
+    } catch (error) {
+      console.error('Error saving user location:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation({ latitude: latitude, longitude: longitude });
+          if (currentUser){
+            sendLocationToServer(latitude, longitude); 
+          }
+        },
+        (err) => {
+          console.error("Failed to retrieve location");
+        },
+        { enableHighAccuracy: true }
+      );
+    }
+  }, []);
+
+  const onLocationSelect = (event) => {
+    const { city, location } = event;
+    setLocation(location);
+    setCity(city);
+  };
+
   let bodyContent = (
-    <div className="flex flex-col gap-8">
-      <Heading
-        title="Where do you want to leave your pet?"
-        subtitle="Find the nearest and best location for you!"
-      />
-      <CountrySelect
-        value={location}
-        onChange={(value) => setLocation(value)}
-      />
-      <hr />
-      <Map center={location?.latlng} />
-    </div>
+    <MapSelect 
+      title="Where do you want to leave your pet?"
+      subtitle="Find the nearest and best location for you!"
+      defaultCoordinates={currentUser?.defaultLocation}
+      onSelect={(event) => onLocationSelect(event)}
+    />
   );
 
   if (step === STEPS.DATE) {
