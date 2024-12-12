@@ -33,7 +33,7 @@ const MapSelect = ( {
             setMarkerPosition([ defaultCoordinates.latitude, defaultCoordinates.longitude]);
             fetchAddressFromCoordinates(defaultCoordinates.latitude, defaultCoordinates.longitude);
         }
-      }, []);
+      }, [defaultCoordinates]);
 
       useEffect(() => {
         if (city) {
