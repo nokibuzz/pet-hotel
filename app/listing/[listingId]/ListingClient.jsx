@@ -121,8 +121,9 @@ const ListingClient = ({
             id={listing.id}
             title={listing.title}
             imageSrc={listing.imageSrc}
-            locationValue={listing.locationValue}
+            addressLabel={listing.addressLabel}
             currentUser={currentUser}
+            listing={listing}
           />
           <div className="grid grid-cols-1 lg:grid-cols-7 lg:gap-10 mt-10">
             {/* Left Content */}
