@@ -43,9 +43,14 @@ const DraggableMap = ({ center, onMarkerDragEnd, zoomLevel, setZoomLevel }) => {
     shadowAnchor: [14, 35],
   });
 
+  // temp solution if center is not populated
+  if (!center || center?.length == 0) {
+    center = [44.802, 20.466];
+  }
+
   return (
     <MapContainer
-      center={center || [44.8, 20.47]}
+      center={center}
       zoom={zoomLevel}
       // scrollWheelZoom={false}
       className="h-[40vh] rounded-lg"

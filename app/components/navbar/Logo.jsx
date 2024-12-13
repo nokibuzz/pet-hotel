@@ -14,7 +14,7 @@ const Logo = () => {
       query: {
         startDate: searchParams?.get("startDate"),
         endDate: searchParams?.get("endDate"),
-        locationValue: searchParams?.get("locationValue"),
+        // locationValue: searchParams?.get("locationValue"),
         guestCount: searchParams?.get("guestCount"),
       },
     },

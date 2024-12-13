@@ -19,16 +19,19 @@ const ReservationClient = ({ reservation, currentUser }) => {
   const [otherUser, setOtherUser] = useState(undefined);
 
   useEffect(() => {
-    const id = currentUser.id === reservation.userId ? reservation.listing.userId : reservation.userId;
+    const id =
+      currentUser.id === reservation.userId
+        ? reservation.listing.userId
+        : reservation.userId;
 
     const fetchData = async () => {
       try {
         const response = await fetch(`/api/user/${id}`);
-        if (!response.ok) throw new Error('User not found!');
+        if (!response.ok) throw new Error("User not found!");
         const user = await response.json();
         setOtherUser(user);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -47,7 +50,7 @@ const ReservationClient = ({ reservation, currentUser }) => {
             id={listing.id}
             title={listing.title}
             imageSrc={listing.imageSrc}
-            locationValue={listing.locationValue}
+            addressLabel={listing.addressLabel}
             currentUser={currentUser}
           />
           <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-10">
@@ -79,7 +82,7 @@ const ReservationClient = ({ reservation, currentUser }) => {
                 hasVet={listing.hasVet}
                 addionalInformation={listing.addionalInformation}
               />
-              <Conversation 
+              <Conversation
                 reservationId={reservation.id}
                 currentUser={currentUser}
                 otherUser={otherUser}
