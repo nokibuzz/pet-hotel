@@ -2,7 +2,7 @@
 
 import useRentModal from "@/app/hooks/useRentModal";
 import Modal from "./Modal";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
@@ -52,7 +52,7 @@ const RentModal = () => {
     reset,
   } = useForm({
     defaultValues: {
-      category: "",
+      category: rentModal.listing?.category || "",
       location: null,
       roomCount: 1,
       guestCount: 1,
@@ -141,6 +141,13 @@ const RentModal = () => {
       .catch(() => toast.error("Something went wrong!"))
       .finally(() => setIsLoading(false));
   };
+
+  // for edit modal, prepopulate values
+  useEffect(() => {
+    if (rentModal.listing?.category && !category) {
+      setCustomValue("category", rentModal.listing.category);
+    }
+  }, [rentModal.listing, category, setCustomValue]);
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.PRICE) {
