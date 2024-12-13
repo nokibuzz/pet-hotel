@@ -2,7 +2,7 @@
 
 import useRentModal from "@/app/hooks/useRentModal";
 import Modal from "./Modal";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
@@ -65,17 +65,22 @@ const RentModal = ({ currentUser }) => {
       hasGrooming: false,
       hasVet: false,
       addionalInformation: "",
-      locationLongitude: "", 
+      locationLongitude: "",
       locationLatitude: "",
-      addressLabel: ""
+      addressLabel: "",
     },
   });
 
   // cause we have customer categoryInput, we need to check if the category value is valid
+  const title = watch("title");
+  const description = watch("description");
   const category = watch("category");
   const guestCount = watch("guestCount");
   const roomCount = watch("roomCount");
+  const price = watch("price");
   const imageSrc = watch("imageSrc");
+  const checkInTime = watch("checkInTime");
+  const checkOutTime = watch("checkOutTime");
   const hasCancelation = watch("hasCancelation");
   const allowBooking = watch("allowBooking");
   const paymentMethodsCards = watch("paymentMethodsCards");
@@ -83,6 +88,9 @@ const RentModal = ({ currentUser }) => {
   const hasFood = watch("hasFood");
   const hasGrooming = watch("hasGrooming");
   const hasVet = watch("hasVet");
+  const addionalInformation = watch("addionalInformation");
+  const locationLongitude = watch("locationLongitude");
+  const locationLatitude = watch("locationLatitude");
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -113,23 +121,39 @@ const RentModal = ({ currentUser }) => {
 
     setIsLoading(true);
 
-    axios
-      .post("/api/listing", data)
-      .then(() => {
-        toast.success("Successfully created!");
-        router.refresh();
-        // reseting form, from react-form-hook library
-        reset();
-        setStep(STEPS.CATEGORY);
-        rentModal.onClose();
-      })
-      .catch(() => toast.error("Something went wrong!"))
-      .finally(() => setIsLoading(false));
+    if (rentModal.isEdit) {
+      const updatedData = { ...data, id: rentModal.listing.id };
+      axios
+        .put("/api/listing", updatedData)
+        .then(() => {
+          toast.success("Successfully updated!");
+          router.refresh();
+          // Resetting form, from react-form-hook library
+          reset();
+          setStep(STEPS.CATEGORY);
+          rentModal.onClose();
+        })
+        .catch(() => toast.error("Something went wrong!"))
+        .finally(() => setIsLoading(false));
+    } else {
+      axios
+        .post("/api/listing", data)
+        .then(() => {
+          toast.success("Successfully created!");
+          router.refresh();
+          // reseting form, from react-form-hook library
+          reset();
+          setStep(STEPS.CATEGORY);
+          rentModal.onClose();
+        })
+        .catch(() => toast.error("Something went wrong!"))
+        .finally(() => setIsLoading(false));
+    }
   };
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.PRICE) {
-      return "Create";
+      return rentModal.isEdit ? "Update" : "Create";
     }
 
     return "Next";
@@ -142,6 +166,69 @@ const RentModal = ({ currentUser }) => {
 
     return "Back";
   }, [step]);
+
+  // for edit modal, prepopulate values
+  useEffect(() => {
+    if (rentModal.listing?.title && !title) {
+      setCustomValue("title", rentModal.listing.title);
+    }
+    if (rentModal.listing?.description && !description) {
+      setCustomValue("description", rentModal.listing.description);
+    }
+    if (rentModal.listing?.category && !category) {
+      setCustomValue("category", rentModal.listing.category);
+    }
+    if (rentModal.listing?.checkInTime && !checkInTime) {
+      setCustomValue("checkInTime", rentModal.listing.checkInTime);
+    }
+    if (rentModal.listing?.checkOutTime && !checkOutTime) {
+      setCustomValue("checkOutTime", rentModal.listing.checkOutTime);
+    }
+    if (rentModal.listing?.location?.coordinates && !locationLongitude) {
+      setCustomValue(
+        "locationLongitude",
+        rentModal.listing.location.coordinates?.[0]
+      );
+    }
+    if (rentModal.listing?.location?.coordinates && !locationLatitude) {
+      setCustomValue(
+        "locationLatitude",
+        rentModal.listing.location.coordinates?.[1]
+      );
+    }
+    if (rentModal.listing?.guestCount && guestCount === 1) {
+      setCustomValue("guestCount", rentModal.listing.guestCount);
+    }
+    if (rentModal.listing?.roomCount && roomCount === 1) {
+      setCustomValue("roomCount", rentModal.listing.roomCount);
+    }
+    if (rentModal.listing?.price && price === 1) {
+      setCustomValue("price", rentModal.listing.price);
+    }
+    if (rentModal.listing?.imageSrc && !imageSrc) {
+      setCustomValue("imageSrc", rentModal.listing.imageSrc);
+    }
+    if (rentModal.listing?.addionalInformation && !addionalInformation) {
+      setCustomValue(
+        "addionalInformation",
+        rentModal.listing.addionalInformation
+      );
+    }
+  }, [
+    rentModal.listing,
+    title,
+    description,
+    category,
+    checkInTime,
+    checkOutTime,
+    locationLatitude,
+    locationLongitude,
+    guestCount,
+    roomCount,
+    imageSrc,
+    addionalInformation,
+    setCustomValue,
+  ]);
 
   let bodyContent = (
     <div className="flex flex-col gap-8">
@@ -174,13 +261,18 @@ const RentModal = ({ currentUser }) => {
   };
 
   if (step === STEPS.LOCATION) {
+    const defaultCoordinates = currentUser?.defaultLocation ?? {
+      latitude: locationLatitude,
+      longitude: locationLongitude,
+    };
+
     bodyContent = (
-      <MapSelect 
+      <MapSelect
         title="Where is your pet house located?"
         subtitle="Help dog lovers find you"
-        defaultCoordinates={currentUser?.defaultLocation}
+        defaultCoordinates={defaultCoordinates}
         onSelect={(location) => onLocationSelect(location)}
-    />
+      />
     );
   }
 
@@ -388,7 +480,7 @@ const RentModal = ({ currentUser }) => {
       isOpen={rentModal.isOpen}
       onClose={rentModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
-      title="Add accomodation"
+      title={rentModal.isEdit ? "Edit accomodation" : "Add accomodation"}
       actionLabel={actionLabel}
       secondaryActionLabel={secondartActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
