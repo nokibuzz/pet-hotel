@@ -24,7 +24,7 @@ const SearchModal = ({ currentUser }) => {
   const searchModal = useSearchModal();
 
   const [step, setStep] = useState(STEPS.LOCATION);
-  const [location, setLocation] = useState();
+  const [location, setLocation] = useState(currentUser?.defaultLocation);
   const [guestCount, setGuestCount] = useState(1);
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
@@ -126,7 +126,7 @@ const SearchModal = ({ currentUser }) => {
   };
 
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (navigator.geolocation && searchModal.isOpen) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
@@ -141,7 +141,7 @@ const SearchModal = ({ currentUser }) => {
         { enableHighAccuracy: true }
       );
     }
-  }, []);
+  }, [searchModal.isOpen]);
 
   const onLocationSelect = (event) => {
     const { city, location } = event;
@@ -153,7 +153,7 @@ const SearchModal = ({ currentUser }) => {
     <MapSelect 
       title="Where do you want to leave your pet?"
       subtitle="Find the nearest and best location for you!"
-      defaultCoordinates={currentUser?.defaultLocation}
+      defaultCoordinates={location}
       onSelect={(event) => onLocationSelect(event)}
     />
   );
