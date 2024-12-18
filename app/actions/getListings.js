@@ -2,8 +2,15 @@ import { prisma } from "@/app/libs/prismadb";
 
 export default async function getListings(params) {
   try {
-    const { userId, guestCount, startDate, endDate, latitude, longitude, category } =
-      await params;
+    const {
+      userId,
+      guestCount,
+      startDate,
+      endDate,
+      latitude,
+      longitude,
+      category,
+    } = await params;
 
     const query = {};
 
@@ -45,12 +52,12 @@ export default async function getListings(params) {
         $geoNear: {
           near: {
             type: "Point",
-            coordinates: [parseFloat(longitude), parseFloat(latitude)]
+            coordinates: [parseFloat(longitude), parseFloat(latitude)],
           },
           distanceField: "distance",
           spherical: true,
-          maxDistance: 10000
-        }
+          maxDistance: 10000,
+        },
       });
     }
 
@@ -59,11 +66,11 @@ export default async function getListings(params) {
         $match: query,
       });
     }
-    
+
     pipeline.push({
       $addFields: {
         id: { $toString: "$_id" },
-        userId: { $toString: "$userId" }
+        userId: { $toString: "$userId" },
       },
     });
 
@@ -76,13 +83,14 @@ export default async function getListings(params) {
     const listings = await prisma.$runCommandRaw({
       aggregate: "Listing",
       pipeline: pipeline,
-      cursor: {}
+      cursor: {},
     });
 
-    const safeListings = listings.cursor?.firstBatch?.map((listing) => ({
-      ...listing,
-      createdAt: listing.createdAt?.$date || null,
-    })) || [];
+    const safeListings =
+      listings.cursor?.firstBatch?.map((listing) => ({
+        ...listing,
+        createdAt: listing.createdAt?.$date || null,
+      })) || [];
 
     return safeListings;
   } catch (error) {

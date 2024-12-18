@@ -13,7 +13,7 @@ const useAddress = () => {
       data.address?.city,
       data.address?.country,
     ];
-  
+
     return parts.filter(Boolean).join(" - ");
   };
 
@@ -33,7 +33,7 @@ const useAddress = () => {
           display_name: calculateDisplayName(result),
           latitude: parseFloat(result.lat),
           longitude: parseFloat(result.lon),
-          address: calculateDisplayName(result)
+          address: calculateDisplayName(result),
         }))
       );
     } catch (error) {
@@ -42,16 +42,20 @@ const useAddress = () => {
   };
 
   const fetchAddressFromCoordinates = async (lat, lon) => {
-    try {
-      const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`
-      );
-      if (response.data && response.data.display_name) {
+    if (lat && lon) {
+      try {
+        const response = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`
+        );
+        if (response.data && response.data.display_name) {
           setAddress(calculateDisplayName(response.data));
-          setCity(response.data.address?.city ?? response.data.address?.country ?? "");
+          setCity(
+            response.data.address?.city ?? response.data.address?.country ?? ""
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching address:", error);
       }
-    } catch (error) {
-      console.error("Error fetching address:", error);
     }
   };
 

@@ -20,7 +20,7 @@ const ReservationClient = ({ reservation, currentUser }) => {
 
   useEffect(() => {
     const id =
-      currentUser.id === reservation.userId
+      currentUser?.id === reservation.userId
         ? reservation.listing.userId
         : reservation.userId;
 
@@ -60,7 +60,7 @@ const ReservationClient = ({ reservation, currentUser }) => {
               description={listing.description}
               roomCount={listing.roomCount}
               guestCount={listing.guestCount}
-              latlng={listing.latlng}
+              location={listing.location.coordinates}
               houseRules={{
                 checkInTime: listing.checkInTime,
                 checkOutTime: listing.checkOutTime,
