@@ -102,12 +102,14 @@ const MapSelect = ({ title, subtitle, defaultCoordinates, onSelect }) => {
           onSelect={handleSuggestionSelect}
         />
         <div className="rounded-lg overflow-hidden">
-          <DraggableMap
-            center={markerPosition}
-            onMarkerDragEnd={handleMarkerDragEnd}
-            zoomLevel={zoomLevel}
-            setZoomLevel={setZoomLevel}
-          />
+          {address !== "" && (
+            <DraggableMap
+              center={markerPosition}
+              onMarkerDragEnd={handleMarkerDragEnd}
+              zoomLevel={zoomLevel}
+              setZoomLevel={setZoomLevel}
+            />
+          )}
         </div>
       </div>
     </div>

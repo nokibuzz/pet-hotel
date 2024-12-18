@@ -480,7 +480,7 @@ const RentModal = ({ currentUser }) => {
       isOpen={rentModal.isOpen}
       onClose={rentModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
-      title={rentModal.isEdit ? "Edit accomodation" : "Add accomodation"}
+      title={rentModal.isEdit ? "Edit property" : "Add property"}
       actionLabel={actionLabel}
       secondaryActionLabel={secondartActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}

@@ -16,7 +16,7 @@ const ListingAddionalInformation = ({
   return (
     <div className="mt-6">
       <hr />
-      <div className="mt-6 flex gap-4">
+      <div className="mt-6 flex gap-4 overflow-x-auto hide-scrollbar">
         <ListingAddionalInformationCard
           enabled={hasFood}
           icon={faBone}

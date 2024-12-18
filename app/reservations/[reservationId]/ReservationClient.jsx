@@ -20,7 +20,7 @@ const ReservationClient = ({ reservation, currentUser }) => {
 
   useEffect(() => {
     const id =
-      currentUser.id === reservation.userId
+      currentUser?.id === reservation.userId
         ? reservation.listing.userId
         : reservation.userId;
 

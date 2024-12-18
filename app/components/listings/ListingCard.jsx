@@ -20,7 +20,7 @@ const ListingCard = ({
   nextPage = "listing",
 }) => {
   const router = useRouter();
-  
+
   const handleCancel = useCallback(
     (e) => {
       e.stopPropagation();
@@ -81,9 +81,11 @@ const ListingCard = ({
             src={data.imageSrc}
             className="object-cover h-full w-full group-hover:scale-110 transition"
           />
-          <div className="absolute top-3 right-3">
-            <HeartButton listingId={data.id} currentUser={currentUser} />
-          </div>
+          {currentUser?.hotelOwner !== true && (
+            <div className="absolute top-3 right-3">
+              <HeartButton listingId={data.id} currentUser={currentUser} />
+            </div>
+          )}
         </div>
         <div className="font-semibold text-lg">{data.title}</div>
         <div className="font-light text-neutral-500">{data.addressLabel}</div>

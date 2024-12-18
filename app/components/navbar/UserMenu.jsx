@@ -23,16 +23,6 @@ const UserMenu = ({ currentUser }) => {
     setIsOpen((value) => !value);
   }, []);
 
-  const onRent = useCallback(() => {
-    // open login modal
-    if (!currentUser) {
-      return loginModal.onOpen();
-    }
-
-    // open rent modal
-    rentModal.onOpen();
-  }, [currentUser, loginModal, rentModal]);
-
   const closeMenu = () => {
     setTimeout(() => {
       setIsOpen(false);
@@ -42,14 +32,6 @@ const UserMenu = ({ currentUser }) => {
   return (
     <div className="relative">
       <div className="flex flex-row items-center">
-        {currentUser?.hotelOwner == true && (
-          <div
-            onClick={onRent}
-            className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
-          >
-            Add accomodation
-          </div>
-        )}
         <div
           onClick={toggleOpen}
           className="p-4 md:py-1 md:px-2 border-[1px] border-neutral-200 flex flex-row items-center justify-between gap-3 rounded-full cursor-pointer hover:shadow-md transition"
@@ -116,7 +98,7 @@ const UserMenu = ({ currentUser }) => {
                       rentModal.onOpen();
                       closeMenu();
                     }}
-                    label="Add accomodation"
+                    label="Add property"
                   />
                 )}
                 <MenuItem

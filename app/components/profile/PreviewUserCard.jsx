@@ -5,21 +5,25 @@ const PreviewUserCard = ({
   items,
   onHeaderClick,
   onItemClick,
-  renderContent,
+  renderTextContent,
+  renderOwnerAddProperty,
 }) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-6 text-center hover:bg-gray-50">
-      <div
-        onClick={onHeaderClick}
-        className="text-lg font-semibold text-gray-700 cursor-pointer hover:text-amber-600"
-      >
-        {title}
+      <div className="flex flex-row justify-between text-lg font-semibold text-gray-700">
+        <div
+          className="cursor-pointer hover:text-amber-600"
+          onClick={onHeaderClick}
+        >
+          {title}
+        </div>
+        {renderOwnerAddProperty && renderOwnerAddProperty}
       </div>
 
       <ScrollableItemsSection
         items={items}
         onItemClick={onItemClick}
-        renderContent={renderContent}
+        renderContent={renderTextContent}
       />
     </div>
   );
