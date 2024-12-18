@@ -2,36 +2,78 @@
 
 import React from "react";
 import ProfileCard from "./profile/ProfileCard";
-import AccountCard from "./profile/AccountCard";
-import BillCard from "./profile/BillCard";
-import { ProfileTabs } from "../types/ProfileTabs";
+import { useRouter } from "next/navigation";
+import { format } from "date-fns";
+import PreviewUserCard from "./profile/PreviewUserCard";
 
-const TabContent = ({ activeTab, currentUser }) => {
-  switch (activeTab) {
-    case ProfileTabs.ACCOUNTS:
-      return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 m-5">
-          <ProfileCard currentUser={currentUser} />
-          <div className="grid grid-cols-1 gap-6">
-            <AccountCard />
-            <BillCard />
-          </div>
+const TabContent = ({ currentUser, reservations, pets }) => {
+  const router = useRouter();
+
+  const reservationDate = (reservation) => {
+    const start = new Date(reservation.startDate);
+    const end = new Date(reservation.endDate);
+
+    return `${format(start, "PP")} - ${format(end, "PP")}`;
+  };
+
+  return (
+    <div className="p-4">
+      <div className="flex flex-col md:flex-row md:space-x-4">
+        <ProfileCard currentUser={currentUser} />
+
+        <div className="md:w-1/2 flex flex-col space-y-6">
+          <PreviewUserCard
+            title="Reservations"
+            items={reservations.map((reservation) => ({
+              id: reservation.id,
+              imageSrc: reservation.listing.imageSrc,
+              title: reservation.listing.title,
+              startDate: reservation.startDate,
+              endDate: reservation.endDate,
+            }))}
+            onHeaderClick={() => router.push("/reservations")}
+            onItemClick={(id) => router.push(`/reservations/${id}`)}
+            renderContent={(item) => (
+              <>
+                <div className="font-semibold text-sm">{item.title}</div>
+                <div className="text-xs font-light text-neutral-500">
+                  {reservationDate(item)}
+                </div>
+              </>
+            )}
+          />
+
+          <PreviewUserCard
+            title="Pets"
+            items={pets.map((pet) => ({
+              id: pet.id,
+              imageSrc: pet.imageSrc,
+              title: pet.name,
+              breed: pet.breed,
+              age: pet.age,
+            }))}
+            onHeaderClick={() => router.push("/pets")}
+            onItemClick={(id) => console.log("Not yet implemented")}
+            renderContent={(item) => (
+              <>
+                <div className="font-semibold text-sm">{item.title}</div>
+                <div className="text-xs font-light text-neutral-500">
+                  {item.breed}
+                </div>
+              </>
+            )}
+          />
         </div>
-      );
+      </div>
 
-    case ProfileTabs.PAYMENTS:
-    case ProfileTabs.COMPLAINTS:
-    case ProfileTabs.SUPPORT:
-      return (
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-lg font-semibold">{activeTab} Tab Content</h2>
-          <p className="text-gray-600">Details for {activeTab} go here.</p>
+      <div className="shadow-md rounded-lg p-6 mt-6 hover:bg-gray-50">
+        <div className="text-xl font-semibold text-gray-700">
+          New Full-Width Section - Not used for now
         </div>
-      );
-
-    default:
-      return <div className="p-6">Welcome to the dashboard!</div>;
-  }
+        <div className="text-gray-600 mt-4">Content of the section</div>
+      </div>
+    </div>
+  );
 };
 
 export default TabContent;

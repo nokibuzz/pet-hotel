@@ -10,6 +10,7 @@ import RentModal from "./components/modals/RentModal";
 import PetModal from "./components/modals/PetModal";
 import SearchModal from "./components/modals/SearchModal";
 import ReviewModal from "./components/modals/ReviewModal";
+import ChangePasswordModal from "./components/modals/ChangePasswordModal";
 
 const font = Nunito({
   subsets: ["latin", "cyrillic"],
@@ -30,10 +31,11 @@ export default async function RootLayout({ children }) {
           <ToasterProvider />
           <LoginModal />
           <RegisterModal />
-          <RentModal currentUser={currentUser}/>
-          <SearchModal currentUser={currentUser}/>
+          <RentModal currentUser={currentUser} />
+          <SearchModal currentUser={currentUser} />
           <PetModal />
           <ReviewModal currentUser={currentUser} />
+          <ChangePasswordModal />
           <Navbar currentUser={currentUser} />
         </ClientOnly>
         <div className="pb-20 pt-28">{children}</div>

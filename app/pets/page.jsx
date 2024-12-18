@@ -8,7 +8,7 @@ import PetsClient from "./PetsClient";
 
 const ProfilePage = async () => {
   const currentUser = await getCurrentUser();
-  const pets = await getPets();
+  const pets = await getPets({ userId: currentUser.id });
 
   if (!currentUser) {
     return (
