@@ -5,7 +5,7 @@ import ClientOnly from "../components/ClientOnly";
 
 import getCurrentUser from "../actions/getCurrentUser";
 import PropertiesClient from "./PropertiesClient";
-import getListings from "../actions/getListings";
+import getProperties from "../actions/getProperties";
 
 const PropertiesPage = async () => {
   const currentUser = await getCurrentUser();
@@ -18,7 +18,7 @@ const PropertiesPage = async () => {
     );
   }
 
-  const listings = await getListings({
+  const listings = await getProperties({
     userId: currentUser.id,
   });
 

@@ -6,7 +6,7 @@ const Button = ({ label, onClick, disabled, outline, small, icon: Icon }) => {
       onClick={onClick}
       disabled={disabled}
       className={`
-    relative disabled:opacity-70 disabled:cursor-not-allowed rounded-lg hover:opacity-80 transition ${
+    relative disabled:opacity-70 disabled:cursor-not-allowed rounded-lg transition ${
       outline ? "bg-white" : "bg-amber-700"
     } ${outline ? "border-black" : "border-amber-700"} ${
         outline ? "text-black" : "text-white"
@@ -14,6 +14,10 @@ const Button = ({ label, onClick, disabled, outline, small, icon: Icon }) => {
         small ? "w-[30%]" : "w-full"
       } ${small ? "font-light" : "font-semibold"} ${
         small ? "border-[1px]" : "border-2"
+      } ${
+        small
+          ? "hover:bg-amber-700 hover:border-white hover:text-white"
+          : "hover:opacity-80"
       }
     `}
     >

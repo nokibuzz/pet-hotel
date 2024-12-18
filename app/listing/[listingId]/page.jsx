@@ -26,6 +26,14 @@ const ListingPage = async ({ params }) => {
     );
   }
 
+  if (!currentUser) {
+    return (
+      <ClientOnly>
+        <EmptyState title="Unauthorized" subtitle="Login to proceed!" />;
+      </ClientOnly>
+    );
+  }
+
   return (
     <ClientOnly>
       <ListingClient

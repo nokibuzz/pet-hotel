@@ -14,12 +14,7 @@ import { faMoneyBillWave } from "@fortawesome/free-solid-svg-icons";
 
 const Map = dynamic(() => import("../Map"), { ssr: false });
 
-const ListingInfo = ({
-  description,
-  category,
-  location,
-  houseRules,
-}) => {
+const ListingInfo = ({ description, category, location, houseRules }) => {
   return (
     <div className="col-span-4 flex flex-col gap-8">
       {category && (
