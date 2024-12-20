@@ -29,12 +29,20 @@ const STEPS = Object.freeze({
   PRICE: 7,
 });
 
+const MAX_IMAGES_FOR_RENT = 10;
+
 const RentModal = ({ currentUser }) => {
   const router = useRouter();
   const rentModal = useRentModal();
 
   const [step, setStep] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState(false);
+  const [localImageSrc, setLocalImageSrc] = useState([]);
+  const [imagesUploaded, setImagesUploaded] = useState(false);
+  const [guestChanged, setGuestChanged] = useState(false);
+  const [roomChanged, setRoomChanged] = useState(false);
+  const [priceChanged, setPriceChanged] = useState(false);
+
   const hours = Array.from({ length: 24 }, (_, index) =>
     index < 10 ? `0${index}:00` : `${index}:00`
   );
@@ -51,7 +59,7 @@ const RentModal = ({ currentUser }) => {
       category: "",
       roomCount: 1,
       guestCount: 1,
-      imageSrc: "",
+      imageSrc: [],
       price: 1,
       title: "",
       description: "",
@@ -108,11 +116,72 @@ const RentModal = ({ currentUser }) => {
     setStep((value) => value + 1);
   };
 
+  const uploadImages = async () => {
+    if (
+      !localImageSrc ||
+      !Array.isArray(localImageSrc) ||
+      localImageSrc.length === 0
+    ) {
+      toast.error("No images to upload!");
+      return;
+    }
+
+    try {
+      const uploaded = [];
+      for (const localImage of localImageSrc) {
+        // Convert Blob URL to File
+        const response = await fetch(localImage);
+        const blob = await response.blob();
+        const file = new File([blob], "image.jpg", { type: blob.type });
+
+        // Upload to Cloudinary
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "oqa81fsw");
+
+        const uploadResponse = await fetch(
+          "https://api.cloudinary.com/v1_1/dyjrsi5h4/image/upload",
+          { method: "POST", body: formData }
+        );
+
+        if (!uploadResponse.ok) {
+          throw new Error("Image upload failed");
+        }
+
+        const data = await uploadResponse.json();
+        uploaded.push(data.secure_url);
+      }
+
+      setCustomValue("imageSrc", uploaded);
+      toast.success("All images uploaded successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error uploading images!");
+    }
+  };
+
   const onSubmit = (data) => {
     if (step == STEPS.IMAGES) {
-      if (!data.imageSrc) {
+      setImagesUploaded(false);
+      if (
+        !localImageSrc ||
+        !Array.isArray(localImageSrc) ||
+        localImageSrc.length === 0
+      ) {
+        // no update images on edit
+        if (rentModal.isEdit) {
+          return onNext();
+        }
+
         return;
       }
+
+      uploadImages()
+        .then((response) => {
+          console.log("Uploaded successfully");
+          setImagesUploaded(true);
+        })
+        .catch((e) => console.error("Woof, woof, images not uploaded!", e));
     }
 
     if (step !== STEPS.PRICE) {
@@ -120,6 +189,7 @@ const RentModal = ({ currentUser }) => {
     }
 
     setIsLoading(true);
+    setLocalImageSrc([]);
 
     if (rentModal.isEdit) {
       const updatedData = { ...data, id: rentModal.listing.id };
@@ -136,6 +206,7 @@ const RentModal = ({ currentUser }) => {
         .catch(() => toast.error("Something went wrong!"))
         .finally(() => setIsLoading(false));
     } else {
+      setIsLoading(false);
       axios
         .post("/api/listing", data)
         .then(() => {
@@ -196,16 +267,27 @@ const RentModal = ({ currentUser }) => {
         rentModal.listing.location.coordinates?.[1]
       );
     }
-    if (rentModal.listing?.guestCount && guestCount === 1) {
+    if (rentModal.listing?.guestCount && guestCount === 1 && !guestChanged) {
+      setGuestChanged(true);
       setCustomValue("guestCount", rentModal.listing.guestCount);
     }
-    if (rentModal.listing?.roomCount && roomCount === 1) {
+    if (
+      rentModal.listing?.roomCount &&
+      roomCount !== rentModal.listing.roomCount &&
+      !roomChanged
+    ) {
+      setRoomChanged(true);
       setCustomValue("roomCount", rentModal.listing.roomCount);
     }
-    if (rentModal.listing?.price && price === 1) {
+    if (
+      rentModal.listing?.price &&
+      price !== rentModal.listing.price &&
+      !priceChanged
+    ) {
+      setPriceChanged(true);
       setCustomValue("price", rentModal.listing.price);
     }
-    if (rentModal.listing?.imageSrc && !imageSrc) {
+    if (Array.isArray(rentModal.listing?.imageSrc) && imageSrc.length === 0) {
       setCustomValue("imageSrc", rentModal.listing.imageSrc);
     }
     if (rentModal.listing?.addionalInformation && !addionalInformation) {
@@ -303,14 +385,15 @@ const RentModal = ({ currentUser }) => {
 
   if (step === STEPS.IMAGES) {
     bodyContent = (
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-4">
         <Heading
           title="Add photos of your home/hotel"
           subtitle="Let owners know how your pet care looks like"
         />
         <ImageUpload
           value={imageSrc}
-          onChange={(value) => setCustomValue("imageSrc", value)}
+          onChange={(value) => setLocalImageSrc(value)}
+          maxImages={MAX_IMAGES_FOR_RENT}
         />
       </div>
     );
@@ -478,7 +561,11 @@ const RentModal = ({ currentUser }) => {
   return (
     <Modal
       isOpen={rentModal.isOpen}
-      onClose={rentModal.onClose}
+      onClose={() => {
+        reset();
+        setStep(STEPS.CATEGORY);
+        rentModal.onClose();
+      }}
       onSubmit={handleSubmit(onSubmit)}
       title={rentModal.isEdit ? "Edit property" : "Add property"}
       actionLabel={actionLabel}
