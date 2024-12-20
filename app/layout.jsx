@@ -11,6 +11,7 @@ import PetModal from "./components/modals/PetModal";
 import SearchModal from "./components/modals/SearchModal";
 import ReviewModal from "./components/modals/ReviewModal";
 import ChangePasswordModal from "./components/modals/ChangePasswordModal";
+import UploadImageModal from "./components/modals/UploadImageModal";
 
 const font = Nunito({
   subsets: ["latin", "cyrillic"],
@@ -36,6 +37,7 @@ export default async function RootLayout({ children }) {
           <PetModal />
           <ReviewModal currentUser={currentUser} />
           <ChangePasswordModal />
+          <UploadImageModal />
           <Navbar currentUser={currentUser} />
         </ClientOnly>
         <div className="pb-20 pt-28">{children}</div>

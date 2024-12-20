@@ -120,7 +120,7 @@ const ListingClient = ({
           <ListingHead
             id={listing.id}
             title={listing.title}
-            imageSrc={listing.imageSrc}
+            imageSrc={listing.imageSrc?.[0]}
             addressLabel={listing.addressLabel}
             currentUser={currentUser}
             listing={listing}

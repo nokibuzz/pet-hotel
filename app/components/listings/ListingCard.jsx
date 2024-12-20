@@ -78,7 +78,7 @@ const ListingCard = ({
           <Image
             fill
             alt="Listing"
-            src={data.imageSrc}
+            src={data.imageSrc?.[0]}
             className="object-cover h-full w-full group-hover:scale-110 transition"
           />
           {currentUser?.hotelOwner !== true && (

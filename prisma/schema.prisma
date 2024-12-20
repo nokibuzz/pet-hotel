@@ -63,7 +63,7 @@ model Listing {
     userId              String?       @db.ObjectId
     title               String
     description         String
-    imageSrc            String
+    imageSrc            String[]
     createdAt           DateTime      @default(now())
     category            String
     roomCount           Int
@@ -103,15 +103,15 @@ model Reservation {
 }
 
 model Pet {
-    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
     name        String
     breed       String
     age         Int
     friendly    Boolean
     vaccinated  Boolean
-    imageSrc    String
+    imageSrc    String[]
     description String?
-    userId      String  @db.ObjectId
+    userId      String   @db.ObjectId
 
     owner User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -154,12 +154,12 @@ model ReviewReaction {
 }
 
 model Message {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  senderId      String
-  receiverId    String
-  content       String
-  timestamp     DateTime @default(now())
-  chatId        String
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    senderId   String
+    receiverId String
+    content    String
+    timestamp  DateTime @default(now())
+    chatId     String
 }
 
 // username:dogohotel

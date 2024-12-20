@@ -34,7 +34,7 @@ const ProfileContent = ({ currentUser, reservations, pets, properties }) => {
                 title="Reservations"
                 items={reservations.map((reservation) => ({
                   id: reservation.id,
-                  imageSrc: reservation.listing.imageSrc,
+                  imageSrc: reservation.listing.imageSrc?.[0],
                   title: reservation.listing.title,
                   startDate: reservation.startDate,
                   endDate: reservation.endDate,
@@ -55,7 +55,7 @@ const ProfileContent = ({ currentUser, reservations, pets, properties }) => {
                 title="Pets"
                 items={pets.map((pet) => ({
                   id: pet.id,
-                  imageSrc: pet.imageSrc,
+                  imageSrc: pet.imageSrc?.[0],
                   title: pet.name,
                   breed: pet.breed,
                   age: pet.age,
@@ -80,7 +80,7 @@ const ProfileContent = ({ currentUser, reservations, pets, properties }) => {
                 title="Properties"
                 items={properties.map((property) => ({
                   id: property.id,
-                  imageSrc: property.imageSrc,
+                  imageSrc: property.imageSrc?.[0],
                   title: property.title,
                   category: property.category,
                 }))}
