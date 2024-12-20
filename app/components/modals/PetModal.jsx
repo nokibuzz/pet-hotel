@@ -1,14 +1,9 @@
 "use client";
 
-import useRentModal from "@/app/hooks/useRentModal";
 import Modal from "./Modal";
 import { useMemo, useState } from "react";
 import Heading from "../Heading";
-import { categories } from "../navbar/Categories";
-import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
-import CountrySelect from "../inputs/CountrySelect";
-import dynamic from "next/dynamic";
 import Counter from "../inputs/Counter";
 import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
@@ -26,12 +21,15 @@ const STEPS = Object.freeze({
   DESCRIPTION: 4,
 });
 
+const MAX_IMAGES_FOR_PET = 7;
+
 const PetModal = () => {
   const router = useRouter();
   const petModal = usePetModal();
 
   const [step, setStep] = useState(STEPS.BASIC);
   const [isLoading, setIsLoading] = useState(false);
+  const [localImageSrc, setLocalImageSrc] = useState([]);
 
   const {
     register,
@@ -47,7 +45,7 @@ const PetModal = () => {
       age: 0,
       friendly: true,
       vaccinated: true,
-      imageSrc: "",
+      imageSrc: [],
       description: "",
     },
   });
@@ -73,11 +71,65 @@ const PetModal = () => {
     setStep((value) => value + 1);
   };
 
+  const uploadImages = async () => {
+    if (
+      !localImageSrc ||
+      !Array.isArray(localImageSrc) ||
+      localImageSrc.length === 0
+    ) {
+      toast.error("No images to upload!");
+      return;
+    }
+
+    try {
+      const uploaded = [];
+      for (const localImage of localImageSrc) {
+        // Convert Blob URL to File
+        const response = await fetch(localImage);
+        const blob = await response.blob();
+        const file = new File([blob], "image.jpg", { type: blob.type });
+
+        // Upload to Cloudinary
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "oqa81fsw");
+
+        const uploadResponse = await fetch(
+          "https://api.cloudinary.com/v1_1/dyjrsi5h4/image/upload",
+          { method: "POST", body: formData }
+        );
+
+        if (!uploadResponse.ok) {
+          throw new Error("Image upload failed");
+        }
+
+        const data = await uploadResponse.json();
+        uploaded.push(data.secure_url);
+      }
+
+      setCustomValue("imageSrc", uploaded);
+      toast.success("All images uploaded successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error uploading images!");
+    }
+  };
+
   const onSubmit = (data) => {
     if (step == STEPS.IMAGES) {
-      if (!data.imageSrc) {
+      if (
+        !localImageSrc ||
+        !Array.isArray(localImageSrc) ||
+        localImageSrc.length === 0
+      ) {
         return;
       }
+
+      uploadImages()
+        .then((response) => {
+          console.log("Uploaded successfully");
+        })
+        .catch((e) => console.error("Woof, woof, images not uploaded!", e));
     }
 
     if (step !== STEPS.DESCRIPTION) {
@@ -192,7 +244,8 @@ const PetModal = () => {
         />
         <ImageUpload
           value={imageSrc}
-          onChange={(value) => setCustomValue("imageSrc", value)}
+          onChange={(value) => setLocalImageSrc(value)}
+          maxImages={MAX_IMAGES_FOR_PET}
         />
       </div>
     );

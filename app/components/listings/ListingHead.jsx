@@ -1,9 +1,9 @@
 "use client";
 
 import Heading from "../Heading";
-import Image from "next/image";
 import HeartButton from "../HeartButton";
 import useRentModal from "@/app/hooks/useRentModal";
+import ImageGallery from "../gallery/ImageGallery";
 
 const ListingHead = ({
   id,
@@ -34,12 +34,7 @@ const ListingHead = ({
         }
       />
       <div className="w-full h-[60vh] overflow-hidden rounded-xl relative">
-        <Image
-          alt="Picture"
-          src={imageSrc}
-          fill
-          className="object-cover w-full"
-        />
+        <ImageGallery images={imageSrc} />
         <div className="absolute top-5 right-5">
           <HeartButton listingId={id} currentUser={currentUser} />
         </div>
