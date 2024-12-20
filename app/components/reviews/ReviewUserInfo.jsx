@@ -6,7 +6,7 @@ const ReviewUserInfo = ({ user, currentUser }) => {
   return (
     <div className="flex items-center space-x-4">
       <img
-        src={user.imageSrc || "/images/placeholder.png"}
+        src={user.image || "/images/placeholder.png"}
         alt={user.name}
         className="w-12 h-12 rounded-full object-cover"
       />

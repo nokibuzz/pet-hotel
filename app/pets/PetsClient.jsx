@@ -34,7 +34,7 @@ const PetsClient = ({ pets }) => {
                   name={pet.name}
                   breed={pet.breed}
                   years={pet.age}
-                  imageSrc={pet.imageSrc}
+                  imageSrc={pet.imageSrc?.[0]}
                 />
               );
             })}

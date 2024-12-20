@@ -13,6 +13,7 @@ const Modal = ({
   footer,
   actionLabel,
   disabled,
+  canCloseDisabled = false,
   secondaryAction,
   secondaryActionLabel,
 }) => {
@@ -23,7 +24,7 @@ const Modal = ({
   }, [isOpen]);
 
   const handleClose = useCallback(() => {
-    if (disabled) {
+    if (disabled && !canCloseDisabled) {
       return;
     }
 
