@@ -49,7 +49,7 @@ const ReservationClient = ({ reservation, currentUser }) => {
           <ListingHead
             id={listing.id}
             title={listing.title}
-            imageSrc={listing.imageSrc?.[0]}
+            imageSrc={listing.imageSrc}
             addressLabel={listing.addressLabel}
             currentUser={currentUser}
           />
