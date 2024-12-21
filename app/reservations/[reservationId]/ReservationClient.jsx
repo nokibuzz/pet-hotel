@@ -5,7 +5,7 @@ import ListingAddionalInformation from "@/app/components/listings/ListingAddiona
 import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ReservationInfo from "@/app/components/reservations/ReservationInfo";
-import { categories } from "@/app/components/navbar/Categories";
+import { options } from "@/app/components/navbar/BasicFilters";
 import React, { useMemo, useEffect, useState } from "react";
 import Conversation from "@/app/components/conversation/Conversation";
 
@@ -39,7 +39,7 @@ const ReservationClient = ({ reservation, currentUser }) => {
   }, []);
 
   const category = useMemo(() => {
-    return categories.find((item) => item.label === listing.category);
+    return options.find((item) => item.label === listing.category);
   }, [listing.category]);
 
   return (

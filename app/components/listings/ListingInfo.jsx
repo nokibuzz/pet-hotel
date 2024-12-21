@@ -1,7 +1,5 @@
 "use client";
 
-import useCountries from "@/app/hooks/useCountries";
-import Avatar from "../Avatar";
 import ListingCategory from "./ListingCategory";
 import dynamic from "next/dynamic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
