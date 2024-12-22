@@ -6,9 +6,11 @@ import ToasterProvider from "./providers/ToasterProvider";
 import LoginModal from "./components/modals/LoginModal";
 import RegisterModal from "./components/modals/RegisterModal";
 import getCurrentUser from "./actions/getCurrentUser";
+import getMinMaxPrices from "./actions/getMinMaxPrices";
 import RentModal from "./components/modals/RentModal";
 import PetModal from "./components/modals/PetModal";
 import SearchModal from "./components/modals/SearchModal";
+import AdvancedFilters from "./components/modals/AdvancedFilters";
 import ReviewModal from "./components/modals/ReviewModal";
 import ChangePasswordModal from "./components/modals/ChangePasswordModal";
 import UploadImageModal from "./components/modals/UploadImageModal";
@@ -24,6 +26,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const currentUser = await getCurrentUser();
+  const minMaxPrices = await getMinMaxPrices();
 
   return (
     <html lang="en">
@@ -34,6 +37,7 @@ export default async function RootLayout({ children }) {
           <RegisterModal />
           <RentModal currentUser={currentUser} />
           <SearchModal currentUser={currentUser} />
+          <AdvancedFilters defaultPriceRange={minMaxPrices}/>
           <PetModal />
           <ReviewModal currentUser={currentUser} />
           <ChangePasswordModal />

@@ -4,7 +4,7 @@ import useRentModal from "@/app/hooks/useRentModal";
 import Modal from "./Modal";
 import { useMemo, useState, useEffect } from "react";
 import Heading from "../Heading";
-import { categories } from "../navbar/Categories";
+import { options } from "../navbar/BasicFilters";
 import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
 import Counter from "../inputs/Counter";
@@ -178,7 +178,6 @@ const RentModal = ({ currentUser }) => {
 
       uploadImages()
         .then((response) => {
-          console.log("Uploaded successfully");
           setImagesUploaded(true);
         })
         .catch((e) => console.error("Woof, woof, images not uploaded!", e));
@@ -319,7 +318,7 @@ const RentModal = ({ currentUser }) => {
         subtitle="Pick one"
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-        {categories.map((item) => (
+        {options.map((item) => (
           <div key={item.label} className="col-span-1">
             <CategoryInput
               onClick={(category) => {
