@@ -196,7 +196,7 @@ const AdvancedFilters = ({ defaultPriceRange }) => {
     });
 
     let bodyContent = (
-        <div className="flex flex-col gap-6 max-h-[70vh] overflow-y-auto p-6">
+        <div className="flex flex-col gap-6 max-h-[70vh] overflow-y-scroll scrollbar-hide p-6 hide-scrollbar">
           <div className="border-b pb-4">
             <h3 className="font-semibold text-lg mb-2">Price (per night)</h3>
             <RangeInput 
