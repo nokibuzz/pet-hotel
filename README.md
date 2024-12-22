@@ -28,3 +28,5 @@ https://authjs.dev/getting-started/adapters/prisma
 ```bash
 npx prisma db push # will push initial schema to the db
 ```
+
+Create index on listing for the location.
