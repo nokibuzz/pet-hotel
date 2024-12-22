@@ -20,9 +20,7 @@ const Toggle = ({
       } items-center gap-6`}
     >
       <label
-        className={`text-md ${
-          errors[id] ? "text-red-700" : "text-neutral-500"
-        }`}
+        className={`text-md ${errors && errors[id] ? "text-red-700" : "text-neutral-500"}`}
       >
         {label}
       </label>
@@ -31,9 +29,7 @@ const Toggle = ({
         checked={value}
         onChange={() => onChange(!value)}
         required={required}
-        className={`react-toggle ${
-          errors[id] ? "border-red-700" : "border-neutral-300"
-        }`}
+        className={`react-toggle ${errors && errors[id] ? "border-red-700" : "border-neutral-300"}`}
       />
     </div>
   );
