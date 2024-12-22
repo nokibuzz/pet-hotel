@@ -5,6 +5,7 @@ import BasicFilterOption from "../BasicFilterOption";
 import AdvancedFiltersButton from "../AdvancedFiltersButton";
 import useAdvancedFiltersModal from "@/app/hooks/useAdvancedFiltersModal";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useRef, useState, useEffect } from "react";
 import { faHouse, faHotel, faPerson } from '@fortawesome/free-solid-svg-icons';
 
 export const options = [
@@ -33,7 +34,12 @@ const BasicFilters = () => {
 
   const isMainPage = pathname === "/";
   const advancedFilters = params?.get("advancedFilters");
-    
+  
+  const [visibleFilters, setVisibleFilters] = useState([]);
+  const [hiddenFiltersCount, setHiddenFiltersCount] = useState(0);
+
+  const filtersRef = useRef(null);
+
   const getCurrentFilters = () => {
 
     const minPrice = params?.get("minPrice");
@@ -89,29 +95,56 @@ const BasicFilters = () => {
     return filters;
   };
 
+  useEffect(() => {
+    const filters = getCurrentFilters();
+
+    const containerWidth = filtersRef.current?.clientWidth || 0;
+
+    let totalWidth = 0;
+    let visible = [];
+
+    for (let i = 0; i < filters.length; i++) {
+      const filterWidth = 200;
+      if (totalWidth + filterWidth <= containerWidth) {
+        visible.push(filters[i]);
+        totalWidth += filterWidth;
+      } else {
+        setHiddenFiltersCount(filters.length - i);
+        break;
+      }
+    }
+
+    setVisibleFilters(visible);
+  }, [params]);
+
   if (!isMainPage) {
     return null;
   }
 
   return (
     <Container>
-      <div className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto">
+      <div className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto" ref={filtersRef}>
       {
       advancedFilters? 
       (
-<div className="flex justify-center items-center gap-4 mb-9">
-  <div className="text-lg font-semibold text-gray-800">Current Search</div>
-  <div className="flex flex-wrap justify-center items-center gap-4">
-    {getCurrentFilters().map((filter) => (
-      <div
-        key={filter.label}
-        className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center"
-      >
-        {filter.value}
-      </div>
-    ))}
-  </div>
-</div>
+        <div className="flex justify-center items-center gap-4 mb-9">
+          <div className="text-lg font-semibold text-gray-800">Current Search</div>
+          <div className="flex flex-wrap justify-center items-center gap-4">
+            {visibleFilters.map((filter) => (
+              <div
+                key={filter.label}
+                className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center"
+              >
+                {filter.value}
+              </div>
+            ))}
+            {hiddenFiltersCount > 0 && (
+              <div className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center">
+                +{hiddenFiltersCount} more
+              </div>
+            )}
+          </div>
+        </div>
       ) : 
       ( 
         <div className="flex flex-row gap-3 flex-grow justify-around">
