@@ -87,8 +87,8 @@ const ListingCard = ({
             </div>
           )}
         </div>
-        <div className="font-semibold text-lg">{data.title}</div>
-        <div className="font-light text-neutral-500">{data.addressLabel}</div>
+        <div className="font-semibold text-lg truncate max-w-full" title={data.title}>{data.title}</div>
+        <div className="font-light text-neutral-500 truncate max-w-full" title={data.addressLabel}>{data.addressLabel}</div>
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
         </div>

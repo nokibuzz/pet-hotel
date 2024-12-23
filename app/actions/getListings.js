@@ -4,12 +4,20 @@ export default async function getListings(params) {
   try {
     const {
       userId,
-      guestCount,
+      guestCount, 
       startDate,
       endDate,
       latitude,
       longitude,
       category,
+      minPrice,
+      maxPrice,
+      nearMe,
+      facility,        
+      hasCancelation,
+      paymentMethodsCards,
+      paymentMethodsCash,
+      review,
     } = await params;
 
     const query = {};
@@ -19,7 +27,8 @@ export default async function getListings(params) {
     }
 
     if (category) {
-      query.category = category;
+      const categoriesArray = category.split(",");
+      query.category = { $in: categoriesArray };
     }
 
     if (guestCount) {
@@ -45,6 +54,48 @@ export default async function getListings(params) {
       };
     }
 
+    if (minPrice && maxPrice) {
+      query.price = {
+        $gte: parseInt(minPrice, 10),
+        $lte: parseInt(maxPrice, 10),
+      };
+    } else if (minPrice) {
+      query.price = {
+        $gte: parseInt(minPrice, 10),
+      };
+    } else if (maxPrice) {
+      query.price = {
+        $lte: parseInt(maxPrice, 10),
+      };
+    }
+
+    if (facility) {
+      const facilityArray = facility.split(",");
+      if (facilityArray.includes("Food")) {
+        query.hasFood = true;
+      }
+      if (facilityArray.includes("Grooming")) {
+        query.hasGrooming = true;
+      }
+      if (facilityArray.includes("Veterinarian")) {
+        query.hasVet = true;
+      }
+    }
+
+    if (hasCancelation) {
+      query.hasCancelation = true;
+    }
+    if (paymentMethodsCards) {
+      query.paymentMethodsCards = true;
+    }
+    if (paymentMethodsCash) {
+      query.paymentMethodsCash = true;
+    }
+
+    if (review) {
+      query.overallReview = { $gte: parseInt(review, 10) };
+    }
+
     const pipeline = [];
 
     if (latitude && longitude) {
@@ -56,7 +107,7 @@ export default async function getListings(params) {
           },
           distanceField: "distance",
           spherical: true,
-          maxDistance: 10000,
+          maxDistance: nearMe ? nearMe * 1000 : 10000,
         },
       });
     }

@@ -4,7 +4,7 @@ import Container from "../Container";
 import Search from "./Search";
 import Logo from "./Logo";
 import UserMenu from "./UserMenu";
-import Categories from "./Categories";
+import BasicFilters from "./BasicFilters";
 
 const Navbar = ({ currentUser }) => {
   return (
@@ -12,13 +12,13 @@ const Navbar = ({ currentUser }) => {
       <div className="py-4 border-b-[1px]">
         <Container>
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0">
-            <Logo />
-            <Search />
-            <UserMenu currentUser={currentUser} />
+            <div className="flex-1"><Logo /></div>
+            <div className="flex-1 flex justify-center"><Search /></div>
+            <div className="flex-1 flex justify-end"><UserMenu currentUser={currentUser} /></div>
           </div>
         </Container>
       </div>
-      <Categories />
+      <BasicFilters />
     </div>
   );
 };

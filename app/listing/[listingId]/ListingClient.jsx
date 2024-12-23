@@ -5,7 +5,7 @@ import ListingAddionalInformation from "@/app/components/listings/ListingAddiona
 import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ListingReservation from "@/app/components/listings/ListingReservation";
-import { categories } from "@/app/components/navbar/Categories";
+import { options } from "@/app/components/navbar/BasicFilters";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import axios from "axios";
 import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
@@ -110,7 +110,7 @@ const ListingClient = ({
   }, [dateRange, listing.price]);
 
   const category = useMemo(() => {
-    return categories.find((item) => item.label === listing.category);
+    return options.find((item) => item.label === listing.category);
   }, [listing.category]);
 
   return (
