@@ -18,6 +18,7 @@ export default async function getListings(params) {
       paymentMethodsCards,
       paymentMethodsCash,
       review,
+      sortBy,
     } = await params;
 
     const query = {};
@@ -125,11 +126,45 @@ export default async function getListings(params) {
       },
     });
 
-    pipeline.push({
-      $sort: {
-        createdAt: -1,
-      },
-    });
+    if (sortBy) {
+      switch (sortBy) {
+        case "title":
+          pipeline.push({
+            $sort: {
+              title: 1,
+            },
+          });
+          break;
+        case "price":
+          pipeline.push({
+            $sort: {
+              price: 1,
+            },
+          });
+          break;
+        case "rating":
+          pipeline.push({
+            $sort: {
+              overallReview: -1,
+            },
+          });
+          break;
+        case "distance":
+          pipeline.push({
+            $sort: {
+              distance: 1,
+            },
+          });
+          break;
+      }
+    }
+    else {
+      pipeline.push({
+        $sort: {
+          createdAt: -1,
+        },
+      });
+    }
 
     const listings = await prisma.$runCommandRaw({
       aggregate: "Listing",

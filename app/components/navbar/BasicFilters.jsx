@@ -7,6 +7,7 @@ import useAdvancedFiltersModal from "@/app/hooks/useAdvancedFiltersModal";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import { faHouse, faHotel, faPerson } from '@fortawesome/free-solid-svg-icons';
+import SortFiltersOption from "../SortFiltersOption";
 
 export const options = [
   {
@@ -123,7 +124,7 @@ const BasicFilters = () => {
 
   return (
     <Container>
-      <div className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto" ref={filtersRef}>
+      <div className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden" ref={filtersRef}>
       {
       advancedFilters? 
       (
@@ -158,6 +159,10 @@ const BasicFilters = () => {
           ))}
         </div>
       )}
+
+        <div className="flex-shrink-0 flex items-center justify-center -mt-4">
+          <SortFiltersOption />
+        </div>
 
         <div className="flex-shrink-0 flex items-center justify-center -mt-4">
           <AdvancedFiltersButton
