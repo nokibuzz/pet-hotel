@@ -8,23 +8,23 @@ import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 const ImageGallery = ({ images, slideAutomatically = false }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
+  const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
-    if (slideAutomatically) {
-      const interval = setInterval(() => {
-        slideToNextImage();
-      }, 10000);
+    const id = setInterval(() => {
+      slideToNextImage();
+    }, 10000);
+    setIntervalId(id);
 
-      return () => clearInterval(interval);
-    }
-  }, [images.length, slideAutomatically]);
+    return () => clearInterval(id);
+  }, [images.length]);
 
   const slideToNextImage = () => {
     setTransitioning(true);
     setTimeout(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
       setTransitioning(false);
-    }, 500);
+    }, 400);
   };
 
   const slideToPrevImage = () => {
@@ -34,7 +34,12 @@ const ImageGallery = ({ images, slideAutomatically = false }) => {
         (prevIndex) => (prevIndex - 1 + images.length) % images.length
       );
       setTransitioning(false);
-    }, 500);
+    }, 400);
+  };
+
+  const handlePreviewClick = (index) => {
+    clearInterval(intervalId);
+    setCurrentIndex(index);
   };
 
   const getNextImages = () => {
@@ -51,7 +56,7 @@ const ImageGallery = ({ images, slideAutomatically = false }) => {
   return (
     <div className="relative w-full h-[60vh]">
       <div
-        className="w-full h-full flex transition-transform duration-500 ease-in-out"
+        className="w-full h-full flex transition-transform duration-400 ease-in-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((image, idx) => (
@@ -97,10 +102,9 @@ const ImageGallery = ({ images, slideAutomatically = false }) => {
           <div
             key={idx}
             className="w-16 h-16 relative border rounded-lg overflow-hidden cursor-pointer"
-            onClick={() => {
-              setCurrentIndex((currentIndex + idx + 1) % images.length);
-              clearInterval();
-            }}
+            onClick={() =>
+              handlePreviewClick((currentIndex + idx + 1) % images.length)
+            }
           >
             <Image
               alt={`Preview ${idx}`}
