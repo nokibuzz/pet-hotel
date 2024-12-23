@@ -11,11 +11,19 @@ const Dropdown = ({
   onChange,
   errors,
   required,
+  defaultValue,
 }) => {
   const formattedOptions = options.map((option) => ({
     value: option,
     label: option,
   }));
+
+  const getDefaultValue = (option) => {
+    return {
+      value: option,
+      label: option,
+    };
+  }
 
   const handleChange = (selectedOption) => {
     if (onChange) {
@@ -36,6 +44,7 @@ const Dropdown = ({
         id={id}
         {...register(id, { required })}
         options={formattedOptions}
+        defaultValue={defaultValue ? getDefaultValue(defaultValue) : null}
         placeholder={placeholder || "Select..."}
         onChange={(selectedOption) => handleChange(selectedOption)}
         classNames={{

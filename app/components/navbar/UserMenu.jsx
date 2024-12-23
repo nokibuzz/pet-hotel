@@ -30,7 +30,7 @@ const UserMenu = ({ currentUser }) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative z-50">
       <div className="flex flex-row items-center">
         <div
           onClick={toggleOpen}
