@@ -3,8 +3,9 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import qs from "query-string";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const CategoryBox = ({ icon: Icon, label, selected }) => {
+const BasicFilterOption = ({ icon: Icon, label, selected }) => {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -42,10 +43,10 @@ const CategoryBox = ({ icon: Icon, label, selected }) => {
         selected ? "border-b-neutral-800" : "border-transparent"
       } ${selected ? "text-neutral-800" : "text-neutral-500"}`}
     >
-      <Icon size={26} />
+      <FontAwesomeIcon icon={Icon} size="lg" className="text-neutral-500" />
       <div className="font-medium text-sm">{label}</div>
     </div>
   );
 };
 
-export default CategoryBox;
+export default BasicFilterOption;

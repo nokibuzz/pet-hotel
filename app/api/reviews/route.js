@@ -60,9 +60,30 @@ export async function POST(request) {
       data: { totalReviews: { increment: 1 } },
     });
 
+    const overallReview = await prisma.$runCommandRaw({
+      aggregate: "Review",
+      pipeline: [
+        {
+          $match: {
+            $expr: { $eq: ["$listingId", { $toObjectId: listingId }] },
+          },
+        },
+        {
+          $group: {
+            _id: "$listingId",
+            averageReview: { $avg: "$overallRating" },
+          },
+        },
+      ],
+      cursor: {},
+    });
+
     await prisma.listing.update({
       where: { id: listingId },
-      data: { totalReviews: { increment: 1 } },
+      data: { 
+        overallReview: overallReview.cursor?.firstBatch[0]?.averageReview || 0,
+        totalReviews: { increment: 1 } 
+      },
     });
 
     return NextResponse.json(review);
