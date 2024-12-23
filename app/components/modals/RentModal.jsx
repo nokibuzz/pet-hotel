@@ -444,6 +444,7 @@ const RentModal = ({ currentUser }) => {
             register={register}
             errors={errors}
             required
+            defaultValue={"12:00"}
           />
           <Dropdown
             id="checkOutTime"
@@ -454,6 +455,7 @@ const RentModal = ({ currentUser }) => {
             register={register}
             errors={errors}
             required
+            defaultValue={"12:00"}
           />
         </div>
         <hr />
