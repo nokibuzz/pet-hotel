@@ -40,7 +40,6 @@ const RentModal = ({ currentUser }) => {
   const [localImageSrc, setLocalImageSrc] = useState([]);
   const [imagesUploaded, setImagesUploaded] = useState(false);
   const [guestChanged, setGuestChanged] = useState(false);
-  const [roomChanged, setRoomChanged] = useState(false);
   const [priceChanged, setPriceChanged] = useState(false);
 
   const hours = Array.from({ length: 24 }, (_, index) =>
@@ -57,7 +56,6 @@ const RentModal = ({ currentUser }) => {
   } = useForm({
     defaultValues: {
       category: "",
-      roomCount: 1,
       guestCount: 1,
       imageSrc: [],
       price: 1,
@@ -84,7 +82,6 @@ const RentModal = ({ currentUser }) => {
   const description = watch("description");
   const category = watch("category");
   const guestCount = watch("guestCount");
-  const roomCount = watch("roomCount");
   const price = watch("price");
   const imageSrc = watch("imageSrc");
   const checkInTime = watch("checkInTime");
@@ -266,17 +263,13 @@ const RentModal = ({ currentUser }) => {
         rentModal.listing.location.coordinates?.[1]
       );
     }
-    if (rentModal.listing?.guestCount && guestCount === 1 && !guestChanged) {
+    if (
+      rentModal.listing?.guestCount &&
+      guestCount !== rentModal.listing.guestCount &&
+      !guestChanged
+    ) {
       setGuestChanged(true);
       setCustomValue("guestCount", rentModal.listing.guestCount);
-    }
-    if (
-      rentModal.listing?.roomCount &&
-      roomCount !== rentModal.listing.roomCount &&
-      !roomChanged
-    ) {
-      setRoomChanged(true);
-      setCustomValue("roomCount", rentModal.listing.roomCount);
     }
     if (
       rentModal.listing?.price &&
@@ -305,7 +298,6 @@ const RentModal = ({ currentUser }) => {
     locationLatitude,
     locationLongitude,
     guestCount,
-    roomCount,
     imageSrc,
     addionalInformation,
     setCustomValue,
@@ -361,22 +353,14 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Give some more info about your pet place"
-          subtitle="Why pets should choose your place"
+          title="What are your capacity"
+          subtitle="How many pets can you take care of"
         />
         <Counter
           title="Pets"
           subtitle="How many pets you can take?"
           value={guestCount}
           onChange={(value) => setCustomValue("guestCount", value)}
-        />
-        <hr />
-        {/* This is just a show, find out how pet care hotels count this "rooms", like 5 pets inside 1 room etc. But with breed in mind, like pitbull cannot be in the same room as pussy chiwawa */}
-        <Counter
-          title="Rooms"
-          subtitle="How many rooms do you have?"
-          value={roomCount}
-          onChange={(value) => setCustomValue("roomCount", value)}
         />
       </div>
     );
@@ -434,10 +418,11 @@ const RentModal = ({ currentUser }) => {
           title="House rules"
           subtitle="House rules are a set of guidelines or regulations that outline expected behaviors, responsibilities, and standards within a specific property or environment to ensure a respectful, safe, and harmonious experience for all occupants or visitors."
         />
+
         <div className="flex flex-row gap-4">
           <Dropdown
             id="checkInTime"
-            label="Check-In"
+            label={category === "Petgarten" ? "Earliest pet stay" : "Check-In"}
             placeholder="Select time..."
             onChange={(value) => setCustomValue("checkInTime", value)}
             options={hours}
@@ -447,7 +432,9 @@ const RentModal = ({ currentUser }) => {
           />
           <Dropdown
             id="checkOutTime"
-            label="Check-Out"
+            label={
+              category === "Petgarten" ? "Leatest pet pick up" : "Check-In"
+            }
             placeholder="Select time..."
             onChange={(value) => setCustomValue("checkOutTime", value)}
             options={hours}
@@ -457,23 +444,27 @@ const RentModal = ({ currentUser }) => {
           />
         </div>
         <hr />
-        <div className="flex flex-row gap-4">
-          <Toggle
-            id="hasCancelation"
-            label="Has cancelation policy"
-            value={hasCancelation}
-            onChange={(value) => setCustomValue("hasCancelation", value)}
-            errors={errors}
-          />
-          <Toggle
-            id="allowBooking"
-            label="Allow booking"
-            value={allowBooking}
-            onChange={(value) => setCustomValue("allowBooking", value)}
-            errors={errors}
-          />
-        </div>
-        <hr />
+        {category !== "Petgarten" && (
+          <>
+            <div className="flex flex-row gap-4">
+              <Toggle
+                id="hasCancelation"
+                label="Has cancelation policy"
+                value={hasCancelation}
+                onChange={(value) => setCustomValue("hasCancelation", value)}
+                errors={errors}
+              />
+              <Toggle
+                id="allowBooking"
+                label="Allow booking"
+                value={allowBooking}
+                onChange={(value) => setCustomValue("allowBooking", value)}
+                errors={errors}
+              />
+            </div>
+            <hr />
+          </>
+        )}
         <div className="flex flex-row gap-4">
           <Toggle
             id="paymentMethodsCards"
@@ -508,7 +499,6 @@ const RentModal = ({ currentUser }) => {
           onChange={(value) => setCustomValue("hasFood", value)}
           errors={errors}
         />
-        <hr />
         <Toggle
           id="hasGrooming"
           label="Has grooming"
@@ -516,7 +506,6 @@ const RentModal = ({ currentUser }) => {
           onChange={(value) => setCustomValue("hasGrooming", value)}
           errors={errors}
         />
-        <hr />
         <Toggle
           id="hasVet"
           label="Has veterinarian"

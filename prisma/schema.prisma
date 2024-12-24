@@ -66,13 +66,12 @@ model Listing {
     imageSrc            String[]
     createdAt           DateTime      @default(now())
     category            String
-    roomCount           Int
     guestCount          Int
     price               Int
     checkInTime         String
     checkOutTime        String
-    hasCancelation      Boolean
-    allowBooking        Boolean
+    hasCancelation      Boolean?
+    allowBooking        Boolean?
     paymentMethodsCards Boolean
     paymentMethodsCash  Boolean
     hasFood             Boolean
