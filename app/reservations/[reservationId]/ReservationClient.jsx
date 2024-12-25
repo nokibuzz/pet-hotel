@@ -58,7 +58,6 @@ const ReservationClient = ({ reservation, currentUser }) => {
               user={listing.user}
               category={category}
               description={listing.description}
-              roomCount={listing.roomCount}
               guestCount={listing.guestCount}
               location={listing.location.coordinates}
               houseRules={{

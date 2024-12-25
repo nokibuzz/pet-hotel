@@ -134,8 +134,7 @@ const ListingClient = ({
                   <div>Pet house owner {listing.user?.name}</div>
                 </div>
                 <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
-                  <div>{listing.guestCount} pets</div>|
-                  <div>{listing.roomCount} rooms</div>
+                  <div>Capacity: {listing.guestCount} pets</div>
                 </div>
               </div>
               <hr className="my-6" />
