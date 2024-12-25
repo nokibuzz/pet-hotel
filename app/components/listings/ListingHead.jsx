@@ -35,9 +35,11 @@ const ListingHead = ({
       />
       <div className="w-full h-[60vh] overflow-hidden rounded-xl relative">
         <ImageGallery images={imageSrc} />
-        <div className="absolute top-5 right-5">
-          <HeartButton listingId={id} currentUser={currentUser} />
-        </div>
+        {currentUser?.hotelOwner !== true && (
+          <div className="absolute top-5 right-5">
+            <HeartButton listingId={id} currentUser={currentUser} />
+          </div>
+        )}
       </div>
     </>
   );
