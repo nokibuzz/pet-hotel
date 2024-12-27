@@ -6,7 +6,7 @@ import { TbPhotoPlus } from "react-icons/tb";
 import { AiOutlineClose } from "react-icons/ai";
 import toast from "react-hot-toast";
 
-const ImageUpload = ({ onChange, value = [], maxImages }) => {
+const ImageUpload = ({ onChange, value = [], maxImages, translation }) => {
   const [localImages, setLocalImages] = useState(value);
 
   // Handle file selection and local preview
@@ -17,7 +17,9 @@ const ImageUpload = ({ onChange, value = [], maxImages }) => {
     );
 
     if (validFiles.length !== files.length) {
-      toast.error("Only JPEG and PNG files are allowed!");
+      toast.error(
+        translation.wrongFormat || "Only JPEG and PNG files are allowed!"
+      );
     }
 
     const totalImages = localImages.length + validFiles.length;
@@ -27,7 +29,10 @@ const ImageUpload = ({ onChange, value = [], maxImages }) => {
       const previews = allowedFiles.map((file) => URL.createObjectURL(file));
       setLocalImages((prev) => [...prev, ...previews]);
       onChange([...localImages, ...previews]);
-      toast.error(`You can only upload up to ${maxImages} images.`);
+      toast.error(
+        translation.limitImagesExceeded + maxImages ||
+          `You can only upload up to ${maxImages} images.`
+      );
     } else {
       const previews = validFiles.map((file) => {
         return URL.createObjectURL(file);
@@ -55,7 +60,9 @@ const ImageUpload = ({ onChange, value = [], maxImages }) => {
         }`}
       >
         <TbPhotoPlus size={30} />
-        <div className="font-semibold text-lg">Click to add images</div>
+        <div className="font-semibold text-lg">
+          {translation.addImages || "Click to add images"}
+        </div>
         <input
           type="file"
           accept="image/jpeg,image/png"
