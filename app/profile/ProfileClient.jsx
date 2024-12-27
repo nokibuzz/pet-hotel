@@ -3,7 +3,13 @@
 import Container from "../components/Container";
 import ProfileContent from "../components/profile/ProfileContent";
 
-const ProfileClient = ({ currentUser, reservations, pets, properties }) => {
+const ProfileClient = ({
+  currentUser,
+  reservations,
+  pets,
+  properties,
+  translation,
+}) => {
   return (
     <Container>
       <div className="flex flex-col h-max rounded-lg md:flex-row gap-6">
@@ -13,6 +19,7 @@ const ProfileClient = ({ currentUser, reservations, pets, properties }) => {
             reservations={reservations}
             pets={pets}
             properties={properties}
+            translation={translation}
           />
         </div>
       </div>

@@ -6,7 +6,6 @@ import PetCard from "../components/pets/PetCard";
 import usePetModal from "../hooks/usePetModal";
 
 const PetsClient = ({ pets, translation }) => {
-  console.log("t", translation);
   const petModal = usePetModal();
   return (
     <Container>

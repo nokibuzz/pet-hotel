@@ -12,6 +12,7 @@ const ListingAddionalInformation = ({
   hasGrooming,
   hasVet,
   addionalInformation,
+  translation,
 }) => {
   return (
     <div className="mt-6">
@@ -20,17 +21,17 @@ const ListingAddionalInformation = ({
         <ListingAddionalInformationCard
           enabled={hasFood}
           icon={faBone}
-          label="Food"
+          label={translation.food || "Food"}
         />
         <ListingAddionalInformationCard
           enabled={hasGrooming}
           icon={faShower}
-          label="Grooming"
+          label={translation.grooming || "Grooming"}
         />
         <ListingAddionalInformationCard
           enabled={hasVet}
           icon={faUserDoctor}
-          label="Veterinarian"
+          label={translation.veterinarian || "Veterinarian"}
         />
       </div>
       {addionalInformation && (

@@ -1,0 +1,22 @@
+{
+  "en": {
+    "EmptyState": {
+      "title": "No matches",
+      "subtitle": "Plase change your search and try again!",
+      "resetFilters": "Reset filters"
+    },
+    "ListingCard": {
+      "perDay": "per day"
+    }
+  },
+  "sr": {
+    "EmptyState": {
+      "title": "Nema rezultata",
+      "subtitle": "Izmenite pretragu i pokušajte ponovo!",
+      "resetFilters": "Poništi filtere"
+    },
+    "ListingCard": {
+      "perDay": "po danu"
+    }
+  }
+}

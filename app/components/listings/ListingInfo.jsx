@@ -12,7 +12,13 @@ import { faMoneyBillWave } from "@fortawesome/free-solid-svg-icons";
 
 const Map = dynamic(() => import("../Map"), { ssr: false });
 
-const ListingInfo = ({ description, category, location, houseRules }) => {
+const ListingInfo = ({
+  description,
+  category,
+  location,
+  houseRules,
+  translation,
+}) => {
   return (
     <div className="col-span-4 flex flex-col gap-8">
       {category && (
@@ -30,30 +36,36 @@ const ListingInfo = ({ description, category, location, houseRules }) => {
       <Map center={[location[1], location[0]]} />
       <hr />
       <div className="text-xl font-semibold flex flex-row items-center gap-2">
-        <div>House rules</div>
+        <div>{translation.houseRules || "House rules"}</div>
       </div>
       <div className="col-span-4 flex gap-8">
         <div className="flex-1">
-          Check-In <b>{houseRules.checkInTime}</b>
+          {translation.checkIn || "Check-In"} <b>{houseRules.checkInTime}</b>
         </div>
         <div className="flex-1">
-          Check-Out <b>{houseRules.checkOutTime}</b>
+          {translation.checkOut || "Check-Out"} <b>{houseRules.checkOutTime}</b>
         </div>
       </div>
       <div className="col-span-4 flex gap-8">
-        <div className="flex-1">Cancelation policy</div>
+        <div className="flex-1">
+          {translation.cancelationPolicy || "Cancelation policy"}
+        </div>
         {houseRules.hasCancelation ? (
           <div className="flex-1">
-            <b>Has free cancelation</b>
+            <b>{translation.hasFreeCancelation || "Has free cancelation"}</b>
           </div>
         ) : (
           <div className="flex-1">
-            <b>Cancelation not possible</b>
+            <b>
+              {translation.cancelationNotPossible || "Cancelation not possible"}
+            </b>
           </div>
         )}
       </div>
       <div className="grid grid-cols-2 gap-8">
-        <div className="flex items-center justify-start">Payment methods</div>
+        <div className="flex items-center justify-start">
+          {translation.paymentMethods || "Payment methods"}
+        </div>
         <div className="flex flex-col gap-2">
           {houseRules.paymentMethodsCards && (
             <div className="flex gap-2">

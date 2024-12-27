@@ -7,6 +7,7 @@ import ListingClient from "@/app/listing/[listingId]/ListingClient";
 import ClientOnly from "@/app/components/ClientOnly";
 import EmptyState from "@/app/components/EmptyState";
 import getReviews from "@/app/actions/getReviews";
+import { getTranslations } from "@/app/utils/getTranslations";
 
 const ListingPage = async ({ params }) => {
   const listing = await getListingById(params);
@@ -18,10 +19,15 @@ const ListingPage = async ({ params }) => {
     userId: currentUser?.id,
   });
 
+  const translation = await getTranslations(currentUser?.locale, "listing");
+
   if (!listing) {
     return (
       <ClientOnly>
-        <EmptyState />
+        <EmptyState
+          title={translation.EmptyState.listingTitle}
+          subtitle={translation.EmptyState.listingSubtitle}
+        />
       </ClientOnly>
     );
   }
@@ -29,7 +35,11 @@ const ListingPage = async ({ params }) => {
   if (!currentUser) {
     return (
       <ClientOnly>
-        <EmptyState title="Unauthorized" subtitle="Login to proceed!" />;
+        <EmptyState
+          title={translation.EmptyState.title}
+          subtitle={translation.EmptyState.subtitle}
+        />
+        ;
       </ClientOnly>
     );
   }
@@ -42,6 +52,7 @@ const ListingPage = async ({ params }) => {
         reservations={reservations}
         reviews={reviews}
         totalReviews={totalReviews}
+        translation={translation}
       />
     </ClientOnly>
   );

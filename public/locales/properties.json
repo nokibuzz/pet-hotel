@@ -1,0 +1,36 @@
+{
+  "en": {
+    "EmptyState": {
+      "title": "Unauthorized",
+      "subtitle": "Login to proceed!",
+      "propertiesTitle": "No properties found",
+      "propertiesSubtitle": "Looks like you don't have any propery registered on the system!"
+    },
+    "PropertiesClient": {
+      "title": "Properties",
+      "subtitle": "The properties you owe and offer reservations",
+      "deletedSuccessfully": "Successfully deleted property!"
+    },
+    "ListingCard": {
+      "perDay": "po danu",
+      "deleteProperty": "Delete property"
+    }
+  },
+  "sr": {
+    "EmptyState": {
+      "title": "Niste prijavljeni!",
+      "subtitle": "Prijavite se da biste nastavili korišćenje aplikacije!",
+      "propertiesTitle": "Nema prijavljenih objekata",
+      "propertiesSubtitle": "Izgleda da nemate objekata registrovanih u sistemu!"
+    },
+    "PropertiesClient": {
+      "title": "Objekti",
+      "subtitle": "Objekti koje posedujete, spremni za rezervisanje!",
+      "deletedSuccessfully": "Objekat uspešno obrisan!"
+    },
+    "ListingCard": {
+      "perDay": "po danu",
+      "deleteProperty": "Izbriši objekat"
+    }
+  }
+}

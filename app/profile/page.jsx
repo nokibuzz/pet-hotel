@@ -6,6 +6,7 @@ import getProperties from "../actions/getProperties";
 import getReservations from "../actions/getReservations";
 import ClientOnly from "../components/ClientOnly";
 import EmptyState from "../components/EmptyState";
+import { getTranslations } from "../utils/getTranslations";
 import ProfileClient from "./ProfileClient";
 
 const ProfilePage = async () => {
@@ -15,10 +16,15 @@ const ProfilePage = async () => {
   const pets = await getPets(profileParams);
   const properties = await getProperties(profileParams);
 
+  const translation = await getTranslations(currentUser?.locale, "profile");
+
   if (!currentUser) {
     return (
       <ClientOnly>
-        <EmptyState title="Unauthorized" subtitle="Login to proceed!" />
+        <EmptyState
+          title={translation.EmptyState.title}
+          subtitle={translation.EmptyState.subtitle}
+        />
       </ClientOnly>
     );
   }
@@ -30,6 +36,7 @@ const ProfilePage = async () => {
         reservations={reservations}
         pets={pets}
         properties={properties}
+        translation={translation}
       />
     </ClientOnly>
   );

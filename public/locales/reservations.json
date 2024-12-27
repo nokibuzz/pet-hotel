@@ -1,0 +1,42 @@
+{
+  "en": {
+    "EmptyState": {
+      "title": "Unauthorized",
+      "subtitle": "Login to proceed!",
+      "reservationTitle": "No reservations found",
+      "reservationSubtitle": "Looks like you didn't reserve any pet care!"
+    },
+    "ReservationsClient": {
+      "editListing": "Edit Listing",
+      "title": "Reservations",
+      "subtitleHotelOwner": "Booking on your place",
+      "subtitleUser": "Your pet care experience",
+      "reservationCanceled": "Reservation cancelled!",
+      "errorOnCancelation": "Error on reservation cancelation!"
+    },
+    "ListingCard": {
+      "cancelReservation": "Cancel reservation",
+      "perDay": "per day"
+    }
+  },
+  "sr": {
+    "EmptyState": {
+      "title": "Niste prijavljeni!",
+      "subtitle": "Prijavite se da biste nastavili korišćenje aplikacije!",
+      "reservationTitle": "Nema rezervacija",
+      "reservationSubtitle": "Izgleda da još uvek niste koristili smeštaj za Vašeg ljubimca!"
+    },
+    "ReservationsClient": {
+      "editListing": "Izmeni smeštaj",
+      "title": "Rezervacije",
+      "subtitleHotelOwner": "Rezervacije u Vašem smeštaju",
+      "subtitleUser": "Vaše dosadašnje rezervacije",
+      "reservationCanceled": "Rezervacija otkazana!",
+      "errorOnCancelation": "Greška pri otkazivanju rezervacije!"
+    },
+    "ListingCard": {
+      "perDay": "po danu",
+      "cancelReservation": "Otkaži rezervaciju"
+    }
+  }
+}

@@ -84,22 +84,28 @@ const ReviewModal = ({ currentUser }) => {
     axios
       .post("/api/reviews", data)
       .then(() => {
-        toast.success("Successfully created!");
+        toast.success(
+          reviewModal.translation.successfullyCreated || "Successfully created!"
+        );
         router.refresh();
         reset();
         setStep(STEPS.RATING);
         reviewModal.onClose();
       })
-      .catch(() => toast.error("Something went wrong!"))
+      .catch(() =>
+        toast.error(
+          reviewModal.translation.errorOnCreated || "Something went wrong!"
+        )
+      )
       .finally(() => setIsLoading(false));
   };
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.OVERALL) {
-      return "Leave Review";
+      return reviewModal.translation.submit || "Leave Review";
     }
 
-    return "Next";
+    return reviewModal.translation.next || "Next";
   }, [step]);
 
   const secondartActionLabel = useMemo(() => {
@@ -107,17 +113,23 @@ const ReviewModal = ({ currentUser }) => {
       return undefined;
     }
 
-    return "Back";
+    return reviewModal.translation.back || "Back";
   }, [step]);
 
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
-        title="Tell us about your pet experience?"
-        subtitle="How would you rate us, per:"
+        title={
+          reviewModal.translation.Rating?.title ||
+          "Tell us about your pet experience?"
+        }
+        subtitle={
+          reviewModal.translation.Rating?.subtitle ||
+          "How would you rate this listing, per:"
+        }
       />
       <Rating
-        label="Location"
+        label={reviewModal.translation.Rating?.location || "Location"}
         value={locationRating}
         onChange={(value) => setCustomValue("locationRating", value)}
         errors={errors}
@@ -125,7 +137,7 @@ const ReviewModal = ({ currentUser }) => {
       />
       <hr />
       <Rating
-        label="Service"
+        label={reviewModal.translation.Rating?.service || "Service"}
         value={serviceRating}
         onChange={(value) => setCustomValue("serviceRating", value)}
         errors={errors}
@@ -133,7 +145,7 @@ const ReviewModal = ({ currentUser }) => {
       />
       <hr />
       <Rating
-        label="Check In"
+        label={reviewModal.translation.Rating?.checkIn || "Check-In"}
         value={checkInRating}
         onChange={(value) => setCustomValue("checkInRating", value)}
         errors={errors}
@@ -146,12 +158,21 @@ const ReviewModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Describe your object"
-          subtitle="Simple explanation works the best"
+          title={
+            reviewModal.translation.Feedback?.title ||
+            "Describe your experience"
+          }
+          subtitle={
+            reviewModal.translation.Feedback?.subtitle ||
+            "Simple explanation works the best"
+          }
         />
         <TextArea
           id="positiveReview"
-          label="What was the things you liked?"
+          label={
+            reviewModal.translation.Feedback?.positiveReview ||
+            "What was the things you liked?"
+          }
           defaultNumberOfRows={3}
           disabled={isLoading}
           register={register}
@@ -160,7 +181,10 @@ const ReviewModal = ({ currentUser }) => {
         <hr />
         <TextArea
           id="negativeReview"
-          label="What can we do better?"
+          label={
+            reviewModal.translation.Feedback?.positiveReview ||
+            "What can they do better?"
+          }
           defaultNumberOfRows={3}
           disabled={isLoading}
           register={register}
@@ -173,17 +197,25 @@ const ReviewModal = ({ currentUser }) => {
   if (step === STEPS.OVERALL) {
     bodyContent = (
       <div className="flex flex-col gap-8">
-        <Heading title="Overall" subtitle="How would you rate us?" />
+        <Heading
+          title={reviewModal.translation.Overall?.title || "Overall"}
+          subtitle={
+            reviewModal.translation.Overall?.subtitle ||
+            "How would you this listing?"
+          }
+        />
         <Input
           id="title"
-          label="Sumarise your review"
+          label={
+            reviewModal.translation.Overall?.sumarize || "Sumarise your review"
+          }
           disabled={isLoading}
           register={register}
           errors={errors}
           required
         />
         <Rating
-          label="Overall"
+          label={reviewModal.translation.Overall?.overall || "Overall"}
           value={overallRating}
           onChange={(value) => setValue("overallRating", value)}
           errors={errors}
@@ -192,7 +224,10 @@ const ReviewModal = ({ currentUser }) => {
         <hr />
         <Toggle
           id="suggestUs"
-          label="Would you suggest us?"
+          label={
+            reviewModal.translation.Overall?.suggest ||
+            "Would you suggest this listing to a friend?"
+          }
           value={suggestUs}
           onChange={(value) => setCustomValue("suggestUs", value)}
           errors={errors}
@@ -206,7 +241,7 @@ const ReviewModal = ({ currentUser }) => {
       isOpen={reviewModal.isOpen}
       onClose={reviewModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
-      title="Your review"
+      title={reviewModal.translation.title || "Your review"}
       actionLabel={actionLabel}
       secondaryActionLabel={secondartActionLabel}
       secondaryAction={step === STEPS.RATING ? undefined : onBack}

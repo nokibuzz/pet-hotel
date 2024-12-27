@@ -6,26 +6,34 @@ import ClientOnly from "../components/ClientOnly";
 import getCurrentUser from "../actions/getCurrentUser";
 import getReservations from "../actions/getReservations";
 import ReservationsClient from "./ReservationsClient";
+import { getTranslations } from "../utils/getTranslations";
 
 const ListReservationsPage = async () => {
   const currentUser = await getCurrentUser();
 
+  const translation = await getTranslations(
+    currentUser?.locale,
+    "reservations"
+  );
+
   if (!currentUser) {
     return (
       <ClientOnly>
-        <EmptyState title="Unauthorized" subtitle="Login to proceed!" />
+        <EmptyState
+          title={translation.EmptyState.title}
+          subtitle={translation.EmptyState.subtitle}
+        />
       </ClientOnly>
     );
   }
 
   let reservations = [];
 
-  if (currentUser.hotelOwner){
+  if (currentUser.hotelOwner) {
     reservations = await getReservations({
       authorId: currentUser.id,
     });
-  } 
-  else {
+  } else {
     reservations = await getReservations({
       userId: currentUser.id,
     });
@@ -35,8 +43,8 @@ const ListReservationsPage = async () => {
     return (
       <ClientOnly>
         <EmptyState
-          title="No reservations found"
-          subtitle="Looks like you didn't reserve any pet care!"
+          title={translation.EmptyState.reservationTitle}
+          subtitle={translation.EmptyState.listingSubtitle}
         />
       </ClientOnly>
     );
@@ -47,6 +55,7 @@ const ListReservationsPage = async () => {
       <ReservationsClient
         reservations={reservations}
         currentUser={currentUser}
+        translation={translation}
       />
     </ClientOnly>
   );

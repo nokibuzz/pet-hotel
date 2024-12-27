@@ -6,7 +6,7 @@ import AdvancedFiltersButton from "../AdvancedFiltersButton";
 import useAdvancedFiltersModal from "@/app/hooks/useAdvancedFiltersModal";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
-import { faHouse, faHotel, faPerson } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faHotel, faPerson } from "@fortawesome/free-solid-svg-icons";
 import SortFiltersOption from "../SortFiltersOption";
 
 export const options = [
@@ -27,7 +27,7 @@ export const options = [
   },
 ];
 
-const BasicFilters = () => {
+const BasicFilters = ({ translation }) => {
   const params = useSearchParams();
   const category = params?.get("category");
   const pathname = usePathname();
@@ -35,14 +35,13 @@ const BasicFilters = () => {
 
   const isMainPage = pathname === "/";
   const advancedFilters = params?.get("advancedFilters");
-  
+
   const [visibleFilters, setVisibleFilters] = useState([]);
   const [hiddenFiltersCount, setHiddenFiltersCount] = useState(0);
 
   const filtersRef = useRef(null);
 
   const getCurrentFilters = () => {
-
     const minPrice = params?.get("minPrice");
     const maxPrice = params?.get("maxPrice");
     const category = params?.get("category");
@@ -56,13 +55,20 @@ const BasicFilters = () => {
     let filters = [];
 
     if (minPrice && maxPrice) {
-      filters.push({ label: "Price Range", value: `Price Range: [${minPrice}-${maxPrice}]` });
-    }
-    else if (minPrice) {
-      filters.push({ label: "Minimal Price", value: `Minimal Price: ${minPrice}` });
-    }
-    else if (maxPrice) {
-      filters.push({ label: "Maximal Price", value: `Maximal Price: ${maxPrice}` });
+      filters.push({
+        label: "Price Range",
+        value: `Price Range: [${minPrice}-${maxPrice}]`,
+      });
+    } else if (minPrice) {
+      filters.push({
+        label: "Minimal Price",
+        value: `Minimal Price: ${minPrice}`,
+      });
+    } else if (maxPrice) {
+      filters.push({
+        label: "Maximal Price",
+        value: `Maximal Price: ${maxPrice}`,
+      });
     }
 
     if (category) {
@@ -124,50 +130,53 @@ const BasicFilters = () => {
 
   return (
     <Container>
-      <div className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden" ref={filtersRef}>
-      {
-      advancedFilters? 
-      (
-        <div className="flex justify-center items-center gap-4 mb-9">
-          <div className="text-lg font-semibold text-gray-800">Current Search</div>
-          <div className="flex flex-wrap justify-center items-center gap-4">
-            {visibleFilters.map((filter) => (
-              <div
-                key={filter.label}
-                className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center"
-              >
-                {filter.value}
-              </div>
-            ))}
-            {hiddenFiltersCount > 0 && (
-              <div className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center">
-                +{hiddenFiltersCount} more
-              </div>
-            )}
+      <div
+        className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden"
+        ref={filtersRef}
+      >
+        {advancedFilters ? (
+          <div className="flex justify-center items-center gap-4 mb-9">
+            <div className="text-lg font-semibold text-gray-800">
+              Current Search
+            </div>
+            <div className="flex flex-wrap justify-center items-center gap-4">
+              {visibleFilters.map((filter) => (
+                <div
+                  key={filter.label}
+                  className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center"
+                >
+                  {filter.value}
+                </div>
+              ))}
+              {hiddenFiltersCount > 0 && (
+                <div className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center">
+                  +{hiddenFiltersCount} more
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ) : 
-      ( 
-        <div className="flex flex-row gap-3 flex-grow justify-around">
-          {options.map((item) => (
-            <BasicFilterOption
-              key={item.label}
-              label={item.label}
-              selected={category === item.label}
-              icon={item.icon}
-            />
-          ))}
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-row gap-3 flex-grow justify-around">
+            {options.map((item) => (
+              <BasicFilterOption
+                key={item.label}
+                label={item.label}
+                selected={category === item.label}
+                icon={item.icon}
+              />
+            ))}
+          </div>
+        )}
 
         <div className="flex-shrink-0 flex items-center justify-center -mt-4">
-          <SortFiltersOption />
+          <SortFiltersOption translation={translation} />
         </div>
 
         <div className="flex-shrink-0 flex items-center justify-center -mt-4">
           <AdvancedFiltersButton
             selected={category === "Filters"}
-            onClick={advancedFiltersModal.onOpen}
+            onClick={() => advancedFiltersModal.onOpen(translation)}
+            translation={translation}
           />
         </div>
       </div>
