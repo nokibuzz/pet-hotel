@@ -1,0 +1,128 @@
+{
+  "en": {
+    "EmptyState": {
+      "title": "Unauthorized",
+      "subtitle": "Login to proceed!",
+      "listingTitle": "No matches",
+      "listingSubtitle": "Plase change your search and try again!"
+    },
+    "ListingClient": {
+      "reservationSuccessfull": "Successfully reserved stay for pet!",
+      "reservationError": "Something went wrong on reservation!",
+      "petHouseOwner": "Pet house owner",
+      "editListing": "Edit Listing",
+      "petCapacity": "Pet capacity:",
+      "perDay": "per day",
+      "reserve": "Reserve",
+      "total": "Total"
+    },
+    "ListingAddionalInformation": {
+      "food": "Food",
+      "grooming": "Grooming",
+      "veterinarian": "Veterinarian"
+    },
+    "ListingInfo": {
+      "houseRules": "House rules",
+      "checkIn": "Check-In",
+      "checkOut": "Check-Out",
+      "cancelationPolicy": "Cancelation policy",
+      "hasFreeCancelation": "Has free cancelation",
+      "cancelationNotPossible": "Cancelation not possible",
+      "paymentMethods": "Payment methods"
+    },
+    "Review": {
+      "title": "Your review",
+      "reviews": "Reviews",
+      "button": "Leave review",
+      "loadMore": "Load more",
+      "successfullyCreated": "Review successfully created!",
+      "errorOnCreated": "Something went wrong on adding review",
+      "next": "Next",
+      "back": "Back",
+      "submit": "Leave Review",
+      "Rating": {
+        "title": "Tell us about your experience of the listing?",
+        "subtitle": "How would you rate this listing, per:",
+        "location": "Location",
+        "service": "Service",
+        "checkIn": "Check-In"
+      },
+      "Feedback": {
+        "title": "Describe your experience",
+        "subtitle": "Simple explanation works the best",
+        "positiveReview": "What was the things you liked?",
+        "negativeReview": "What can they do better?"
+      },
+      "Overall": {
+        "title": "Overall",
+        "subtitle": "How would you rate this listing?",
+        "sumarize": "Sumarise your review",
+        "overall": "Overall",
+        "suggest": "Would you suggest this listing to a friend?"
+      }
+    }
+  },
+  "sr": {
+    "EmptyState": {
+      "title": "Niste prijavljeni!",
+      "subtitle": "Prijavite se da biste nastavili korišćenje aplikacije!",
+      "listingTitle": "Nema rezultata",
+      "listingSubtitle": "Izmenite pretragu i pokušajte ponovo!"
+    },
+    "ListingClient": {
+      "reservationSuccessfull": "Uspešno ste rezervisali smeštaj ljubimcu!",
+      "reservationError": "Neuspela rezervacija!",
+      "petHouseOwner": "Vlasnik",
+      "editListing": "Izmeni smeštaj",
+      "petCapacity": "Kapacitet ljubimaca:",
+      "perDay": "po danu",
+      "reserve": "Rezerviši",
+      "total": "Ukupno"
+    },
+    "ListingAddionalInformation": {
+      "food": "Hrana",
+      "grooming": "Timarenje",
+      "veterinarian": "Veterinar"
+    },
+    "ListingInfo": {
+      "houseRules": "Pravila smeštaja",
+      "checkIn": "Prijava",
+      "checkOut": "Odjava",
+      "cancelationPolicy": "Pravila otkazivanja",
+      "hasFreeCancelation": "Moguće otkazivanje",
+      "cancelationNotPossible": "Otkazivanje nije moguće",
+      "paymentMethods": "Metode plaćanja"
+    },
+    "Review": {
+      "title": "Vaš utisak",
+      "reviews": "Utisci",
+      "button": "Ostavi utisak",
+      "loadMore": "Učitaj još",
+      "successfullyCreated": "Utisak uspešno ostavljen!",
+      "errorOnCreated": "Greška pri kreiranju utiska!",
+      "next": "Dalje",
+      "back": "Nazad",
+      "submit": "Ostavi utisak",
+      "Rating": {
+        "title": "Kakvo je Vaše mišljenje o ovom smeštaju?",
+        "subtitle": "Kako bi ocenili ovaj smeštaj, po sledećim kategorijama:",
+        "location": "Lokacija",
+        "service": "Usluga",
+        "checkIn": "Prijava-Odjava"
+      },
+      "Feedback": {
+        "title": "Opišite Vaše iskustvo",
+        "subtitle": "Jednostavna objašnjenja su često i najbolja",
+        "positiveReview": "Koje su Vam se stvari svidele?",
+        "negativeReview": "Šta zamerate ili predlažete ovom smeštaju?"
+      },
+      "Overall": {
+        "title": "Opšti utisak",
+        "subtitle": "Koju biste ocenu dali ovom smeštaju?",
+        "sumarize": "Vaš sveukupni utisak",
+        "overall": "Opšti utisak",
+        "suggest": "Da li biste preporučili ovaj smeštaj prijatelju?"
+      }
+    }
+  }
+}

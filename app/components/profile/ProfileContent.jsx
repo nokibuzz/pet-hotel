@@ -7,7 +7,13 @@ import { format } from "date-fns";
 import PreviewUserCard from "./PreviewUserCard";
 import useRentModal from "@/app/hooks/useRentModal";
 
-const ProfileContent = ({ currentUser, reservations, pets, properties }) => {
+const ProfileContent = ({
+  currentUser,
+  reservations,
+  pets,
+  properties,
+  translation,
+}) => {
   const router = useRouter();
   const rentModal = useRentModal();
 
@@ -25,7 +31,7 @@ const ProfileContent = ({ currentUser, reservations, pets, properties }) => {
   return (
     <div className="p-4">
       <div className="flex flex-col md:flex-row md:space-x-4">
-        <ProfileCard currentUser={currentUser} />
+        <ProfileCard currentUser={currentUser} translation={translation} />
 
         <div className="md:w-1/2 flex flex-col space-y-6">
           {currentUser.hotelOwner !== true && (

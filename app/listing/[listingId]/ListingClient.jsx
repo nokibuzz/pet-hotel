@@ -22,6 +22,7 @@ const ListingClient = ({
   reviews,
   totalReviews,
   currentUser,
+  translation,
 }) => {
   const loginModal = useLoginModal();
   const router = useRouter();
@@ -82,12 +83,18 @@ const ListingClient = ({
         listingId: listing?.id,
       })
       .then(() => {
-        toast.success("Successfully reserved pet stay!");
+        toast.success(
+          translation.ListingClient.reservationSuccessfull ||
+            "Successfully reserved pet stay!"
+        );
         setDateRange(initialDateRange);
         router.push("/reservations");
       })
       .catch(() => {
-        toast.error("Something went wrong on reservation!");
+        toast.error(
+          translation.ListingClient.reservationError ||
+            "Something went wrong on reservation!"
+        );
       })
       .finally(() => {
         setIsLoading(false);
@@ -124,6 +131,7 @@ const ListingClient = ({
             addressLabel={listing.addressLabel}
             currentUser={currentUser}
             listing={listing}
+            translation={translation.ListingClient}
           />
           <div className="grid grid-cols-1 lg:grid-cols-7 lg:gap-10 mt-10">
             {/* Left Content */}
@@ -131,10 +139,17 @@ const ListingClient = ({
               <div className="flex flex-col gap-2">
                 <div className="text-xl font-semibold flex flex-row items-center gap-2">
                   <Avatar src={listing.user?.image} />
-                  <div>Pet house owner {listing.user?.name}</div>
+                  <div>
+                    {translation.ListingClient.petHouseOwner ||
+                      "Pet house owner"}{" "}
+                    {listing.user?.name}
+                  </div>
                 </div>
                 <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
-                  <div>Capacity: {listing.guestCount} pets</div>
+                  <div>
+                    {translation.ListingClient.petCapacity || "Pet capacity:"}{" "}
+                    {listing.guestCount}
+                  </div>
                 </div>
               </div>
               <hr className="my-6" />
@@ -146,12 +161,14 @@ const ListingClient = ({
                 onSubmit={onCreateReservation}
                 disabled={isLoading}
                 disabledDates={disabledDates}
+                translation={translation.ListingClient}
               />
               <ListingAddionalInformation
                 hasFood={listing.hasFood}
                 hasGrooming={listing.hasGrooming}
                 hasVet={listing.hasVet}
                 addionalInformation={listing.addionalInformation}
+                translation={translation.ListingAddionalInformation}
               />
             </div>
             {/* Right Content */}
@@ -169,6 +186,7 @@ const ListingClient = ({
                     paymentMethodsCards: listing.paymentMethodsCards,
                     paymentMethodsCash: listing.paymentMethodsCash,
                   }}
+                  translation={translation.ListingInfo}
                 />
                 <hr className="my-2" />
                 <Reviews
@@ -176,6 +194,7 @@ const ListingClient = ({
                   totalReviews={totalReviews}
                   currentUser={currentUser}
                   listingUser={listing.userId}
+                  translation={translation.Review}
                 />
               </div>
             </div>

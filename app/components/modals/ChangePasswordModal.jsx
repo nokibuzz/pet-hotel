@@ -32,32 +32,42 @@ const ChangePasswordModal = () => {
     setIsLoading(true);
 
     if (data.password !== data.repeatedPassword) {
-      toast.error("Passwords are not the same!");
+      toast.error(
+        changePasswordModal.translation.passwordsNotSame ||
+          "Passwords are not the same!"
+      );
       return;
     }
 
     axios
       .put("/api/register", data)
       .then(() => {
-        toast.success("Successfully updated password!");
+        toast.success(
+          changePasswordModal.translation.updatedSuccessfully ||
+            "Successfully updated password!"
+        );
         router.refresh();
         reset();
         changePasswordModal.onClose();
       })
       .catch((error) => {
-        console.log("res", error);
-        toast.error(error?.response?.data?.error ?? "Something went wrong!");
+        toast.error(
+          changePasswordModal.translation.updatedUnsuccessfully ||
+            "Error on updating password"
+        );
       })
       .finally(() => setIsLoading(false));
   };
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="Change your password" />
+      <Heading
+        title={changePasswordModal.translation.title || "Change your password"}
+      />
       <Input
         id="oldPassword"
         type="password"
-        label="Old Password"
+        label={changePasswordModal.translation.oldPassword || "Old Password"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -66,7 +76,7 @@ const ChangePasswordModal = () => {
       <Input
         id="password"
         type="password"
-        label="New Password"
+        label={changePasswordModal.translation.newPassword || "New Password"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -75,7 +85,10 @@ const ChangePasswordModal = () => {
       <Input
         id="repeatedPassword"
         type="password"
-        label="New Password again"
+        label={
+          changePasswordModal.translation.newPasswordAgain ||
+          "New Password again"
+        }
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -95,7 +108,8 @@ const ChangePasswordModal = () => {
             }}
             className="text-neutral-500 cursor-pointer hover:underline"
           >
-            Forgot your password?
+            {changePasswordModal.translation.forgotPassword ||
+              "Forgot your password?"}
           </div>
         </div>
       </div>
@@ -106,8 +120,8 @@ const ChangePasswordModal = () => {
     <Modal
       disabled={isLoading}
       isOpen={changePasswordModal.isOpen}
-      title="Change password"
-      actionLabel="Change password"
+      title={changePasswordModal.translation.modalTitle || "Change password"}
+      actionLabel={changePasswordModal.translation.submit || "Change password"}
       onClose={changePasswordModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}

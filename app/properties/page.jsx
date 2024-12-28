@@ -6,14 +6,20 @@ import ClientOnly from "../components/ClientOnly";
 import getCurrentUser from "../actions/getCurrentUser";
 import PropertiesClient from "./PropertiesClient";
 import getProperties from "../actions/getProperties";
+import { getTranslations } from "../utils/getTranslations";
 
 const PropertiesPage = async () => {
   const currentUser = await getCurrentUser();
 
+  const translation = await getTranslations(currentUser?.locale, "properties");
+
   if (!currentUser) {
     return (
       <ClientOnly>
-        <EmptyState title="Unauthorized" subtitle="Login to proceed!" />
+        <EmptyState
+          title={translation.EmptyState.title}
+          subtitle={translation.EmptyState.subtitle}
+        />
       </ClientOnly>
     );
   }
@@ -26,8 +32,8 @@ const PropertiesPage = async () => {
     return (
       <ClientOnly>
         <EmptyState
-          title="No properties found"
-          subtitle="Looks like you don't have any propery registered on the system!"
+          title={translation.EmptyState.propertiesTitle}
+          subtitle={translation.EmptyState.propertiesSubtitle}
         />
       </ClientOnly>
     );
@@ -35,7 +41,11 @@ const PropertiesPage = async () => {
 
   return (
     <ClientOnly>
-      <PropertiesClient listings={listings} currentUser={currentUser} />
+      <PropertiesClient
+        listings={listings}
+        currentUser={currentUser}
+        translation={translation}
+      />
     </ClientOnly>
   );
 };

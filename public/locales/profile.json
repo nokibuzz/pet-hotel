@@ -1,0 +1,50 @@
+{
+  "en": {
+    "EmptyState": {
+      "title": "Unauthorized",
+      "subtitle": "Login to proceed!"
+    },
+    "ProfileCard": {
+      "title": "User Profile",
+      "updateAvatar": "Update avatar",
+      "address": "Address"
+    },
+    "ChangePasswordModal": {
+      "title": "Change your password",
+      "onOpen": "Change password",
+      "passwordsNotSame": "Passwords are not the same!",
+      "updatedSuccessfully": "Successfully updated password!",
+      "updatedUnsuccessfully": "Error on updating password",
+      "oldPassword": "Old Password",
+      "newPassword": "New Password",
+      "newPasswordAgain": "New Password again",
+      "forgotPassword": "Forgot your password?",
+      "modalTitle": "Change Password",
+      "submit": "Change Password"
+    }
+  },
+  "sr": {
+    "EmptyState": {
+      "title": "Niste prijavljeni!",
+      "subtitle": "Prijavite se da biste nastavili korišćenje aplikacije!"
+    },
+    "ProfileCard": {
+      "title": "Profil Korisnika",
+      "updateAvatar": "Promeni sliku",
+      "address": "Adresa"
+    },
+    "ChangePasswordModal": {
+      "title": "Izmeni lozinku",
+      "onOpen": "Izmeni lozinku",
+      "passwordsNotSame": "Lozinke se podudaraju!",
+      "updatedSuccessfully": "Lozinka uspešno izmenjena!",
+      "updatedUnsuccessfully": "Greška pri promeni lozinke",
+      "oldPassword": "Stara lozinka",
+      "newPassword": "Nova lozinka",
+      "newPasswordAgain": "Ponovi novu lozinku",
+      "forgotPassword": "Zaboravljena lozinka?",
+      "modalTitle": "Izmeni lozinku",
+      "submit": "Izmeni lozinku"
+    }
+  }
+}

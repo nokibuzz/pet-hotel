@@ -12,6 +12,7 @@ const ListingHead = ({
   title,
   currentUser,
   listing,
+  translation,
 }) => {
   const rentModal = useRentModal();
 
@@ -27,7 +28,7 @@ const ListingHead = ({
                 onClick={() => rentModal.onOpen(listing, true)}
                 className="flex w-[70%] ml-auto justify-center text-sm font-semibold py-3 px-4 mx-1 outline outline-1 rounded-full hover:bg-neutral-100 text-amber-600 transition cursor-pointer"
               >
-                Edit Listing
+                {translation.editListing || "Edit Listing"}
               </div>
             )}
           </>

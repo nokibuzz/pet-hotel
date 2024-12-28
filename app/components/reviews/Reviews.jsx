@@ -5,7 +5,13 @@ import ReviewCard from "./ReviewCard";
 import Button from "../Button";
 import useReviewModal from "@/app/hooks/useReviewModal";
 
-const Reviews = ({ reviews, totalReviews, currentUser, listingUser }) => {
+const Reviews = ({
+  reviews,
+  totalReviews,
+  currentUser,
+  listingUser,
+  translation,
+}) => {
   const reviewModal = useReviewModal();
 
   const [visibleReviews, setVisibleReviews] = useState(5);
@@ -17,14 +23,16 @@ const Reviews = ({ reviews, totalReviews, currentUser, listingUser }) => {
   return (
     <div>
       <div className="flex flex-row justify-between mb-4">
-        <div className="text-xl font-bold pt-2">Reviews</div>
+        <div className="text-xl font-bold pt-2">
+          {translation.reviews || "Reviews"}
+        </div>
         {/* Show button only if user existis and he is not owner of the listing */}
         {currentUser && currentUser.id !== listingUser && (
           <div
-            onClick={reviewModal.onOpen}
+            onClick={() => reviewModal.onOpen(translation)}
             className="md:block text-sm font-semibold py-3 px-4 mx-1 outline outline-1 rounded-full hover:bg-neutral-100 text-amber-600 transition cursor-pointer"
           >
-            Leave review
+            {translation.button || "Leave review"}
           </div>
         )}
       </div>
@@ -35,7 +43,11 @@ const Reviews = ({ reviews, totalReviews, currentUser, listingUser }) => {
           </div>
         ))}
         {visibleReviews < reviews.length && (
-          <Button outline label="Load more" onClick={loadMoreReviews} />
+          <Button
+            outline
+            label={translation.button || "Load more"}
+            onClick={loadMoreReviews}
+          />
         )}
       </div>
     </div>

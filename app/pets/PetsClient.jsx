@@ -5,24 +5,27 @@ import Heading2 from "../components/Heading2";
 import PetCard from "../components/pets/PetCard";
 import usePetModal from "../hooks/usePetModal";
 
-const PetsClient = ({ pets }) => {
+const PetsClient = ({ pets, translation }) => {
   const petModal = usePetModal();
   return (
     <Container>
       <div className="min-h-screen gap-6">
         <Heading2
-          title="Your pets"
-          subtitle="Keep track of your furry friends"
+          title={translation.PetsClient.title || "Your pets"}
+          subtitle={
+            translation.PetsClient.subtitle ||
+            "Keep track of your furry friends"
+          }
           center
         />
 
         <div className="my-6">
           <div className="flex justify-end items-end mb-4">
             <div
-              onClick={petModal.onOpen}
+              onClick={() => petModal.onOpen(translation.PetModal)}
               className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full bg-amber-600 text-white hover:bg-neutral-100 hover:text-black transition cursor-pointer"
             >
-              Add Pet
+              {translation.PetsClient.addPetButton || "Add Pet"}
             </div>
           </div>
 
@@ -35,6 +38,7 @@ const PetsClient = ({ pets }) => {
                   breed={pet.breed}
                   years={pet.age}
                   imageSrc={pet.imageSrc?.[0]}
+                  translation={translation.PetsClient.PetCard}
                 />
               );
             })}

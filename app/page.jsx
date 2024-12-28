@@ -6,15 +6,23 @@ import ClientOnly from "./components/ClientOnly";
 import Container from "./components/Container";
 import EmptyState from "./components/EmptyState";
 import ListingCard from "./components/listings/ListingCard";
+import { getTranslations } from "./utils/getTranslations";
 
 const Home = async ({ searchParams }) => {
   const listings = await getListings(searchParams);
   const currentUser = await getCurrentUser();
 
+  const translation = await getTranslations(currentUser?.locale, "listings");
+
   if (listings.length === 0) {
     return (
       <ClientOnly>
-        <EmptyState showReset />
+        <EmptyState
+          title={translation.EmptyState.reservationTitle}
+          subtitle={translation.EmptyState.listingSubtitle}
+          resetButtonLabel={translation.EmptyState.resetFilters}
+          showReset
+        />
       </ClientOnly>
     );
   }
@@ -30,6 +38,7 @@ const Home = async ({ searchParams }) => {
                 data={listing}
                 currentUser={currentUser}
                 currentSearchParams={searchParams}
+                translation={translation.ListingCard}
               />
             );
           })}

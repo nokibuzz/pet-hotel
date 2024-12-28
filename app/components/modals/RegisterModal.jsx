@@ -50,23 +50,40 @@ const RegisterModal = () => {
     axios
       .post("/api/register", data)
       .then(() => {
-        toast.success("Successfully registered!");
+        toast.success(
+          registerModal.translation.RegisterModal?.successfullyRegistrated ||
+            "Successfully registered!"
+        );
         registerModal.onClose();
         loginModal.onOpen();
       })
-      .catch(() => toast.error("Woof, woof, something went wrong!"))
+      .catch(() =>
+        toast.error(
+          registerModal.translation.RegisterModal?.registrationError ||
+            "Woof, woof, something went wrong on registration!"
+        )
+      )
       .finally(() => setIsLoading(false));
   };
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading
-        title="Welcome to Hotels for dogs"
-        subtitle="Create an account!"
+        title={
+          registerModal.translation.RegisterModal?.title ||
+          "Welcome to Hotels for dogs"
+        }
+        subtitle={
+          registerModal.translation.RegisterModal?.subtitle ||
+          "Create an account!"
+        }
         rightComponent={
           <Toggle
             id="hotelOwner"
-            label="Register hotel"
+            label={
+              registerModal.translation.RegisterModal?.registerHotel ||
+              "I'm an owner"
+            }
             value={hotelOwner}
             onChange={(value) => setCustomValue("hotelOwner", value)}
             col={true}
@@ -76,7 +93,7 @@ const RegisterModal = () => {
       />
       <Input
         id="email"
-        label="Email"
+        label={registerModal.translation.RegisterModal?.email || "Email"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -84,7 +101,7 @@ const RegisterModal = () => {
       />
       <Input
         id="name"
-        label="Name"
+        label={registerModal.translation.RegisterModal?.name || "Name"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -93,7 +110,10 @@ const RegisterModal = () => {
       {hotelOwner && (
         <Input
           id="businessName"
-          label="Business Name"
+          label={
+            registerModal.translation.RegisterModal?.businessName ||
+            "Business Name"
+          }
           disabled={isLoading}
           register={register}
           errors={errors}
@@ -103,7 +123,7 @@ const RegisterModal = () => {
       <Input
         id="password"
         type="password"
-        label="Password"
+        label={registerModal.translation.RegisterModal?.password || "Password"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -117,7 +137,10 @@ const RegisterModal = () => {
       <hr />
       <Button
         outline
-        label="Continue with Google"
+        label={
+          registerModal.translation.RegisterModal?.continueWithGoogle ||
+          "Continue with Google"
+        }
         icon={FcGoogle}
         onClick={() => {
           toast.error("Sorry, we didn't implement this yet!");
@@ -125,7 +148,10 @@ const RegisterModal = () => {
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="justify-center flex flex-row items-center gap-2">
-          <div>Already have an account?</div>
+          <div>
+            {registerModal.translation.RegisterModal?.alreadyHaveAccount ||
+              "Already have an account?"}
+          </div>
           <div
             onClick={() => {
               registerModal.onClose();
@@ -133,7 +159,7 @@ const RegisterModal = () => {
             }}
             className="text-neutral-500 cursor-pointer hover:underline"
           >
-            Log In
+            {registerModal.translation.RegisterModal?.login || "Log In"}
           </div>
         </div>
       </div>
@@ -144,8 +170,10 @@ const RegisterModal = () => {
     <Modal
       disabled={isLoading}
       isOpen={registerModal.isOpen}
-      title="Register"
-      actionLabel="Continue"
+      title={registerModal.translation.RegisterModal?.modalTitle || "Register"}
+      actionLabel={
+        registerModal.translation.RegisterModal?.submit || "Continue"
+      }
       onClose={registerModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}

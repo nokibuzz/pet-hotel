@@ -1,0 +1,96 @@
+{
+  "en": {
+    "UserMenu": {
+      "profile": "Profile",
+      "reservationsUser": "My reservations",
+      "reservationsOwner": "Booked Reservations (my place)",
+      "myPets": "My pets",
+      "myProperties": "My properties",
+      "addProperty": "Add property",
+      "logout": "Logout",
+      "login": "Login",
+      "signUp": "Sign Up"
+    },
+    "LoginModal": {
+      "title": "Welcome back, we love having you",
+      "subtitle": "Login to your account!",
+      "successfullyLoggedIn": "Successfully logged in",
+      "email": "Email",
+      "password": "Password",
+      "continueWithGoogle": "Continue with Google",
+      "dontHaveAccount": "Don't have an account?",
+      "createOne": "Create one"
+    },
+    "RegisterModal": {
+      "title": "Welcome to Hotels for dogs",
+      "subtitle": "Create an account!",
+      "successfullyRegistrated": "Successfully registered!",
+      "registrationError": "Woof, woof, something went wrong on registration!",
+      "registerHotel": "I'm an owner",
+      "email": "Email",
+      "name": "Name",
+      "businessName": "Business Name",
+      "password": "Password",
+      "continueWithGoogle": "Continue with Google",
+      "alreadyHaveAccount": "Already have an account?",
+      "login": "Login",
+      "modalTitle": "Register",
+      "submit": "Continue"
+    },
+    "Filters": {
+      "sort": "Sort",
+      "sortByTitle": "Sort by Title",
+      "sortByPrice": "Sort by Price",
+      "sortByRating": "Sort by Rating",
+      "sortByDistance": "Sort by Distance",
+      "filters": "Filters"
+    }
+  },
+  "sr": {
+    "UserMenu": {
+      "profile": "Profil",
+      "reservationsUser": "Moje rezervacije",
+      "reservationsOwner": "Rezervisano (moji objekti)",
+      "myPets": "Moji ljubimci",
+      "myProperties": "Moji objekti",
+      "addProperty": "Dodaj objekat",
+      "logout": "Izloguj se",
+      "login": "Ulogujte se",
+      "signUp": "Prijavi se"
+    },
+    "LoginModal": {
+      "title": "Dobrodošli nazad, drago nam je da ste ponovo tu",
+      "subtitle": "Ulogujte se!",
+      "successfullyLoggedIn": "Uspešno ulogovani",
+      "email": "Email",
+      "password": "Lozinka",
+      "continueWithGoogle": "Nastaite sa Google-om",
+      "dontHaveAccount": "Nemate nalog?",
+      "createOne": "Kreirajte ga"
+    },
+    "RegisterModal": {
+      "title": "Dobrodošli u Hotele za ljubimce",
+      "subtitle": "Kreiraj nalog!",
+      "successfullyRegistrated": "Uspešno ste registrovani!",
+      "registrationError": "Vuf, vuf, dogodila se greška prilikom registracije!",
+      "registerHotel": "Ja sam vlasnik objekta",
+      "email": "Email",
+      "name": "Ime",
+      "businessName": "Poslovno ime",
+      "password": "Lozinka",
+      "continueWithGoogle": "Nastaite sa Google-om",
+      "alreadyHaveAccount": "Već imate nalog?",
+      "login": "Ulogujte se",
+      "modalTitle": "Prijavite se",
+      "submit": "Nastavite"
+    },
+    "Filters": {
+      "sort": "Sortiraj",
+      "sortByTitle": "Po nazivu",
+      "sortByPrice": "Po ceni",
+      "sortByRating": "Po oceni",
+      "sortByDistance": "Po udaljenosti",
+      "filters": "Filteri"
+    }
+  }
+}

@@ -12,7 +12,7 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 import useRentModal from "@/app/hooks/useRentModal";
 import { useRouter } from "next/navigation";
 
-const UserMenu = ({ currentUser }) => {
+const UserMenu = ({ currentUser, translation }) => {
   const router = useRouter();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
@@ -37,11 +37,11 @@ const UserMenu = ({ currentUser }) => {
           className="p-4 md:py-1 md:px-2 border-[1px] border-neutral-200 flex flex-row items-center justify-between gap-3 rounded-full cursor-pointer hover:shadow-md transition"
         >
           <AiOutlineMenu />
-          <div 
-            className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap" 
+          <div
+            className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
             title={currentUser?.name}
           >
-            {currentUser?.name} 
+            {currentUser?.name}
           </div>
           <div className="hidden md:block">
             <Avatar src={currentUser?.image} />
@@ -59,7 +59,7 @@ const UserMenu = ({ currentUser }) => {
                     router.push("/profile");
                     closeMenu();
                   }}
-                  label="Profile"
+                  label={translation.UserMenu.profile || "Profile"}
                 />
                 {currentUser?.hotelOwner === false && (
                   <MenuItem
@@ -67,7 +67,9 @@ const UserMenu = ({ currentUser }) => {
                       router.push("/reservations");
                       closeMenu();
                     }}
-                    label="My reservations"
+                    label={
+                      translation.UserMenu.reservationsUser || "My reservations"
+                    }
                   />
                 )}
                 {currentUser?.hotelOwner && (
@@ -76,7 +78,10 @@ const UserMenu = ({ currentUser }) => {
                       router.push("/reservations");
                       closeMenu();
                     }}
-                    label="Booked Reservations (my place)"
+                    label={
+                      translation.UserMenu.reservationsOwner ||
+                      "Booked Reservations (my place)"
+                    }
                   />
                 )}
                 {currentUser?.hotelOwner === false && (
@@ -85,7 +90,7 @@ const UserMenu = ({ currentUser }) => {
                       router.push("/pets");
                       closeMenu();
                     }}
-                    label="My pets"
+                    label={translation.UserMenu.myPets || "My pets"}
                   />
                 )}
                 {currentUser?.hotelOwner && (
@@ -94,7 +99,7 @@ const UserMenu = ({ currentUser }) => {
                       router.push("/properties");
                       closeMenu();
                     }}
-                    label="My properties"
+                    label={translation.UserMenu.myProperties || "My properties"}
                   />
                 )}
                 {currentUser?.hotelOwner && (
@@ -103,7 +108,7 @@ const UserMenu = ({ currentUser }) => {
                       rentModal.onOpen();
                       closeMenu();
                     }}
-                    label="Add property"
+                    label={translation.UserMenu.addProperty || "Add property"}
                   />
                 )}
                 <MenuItem
@@ -111,24 +116,24 @@ const UserMenu = ({ currentUser }) => {
                     signOut();
                     closeMenu();
                   }}
-                  label="Logout"
+                  label={translation.UserMenu.logout || "Logout"}
                 />
               </>
             ) : (
               <>
                 <MenuItem
                   onClick={() => {
-                    loginModal.onOpen();
+                    loginModal.onOpen(translation);
                     closeMenu();
                   }}
-                  label="Login"
+                  label={translation.UserMenu.login || "Login"}
                 />
                 <MenuItem
                   onClick={() => {
-                    registerModal.onOpen();
+                    registerModal.onOpen(translation);
                     closeMenu();
                   }}
-                  label="Sign Up"
+                  label={translation.UserMenu.signUp || "Sign Up"}
                 />
               </>
             )}
