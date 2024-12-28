@@ -7,7 +7,12 @@ import { pusherClient } from "./../../libs/pusher";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const Conversation = ({ reservationId, currentUser, otherUser }) => {
+const Conversation = ({
+  reservationId,
+  currentUser,
+  otherUser,
+  translation,
+}) => {
   const [messages, setMessages] = useState([]);
   const chatId = `reservation-chat-${reservationId}`;
   const messagesEndRef = useRef(null);
@@ -15,7 +20,7 @@ const Conversation = ({ reservationId, currentUser, otherUser }) => {
   const loadMessages = async () => {
     try {
       const response = await axios.get(`/api/messages?chatId=${chatId}`);
-      setMessages(response.data); 
+      setMessages(response.data);
     } catch (error) {
       console.error("Error loading messages", error);
     }
@@ -34,14 +39,15 @@ const Conversation = ({ reservationId, currentUser, otherUser }) => {
         message: {
           senderId: currentUser.id,
           receiverId: otherUser.id,
-          content: message
-        }
+          content: message,
+        },
       })
       .catch(() => {
-          toast.error("Woof, woof, something went wrong!")
+        toast.error(
+          translation.errorSendingMessage || "Woof, woof, something went wrong!"
+        );
       })
-      .finally(() => {
-      });
+      .finally(() => {});
   };
 
   const uniqueMessages = messages.filter(
@@ -70,19 +76,26 @@ const Conversation = ({ reservationId, currentUser, otherUser }) => {
         <h1 className="p-4 bg-white border-b-[1px] border-neutral-200 text-lg font-semibold">
           {otherUser?.name}
         </h1>
-        
+
         <div className="w-full h-[40vh] overflow-y-auto p-2 flex flex-col gap-y-4 bg-slate-50">
           {!uniqueMessages.length ? (
-            <div className="text-center text-gray-500">No messages yet</div>
+            <div className="text-center text-gray-500">
+              {translation.noMessages || "No messages yet"}
+            </div>
           ) : (
             uniqueMessages.map((message, index) => (
-              <Message key={index} message={message.content} owner={currentUser.id === message.senderId}/>
+              <Message
+                key={index}
+                message={message.content}
+                owner={currentUser.id === message.senderId}
+              />
             ))
           )}
           <div ref={messagesEndRef} />
           <div className="sticky bottom-0 -mt-4">
-            <MessageInput 
+            <MessageInput
               onSend={(message) => onSendMessageHandler(message)}
+              translation={translation}
             />
           </div>
         </div>

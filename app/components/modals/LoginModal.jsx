@@ -40,7 +40,10 @@ const LoginModal = () => {
       setIsLoading(false);
 
       if (callback?.ok) {
-        toast.success("Logged in");
+        toast.success(
+          loginModal.translation.LoginModal.successfullyLoggedIn ||
+            "Successfully logged in"
+        );
         router.refresh();
         loginModal.onClose();
       }
@@ -54,12 +57,18 @@ const LoginModal = () => {
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading
-        title="Welcome back to Hotels for dogs"
-        subtitle="Login to your account!"
+        title={
+          loginModal.translation.LoginModal?.title ||
+          "Welcome back to Hotels for dogs"
+        }
+        subtitle={
+          loginModal.translation.LoginModal?.subtitle ||
+          "Login to your account!"
+        }
       />
       <Input
         id="email"
-        label="Email"
+        label={loginModal.translation.LoginModal?.email || "Email"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -68,7 +77,7 @@ const LoginModal = () => {
       <Input
         id="password"
         type="password"
-        label="Password"
+        label={loginModal.translation.LoginModal?.password || "Password"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -82,7 +91,10 @@ const LoginModal = () => {
       <hr />
       <Button
         outline
-        label="Continue with Google"
+        label={
+          loginModal.translation.LoginModal?.continueWithGoogle ||
+          "Continue with Google"
+        }
         icon={FcGoogle}
         onClick={() => {
           toast.error("Sorry, we didn't implement this yet!");
@@ -90,15 +102,18 @@ const LoginModal = () => {
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="justify-center flex flex-row items-center gap-2">
-          <div>Don&apos;t have an account?</div>
+          <div>
+            {loginModal.translation.LoginModal?.dontHaveAccount ||
+              "Don't have an account?"}
+          </div>
           <div
             onClick={() => {
               loginModal.onClose();
-              registerModal.onOpen();
+              registerModal.onOpen(translation);
             }}
             className="text-neutral-500 cursor-pointer hover:underline"
           >
-            Create one
+            {loginModal.translation.LoginModal?.createOne || "Create one"}
           </div>
         </div>
       </div>

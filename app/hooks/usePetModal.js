@@ -2,7 +2,8 @@ import { create } from "zustand";
 
 const usePetModal = create((set) => ({
   isOpen: false,
-  onOpen: () => set({ isOpen: true }),
+  translation: {},
+  onOpen: (translation) => set({ isOpen: true, translation }),
   onClose: () => set({ isOpen: false }),
 }));
 

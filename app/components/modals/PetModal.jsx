@@ -77,7 +77,7 @@ const PetModal = () => {
       !Array.isArray(localImageSrc) ||
       localImageSrc.length === 0
     ) {
-      toast.error("No images to upload!");
+      toast.error(petModal.translation.noImages || "No images to upload!");
       return;
     }
 
@@ -108,10 +108,15 @@ const PetModal = () => {
       }
 
       setCustomValue("imageSrc", uploaded);
-      toast.success("All images uploaded successfully!");
+      toast.success(
+        petModal.translation.imageUploadSuccessfully ||
+          "All images uploaded successfully!"
+      );
     } catch (error) {
       console.error(error);
-      toast.error("Error uploading images!");
+      toast.error(
+        petModal.translation.imageUploadError || "Error uploading images!"
+      );
     }
   };
 
@@ -141,22 +146,28 @@ const PetModal = () => {
     axios
       .post("/api/pets", data)
       .then(() => {
-        toast.success("Successfully created!");
+        toast.success(
+          petModal.translation.successfullyCreated || "Successfully created!"
+        );
         router.refresh();
         reset();
         setStep(STEPS.BASIC);
         petModal.onClose();
       })
-      .catch(() => toast.error("Woof, woof, something went wrong!"))
+      .catch(() =>
+        toast.error(
+          petModal.translation.someError || "Woof, woof, something went wrong!"
+        )
+      )
       .finally(() => setIsLoading(false));
   };
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.DESCRIPTION) {
-      return "Add friend";
+      return petModal.translation.submit || "Add friend";
     }
 
-    return "Next";
+    return petModal.translation.next || "Next";
   }, [step]);
 
   const secondartActionLabel = useMemo(() => {
@@ -164,18 +175,23 @@ const PetModal = () => {
       return undefined;
     }
 
-    return "Back";
+    return petModal.translation.back || "Back";
   }, [step]);
 
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
-        title="What is the name of your pet?"
-        subtitle="Give us some details about your pet!"
+        title={
+          petModal.translation.basicTitle || "What is the name of your pet?"
+        }
+        subtitle={
+          petModal.translation.basicSubtitle ||
+          "Give us some details about your pet!"
+        }
       />
       <Input
         id="name"
-        label="Name"
+        label={petModal.translation.name || "Name"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -184,7 +200,7 @@ const PetModal = () => {
       <hr />
       <Input
         id="breed"
-        label="Breed"
+        label={petModal.translation.breed || "Breed"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -192,8 +208,11 @@ const PetModal = () => {
       />
       <hr />
       <Counter
-        title="Age"
-        subtitle="Tell us how many years your pet is celebrating?"
+        title={petModal.translation.ageTitle || "Age"}
+        subtitle={
+          petModal.translation.ageSubtitle ||
+          "Tell us how many years your pet is celebrating?"
+        }
         value={age}
         onChange={(value) => setCustomValue("age", value)}
       />
@@ -203,11 +222,16 @@ const PetModal = () => {
   if (step === STEPS.HEALTH) {
     bodyContent = (
       <div className="flex flex-col gap-8">
-        <Heading title="How about health?" subtitle="Is your pet vaccinated?" />
+        <Heading
+          title={petModal.translation.healthTitle || "Health"}
+          subtitle={
+            petModal.translation.healthSubtitle || "Is your pet vaccinated?"
+          }
+        />
         <Radio
           options={[
-            { label: "Yes", value: true },
-            { label: "No", value: false },
+            { label: petModal.translation.yes || "Yes", value: true },
+            { label: petModal.translation.no || "No", value: false },
           ]}
           value={vaccinated}
           onChange={(value) => setCustomValue("vaccinated", value)}
@@ -220,13 +244,19 @@ const PetModal = () => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="How is your pet with strangers"
-          subtitle="Help us understand best way to play with your dog"
+          title={
+            petModal.translation.friendlyTitle ||
+            "How is your pet with strangers"
+          }
+          subtitle={
+            petModal.translation.friendlySubtitle ||
+            "Help us understand best way to take care of your pet"
+          }
         />
         <Radio
           options={[
-            { label: "Yes", value: true },
-            { label: "No", value: false },
+            { label: petModal.translation.yes || "Yes", value: true },
+            { label: petModal.translation.no || "No", value: false },
           ]}
           value={friendly}
           onChange={(value) => setCustomValue("friendly", value)}
@@ -239,13 +269,19 @@ const PetModal = () => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Add photos of your pet"
-          subtitle="Beautify this page with a photo of your friend!"
+          title={
+            petModal.translation.photosTitle || "Add some photos of your pet"
+          }
+          subtitle={
+            petModal.translation.photosSubtitle ||
+            "Beautify this page with a photo of your friend"
+          }
         />
         <ImageUpload
           value={imageSrc}
           onChange={(value) => setLocalImageSrc(value)}
           maxImages={MAX_IMAGES_FOR_PET}
+          translation={petModal.translation.ImageUpload}
         />
       </div>
     );
@@ -255,12 +291,17 @@ const PetModal = () => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Give us some more info"
-          subtitle="Anything you think we forgot and is important to know!"
+          title={
+            petModal.translation.descriptionTitle || "Give us some more info"
+          }
+          subtitle={
+            petModal.translation.descriptionSubtitle ||
+            "Anything you think we forgot and is important to know"
+          }
         />
         <Input
           id="description"
-          label="Description"
+          label={petModal.translation.descriptionInput || "Description"}
           disabled={isLoading}
           register={register}
           errors={errors}
@@ -275,7 +316,7 @@ const PetModal = () => {
       isOpen={petModal.isOpen}
       onClose={petModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
-      title="Add my pet"
+      title={petModal.translation.title || "Add my pet"}
       actionLabel={actionLabel}
       secondaryActionLabel={secondartActionLabel}
       secondaryAction={step === STEPS.BASIC ? undefined : onBack}

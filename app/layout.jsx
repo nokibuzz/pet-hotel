@@ -14,6 +14,7 @@ import AdvancedFilters from "./components/modals/AdvancedFilters";
 import ReviewModal from "./components/modals/ReviewModal";
 import ChangePasswordModal from "./components/modals/ChangePasswordModal";
 import UploadImageModal from "./components/modals/UploadImageModal";
+import { getTranslations } from "./utils/getTranslations";
 
 const font = Nunito({
   subsets: ["latin", "cyrillic"],
@@ -28,6 +29,8 @@ export default async function RootLayout({ children }) {
   const currentUser = await getCurrentUser();
   const minMaxPrices = await getMinMaxPrices();
 
+  const translation = await getTranslations(currentUser?.locale, "common");
+
   return (
     <html lang="en">
       <body className={font.className}>
@@ -37,12 +40,12 @@ export default async function RootLayout({ children }) {
           <RegisterModal />
           <RentModal currentUser={currentUser} />
           <SearchModal currentUser={currentUser} />
-          <AdvancedFilters defaultPriceRange={minMaxPrices}/>
+          <AdvancedFilters defaultPriceRange={minMaxPrices} />
           <PetModal />
           <ReviewModal currentUser={currentUser} />
           <ChangePasswordModal />
           <UploadImageModal />
-          <Navbar currentUser={currentUser} />
+          <Navbar currentUser={currentUser} translation={translation} />
         </ClientOnly>
         <div className="pb-20 pt-28">{children}</div>
       </body>

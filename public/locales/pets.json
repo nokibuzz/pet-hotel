@@ -1,0 +1,96 @@
+{
+  "en": {
+    "EmptyState": {
+      "title": "Unauthorized",
+      "subtitle": "Login to proceed!"
+    },
+    "PetsClient": {
+      "title": "Your pets",
+      "subtitle": "Keep track of your furry friends",
+      "addPetButton": "Add Pet",
+      "PetCard": {
+        "yearsOld": "years young"
+      }
+    },
+    "PetModal": {
+      "title": "Add my pet",
+      "next": "Next",
+      "back": "Back",
+      "noImages": "No images to upload!",
+      "imageUploadSuccessfully": "All images uploaded successfully!",
+      "imageUploadError": "Error uploading images!",
+      "successfullyCreated": "Successfully created!",
+      "someError": "Woof, woof, something went wrong!",
+      "basicTitle": "What is the name of your pet?",
+      "basicSubtitle": "Give us some details about your fluffy friend",
+      "name": "Name",
+      "breed": "Breed",
+      "ageTitle": "Age",
+      "ageSubtitle": "Tell us how many years your pet is celebrating?",
+      "healthTitle": "Health",
+      "healthSubtitle": "Is you pet vaccinated?",
+      "yes": "Yes",
+      "no": "No",
+      "friendlyTitle": "How is your pet with strangers",
+      "friendlySubtitle": "Help us understand best way to take care of your pet",
+      "photosTitle": "Add some photos of your pet",
+      "photosSubtitle": "Beautify this page with a photo of your friend",
+      "descriptionTitle": "Give us some more info",
+      "descriptionSubtitle": "Anything you think we forgot and is important to know",
+      "descriptionInput": "Description",
+      "submit": "Add friend",
+      "ImageUpload": {
+        "limitImagesExceeded": "You tried to upload more images pet than allowed! Max allowed: ",
+        "wrongFormat": "Only JPEG and PNG files are allowed!",
+        "addImages": "Click to add images of your pet"
+      }
+    }
+  },
+  "sr": {
+    "EmptyState": {
+      "title": "Niste prijavljeni!",
+      "subtitle": "Prijavite se da biste nastavili korišćenje aplikacije!"
+    },
+    "PetsClient": {
+      "title": "Vaši ljubimci",
+      "subtitle": "Evidencija Vaših krznenih drugara",
+      "addPetButton": "Dodaj ljubimca",
+      "PetCard": {
+        "yearsOld": "godine"
+      }
+    },
+    "PetModal": {
+      "title": "Dodaj ljubimca",
+      "next": "Sledeći korak",
+      "back": "Prethodni korak",
+      "noImages": "Nema slika za učitavanje!",
+      "imageUploadSuccessfully": "Slike uspešno učitane!",
+      "imageUploadError": "Greška pri učitavanju slika!",
+      "successfullyCreated": "Uspešno kreirano!",
+      "someError": "Vuf vuf, nešto nije kako treba!",
+      "basicTitle": "Kako se zove Vaš ljubimac?",
+      "basicSubtitle": "Kažite nam nešto više o Vašem krznatom drugaru",
+      "name": "Ime",
+      "breed": "Rasa",
+      "ageTitle": "Starost",
+      "ageSubtitle": "Koliko godina Vaš ljubimac slavi?",
+      "healthTitle": "Zdravlje",
+      "healthSubtitle": "Da li je Vaš ljubimac vakcinisan?",
+      "yes": "Da",
+      "no": "Ne",
+      "friendlyTitle": "Kako se Vaš ljubimac ponaša sa novim ljudima",
+      "friendlySubtitle": "Pomozite nam da pronađemo najbolji način da se brinemo o Vašem ljubimcu",
+      "photosTitle": "Dodajte slike Vašeg ljubimca",
+      "photosSubtitle": "Ulepšajte stranicu slikama Vašeg ljubimca",
+      "descriptionTitle": "Dajte nam još DETALJA",
+      "descriptionSubtitle": "Bilo šta što mislite da može biti značajno pomena",
+      "descriptionInput": "Opis",
+      "submit": "Dodajte drugara",
+      "ImageUpload": {
+        "limitImagesExceeded": "Pokušali ste da učitate više slika Vašeg ljubimca od dozvoljenog. Maksimalno slika: ",
+        "wrongFormat": "Samo JPEG i PNG formati slika dozvoljeni!",
+        "addImages": "Dodajte slike Vašeg ljubimca"
+      }
+    }
+  }
+}

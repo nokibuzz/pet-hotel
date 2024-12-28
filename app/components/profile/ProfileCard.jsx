@@ -7,7 +7,7 @@ import useChangePasswordModal from "@/app/hooks/useChangePasswordModal";
 import useUploadImageModal from "@/app/hooks/useUploadImageModal";
 import { useState } from "react";
 
-const ProfileCard = ({ currentUser }) => {
+const ProfileCard = ({ currentUser, translation }) => {
   const [isHovering, setIsHovering] = useState(false);
 
   const changePasswordModal = useChangePasswordModal();
@@ -15,7 +15,7 @@ const ProfileCard = ({ currentUser }) => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mb-6 md:mb-0 md:w-1/2 md:mr-4 flex flex-col justify-between hover:bg-gray-50">
-      <Heading title="User Profile" />
+      <Heading title={translation.ProfileCard.title || "User Profile"} />
       <div className="flex items-center space-x-4 mb-6">
         <div
           className="relative w-24 h-24"
@@ -37,7 +37,7 @@ const ProfileCard = ({ currentUser }) => {
             {isHovering && (
               <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full">
                 <span className="text-white text-sm font-semibold">
-                  Update avatar
+                  {translation.ProfileCard.updateAvatar || "Update avatar"}
                 </span>
               </div>
             )}
@@ -51,15 +51,19 @@ const ProfileCard = ({ currentUser }) => {
         </div>
       </div>
       <div>
-        <div className="text-lg font-semibold mb-2 text-gray-600">Address</div>
+        <div className="text-lg font-semibold mb-2 text-gray-600">
+          {translation.ProfileCard.address || "Address"}
+        </div>
         <div className="text-gray-600">TODO: add to user db table</div>
       </div>
       <div className="mt-2 flex justify-end">
         <Button
-          label="Change password"
+          label={translation.ChangePasswordModal?.onOpen || "Change password"}
           small
           outline
-          onClick={changePasswordModal.onOpen}
+          onClick={() =>
+            changePasswordModal.onOpen(translation.ChangePasswordModal)
+          }
         />
       </div>
     </div>

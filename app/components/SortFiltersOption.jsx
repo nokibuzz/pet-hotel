@@ -4,17 +4,20 @@ import { faSort } from "@fortawesome/free-solid-svg-icons";
 import { useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
 
-const SortFiltersOption = () => {
+const SortFiltersOption = ({ translation }) => {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef(null);
   const params = useSearchParams();
   const router = useRouter();
 
   const formattedOptions = [
-    { label: "Sort by Title", value: "title" },
-    { label: "Sort by Price", value: "price" },
-    { label: "Sort by Rating", value: "rating" },
-    { label: "Sort by Distance", value: "distance" },
+    { label: translation.sortByTitle || "Sort by Title", value: "title" },
+    { label: translation.sortByPrice || "Sort by Price", value: "price" },
+    { label: translation.sortByRating || "Sort by Rating", value: "rating" },
+    {
+      label: translation.sortByDistance || "Sort by Distance",
+      value: "distance",
+    },
   ];
 
   const handleChange = (selectedOption) => {
@@ -64,7 +67,7 @@ const SortFiltersOption = () => {
         className={`flex flex-col items-center gap-2 p-3 border-b-2 hover:text-neutral-800 transition cursor-pointer border rounded-lg border-gray-300 text-neutral-500`}
       >
         <FontAwesomeIcon icon={faSort} size="lg" className="text-neutral-500" />
-        <div className="font-normal text-xs">Sort</div>
+        <div className="font-normal text-xs">{translation.sort || "Sort"}</div>
       </div>
 
       {isOpen && (

@@ -18,6 +18,7 @@ const ListingCard = ({
   currentUser,
   currentSearchParams = undefined,
   nextPage = "listing",
+  translation,
 }) => {
   const router = useRouter();
 
@@ -87,14 +88,28 @@ const ListingCard = ({
             </div>
           )}
         </div>
-        <div className="font-semibold text-lg truncate max-w-full" title={data.title}>{data.title}</div>
-        <div className="font-light text-neutral-500 truncate max-w-full" title={data.addressLabel}>{data.addressLabel}</div>
+        <div
+          className="font-semibold text-lg truncate max-w-full"
+          title={data.title}
+        >
+          {data.title}
+        </div>
+        <div
+          className="font-light text-neutral-500 truncate max-w-full"
+          title={data.addressLabel}
+        >
+          {data.addressLabel}
+        </div>
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
         </div>
         <div className="flex flex-row items-center gap-1">
           <div className="font-semibold">$ {price}</div>
-          {!reservation && <div className="font-light">per night</div>}
+          {!reservation && (
+            <div className="font-light">
+              {translation.perDay || "per night"}
+            </div>
+          )}
         </div>
         {onAction && actionLabel && (
           <Button

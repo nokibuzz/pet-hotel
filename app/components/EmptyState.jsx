@@ -8,6 +8,7 @@ const EmptyState = ({
   title = "No matches",
   subtitle = "Plase change your search and try again!",
   showReset,
+  resetButtonLabel = "Remove filters",
 }) => {
   const router = useRouter();
 
@@ -18,7 +19,7 @@ const EmptyState = ({
         {showReset && (
           <Button
             outline
-            label="Remove filters"
+            label={resetButtonLabel}
             onClick={() => router.push("/")}
           />
         )}

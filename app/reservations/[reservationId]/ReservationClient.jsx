@@ -9,7 +9,7 @@ import { options } from "@/app/components/navbar/BasicFilters";
 import React, { useMemo, useEffect, useState } from "react";
 import Conversation from "@/app/components/conversation/Conversation";
 
-const ReservationClient = ({ reservation, currentUser }) => {
+const ReservationClient = ({ reservation, currentUser, translation }) => {
   const listing = reservation.listing;
   const initialDateRange = {
     startDate: reservation.startDate,
@@ -49,9 +49,10 @@ const ReservationClient = ({ reservation, currentUser }) => {
           <ListingHead
             id={listing.id}
             title={listing.title}
-            imageSrc={listing.imageSrc?.[0]}
+            imageSrc={listing.imageSrc}
             addressLabel={listing.addressLabel}
             currentUser={currentUser}
+            translation={translation.ReservationClient}
           />
           <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-10">
             <ListingInfo
@@ -67,6 +68,7 @@ const ReservationClient = ({ reservation, currentUser }) => {
                 paymentMethodsCards: listing.paymentMethodsCards,
                 paymentMethodsCash: listing.paymentMethodsCash,
               }}
+              translation={translation.ListingInfo}
             />
             <div className="order-first mb-10 md:order-last md:col-span-3">
               <ReservationInfo
@@ -74,19 +76,23 @@ const ReservationClient = ({ reservation, currentUser }) => {
                 price={listing.price}
                 totalPrice={reservation.totalPrice}
                 dateRange={initialDateRange}
+                translation={translation.ReservationInfo}
               />
               <ListingAddionalInformation
                 hasFood={listing.hasFood}
                 hasGrooming={listing.hasGrooming}
                 hasVet={listing.hasVet}
                 addionalInformation={listing.addionalInformation}
+                translation={translation.ListingAddionalInformation}
               />
               <Conversation
                 reservationId={reservation.id}
                 currentUser={currentUser}
                 otherUser={otherUser}
+                translation={translation.Conversation}
               />
             </div>
+            {/* TODO: add review like on listing client */}
           </div>
         </div>
       </div>

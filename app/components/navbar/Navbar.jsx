@@ -7,7 +7,7 @@ import UserMenu from "./UserMenu";
 import BasicFilters from "./BasicFilters";
 import AnimatedDog from "./AnimatedDog";
 
-const Navbar = ({ currentUser }) => {
+const Navbar = ({ currentUser, translation }) => {
   return (
     <div className="fixed w-full bg-white z-10 shadow-sm">
       <div className="py-4 border-b-[1px]">
@@ -24,12 +24,12 @@ const Navbar = ({ currentUser }) => {
               <AnimatedDog />
             </div>
             <div className="flex-1 flex justify-end">
-              <UserMenu currentUser={currentUser} />
+              <UserMenu currentUser={currentUser} translation={translation} />
             </div>
           </div>
         </Container>
       </div>
-      <BasicFilters />
+      <BasicFilters translation={translation.Filters} />
     </div>
   );
 };

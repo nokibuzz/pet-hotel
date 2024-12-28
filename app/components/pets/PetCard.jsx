@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-const PetCard = ({ name, imageSrc, breed, years }) => {
+const PetCard = ({ name, imageSrc, breed, years, translation }) => {
   return (
     <div className="bg-white rounded-md shadow-md">
       <Image
@@ -15,7 +15,9 @@ const PetCard = ({ name, imageSrc, breed, years }) => {
       <div className="p-4">
         <div className="mt-2 text-xl font-bold">{name}</div>
         <div className="text-gray-600">{breed}</div>
-        <div className="text-gray-400">{years} years young</div>
+        <div className="text-gray-400">
+          {years} {translation.yearsOld || "years young"}
+        </div>
       </div>
     </div>
   );
