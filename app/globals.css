@@ -63,3 +63,18 @@ body,
   scrollbar-width: thin; /* Thin scrollbar */
   scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Gray thumb on transparent track */
 }
+
+.pawprints-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.pawprint {
+  object-fit: cover;
+  opacity: 0.8;
+}
