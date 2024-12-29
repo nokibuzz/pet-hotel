@@ -1,7 +1,6 @@
 "use client";
 
 import Container from "../Container";
-import Search from "./Search";
 import Logo from "./Logo";
 import UserMenu from "./UserMenu";
 import BasicFilters from "./BasicFilters";
@@ -16,7 +15,6 @@ const Navbar = ({ currentUser, translation }) => {
             <div className="flex-1">
               <Logo />
             </div>
-            {/* <div className="flex-1 flex justify-center"><Search /></div> */}
             <div
               className="flex-grow flex justify-center items-center"
               style={{ flexGrow: 2 }}
