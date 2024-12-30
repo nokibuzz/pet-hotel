@@ -11,6 +11,8 @@ import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useRentModal from "@/app/hooks/useRentModal";
 import { useRouter } from "next/navigation";
+import LanguageSelector from "./LanguageSelector";
+import axios from "axios";
 
 const UserMenu = ({ currentUser, translation }) => {
   const router = useRouter();
@@ -27,6 +29,14 @@ const UserMenu = ({ currentUser, translation }) => {
     setTimeout(() => {
       setIsOpen(false);
     }, 500);
+  };
+
+  const handleLanguageChange = (locale) => {
+    const id = currentUser?.id;
+    axios.put(`/api/user/${id}/${locale}`).then(() => {
+      closeMenu();
+      router.refresh();
+    });
   };
 
   return (
@@ -51,6 +61,7 @@ const UserMenu = ({ currentUser, translation }) => {
 
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[35vw] bg-white overflow-hidden right-0 top-12 text-sm">
+          {currentUser && <LanguageSelector onChange={handleLanguageChange} />}
           <div className="flex flex-col cursor-pointer ">
             {currentUser ? (
               <>
