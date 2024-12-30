@@ -11,6 +11,9 @@ import AdvancedFiltersOption from "../AdvancedFiltersOption";
 import DescreteSlider from "../inputs/DiscreteSlider";
 import { faBone, faShower, faUserDoctor } from "@fortawesome/free-solid-svg-icons";
 import Toggle from "../inputs/Toggle";
+import Counter from "../inputs/Counter";
+import Calendar from "../inputs/Calendar";
+import { formatISO } from "date-fns";
 
 export const facilityOptions = [
   {
@@ -32,6 +35,12 @@ const AdvancedFilters = ({ defaultPriceRange }) => {
     const params = useSearchParams();
     const advancedFiltersModal = useAdvancedFiltersModal();
 
+    const [petCount, setPetCount] = useState();
+    const [dateRange, setDateRange] = useState({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    });
     const [priceRange, setPriceRange] = useState([1, 100]);
     const [category, setCategory] = useState("");
     const [nearMe, setNearMe] = useState("");
@@ -43,6 +52,12 @@ const AdvancedFilters = ({ defaultPriceRange }) => {
 
     useEffect(() => {
       if (advancedFiltersModal.isOpen) {
+          setPetCount(parseInt(params?.get("petCount") || 1));
+          setDateRange({
+            startDate: new Date(params?.get("startDate") || new Date()),
+            endDate: new Date(params?.get("endDate") || new Date()),
+            key: "selection",
+          });
           setPriceRange([parseInt(params?.get("minPrice") || defaultPriceRange.min), parseInt(params?.get("maxPrice") || defaultPriceRange.max)]);
           setCategory(params?.get("category") || "");
           setNearMe(params?.get("nearMe") || "");
@@ -104,6 +119,19 @@ const AdvancedFilters = ({ defaultPriceRange }) => {
         if (params) {
           currentQuery = qs.parse(params.toString());
           delete currentQuery.advancedFilters;
+        }
+
+        if (petCount)
+        {
+          currentQuery.petCount = petCount;
+        }
+
+        if (dateRange.startDate) {
+          currentQuery.startDate = formatISO(dateRange.startDate);
+        }
+    
+        if (dateRange.endDate) {
+          currentQuery.endDate = formatISO(dateRange.endDate);
         }
 
         if (parseInt(params?.get("minPrice") || defaultPriceRange.min) != priceRange[0]) {
@@ -180,6 +208,8 @@ const AdvancedFilters = ({ defaultPriceRange }) => {
         advancedFiltersModal,
         router,
         params,
+        petCount,
+        dateRange,
         priceRange,
         category,
         nearMe,
@@ -197,6 +227,23 @@ const AdvancedFilters = ({ defaultPriceRange }) => {
 
     let bodyContent = (
         <div className="flex flex-col gap-6 max-h-[70vh] overflow-y-scroll scrollbar-hide p-6 hide-scrollbar">
+          <div className="border-b pb-4">
+            <h3 className="font-semibold text-lg mb-2">Pet count</h3>
+            <Counter
+              subtitle="How many pets you want to leave?"
+              value={petCount}
+              onChange={(value) => setPetCount(value)}
+            />
+          </div>
+
+          <div className="border-b pb-4">
+            <h3 className="font-semibold text-lg mb-2">Date Range</h3>
+              <Calendar
+                value={dateRange}
+                onChange={(value) => setDateRange(value.selection)}
+              />
+          </div>
+
           <div className="border-b pb-4">
             <h3 className="font-semibold text-lg mb-2">Price (per night)</h3>
             <RangeInput 
