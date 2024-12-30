@@ -8,6 +8,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import { faHouse, faHotel, faPerson } from "@fortawesome/free-solid-svg-icons";
 import SortFiltersOption from "../SortFiltersOption";
+import { formatISO } from "date-fns";
 
 export const options = [
   {
@@ -42,6 +43,9 @@ const BasicFilters = ({ translation }) => {
   const filtersRef = useRef(null);
 
   const getCurrentFilters = () => {
+    const petCount = params?.get("petCount");
+    const startDate = params?.get("startDate");
+    const endDate = params?.get("endDate");
     const minPrice = params?.get("minPrice");
     const maxPrice = params?.get("maxPrice");
     const category = params?.get("category");
@@ -53,6 +57,20 @@ const BasicFilters = ({ translation }) => {
     const review = params?.get("review");
 
     let filters = [];
+
+    if (petCount) {
+      filters.push({
+        label: "Number of pets",
+        value: `Number of pets: [${petCount}]`
+      });
+    }
+
+    if (startDate && endDate) {
+      filters.push({
+        label: "Date Range",
+        value: `Date Range: [${formatISO(startDate).split('T')[0]}-${formatISO(endDate).split('T')[0]}]`,
+      });
+    }
 
     if (minPrice && maxPrice) {
       filters.push({
@@ -167,17 +185,19 @@ const BasicFilters = ({ translation }) => {
             ))}
           </div>
         )}
+        
+        <div className="flex flex-row gap-4 justify-end items-center flex-grow mb-4">
+          <div className="flex items-center">
+            <SortFiltersOption translation={translation} />
+          </div>
 
-        <div className="flex-shrink-0 flex items-center justify-center -mt-4">
-          <SortFiltersOption translation={translation} />
-        </div>
-
-        <div className="flex-shrink-0 flex items-center justify-center -mt-4">
-          <AdvancedFiltersButton
-            selected={category === "Filters"}
-            onClick={() => advancedFiltersModal.onOpen(translation)}
-            translation={translation}
-          />
+          <div className="flex items-center">
+            <AdvancedFiltersButton
+              selected={category === "Filters"}
+              onClick={() => advancedFiltersModal.onOpen(translation)}
+              translation={translation}
+            />
+          </div>
         </div>
       </div>
     </Container>
