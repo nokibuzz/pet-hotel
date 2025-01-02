@@ -12,7 +12,6 @@ const CategoryInput = ({ label, icon: Icon, onClick, selected }) => {
     >
       <FontAwesomeIcon icon={Icon} size="2xl" className="text-neutral-500" />
       <div className="font-semibold">{label}</div>
-      {/* TODO: add description field */}
     </div>
   );
 };

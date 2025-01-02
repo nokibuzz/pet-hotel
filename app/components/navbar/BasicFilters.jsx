@@ -61,14 +61,14 @@ const BasicFilters = ({ translation }) => {
     if (petCount) {
       filters.push({
         label: "Number of pets",
-        value: `Number of pets: [${petCount}]`
+        value: `Number of pets: ${petCount}`
       });
     }
 
     if (startDate && endDate) {
       filters.push({
         label: "Date Range",
-        value: `Date Range: [${formatISO(startDate).split('T')[0]}-${formatISO(endDate).split('T')[0]}]`,
+        value: `Date Range: [${formatISO(startDate).split('T')[0]}- ${formatISO(endDate).split('T')[0]}]`,
       });
     }
 
@@ -148,12 +148,12 @@ const BasicFilters = ({ translation }) => {
 
   return (
     <Container>
-      <div
-        className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden"
+      <div 
+        className="py-1 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden" 
         ref={filtersRef}
       >
         {advancedFilters ? (
-          <div className="flex justify-center items-center gap-4 mb-9">
+          <div className="flex justify-center items-center gap-4">
             <div className="text-lg font-semibold text-gray-800">
               Current Search
             </div>
@@ -161,13 +161,13 @@ const BasicFilters = ({ translation }) => {
               {visibleFilters.map((filter) => (
                 <div
                   key={filter.label}
-                  className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center"
+                  className="px-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center"
                 >
                   {filter.value}
                 </div>
               ))}
               {hiddenFiltersCount > 0 && (
-                <div className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center">
+                <div className="px-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center">
                   +{hiddenFiltersCount} more
                 </div>
               )}
@@ -186,7 +186,7 @@ const BasicFilters = ({ translation }) => {
           </div>
         )}
         
-        <div className="flex flex-row gap-4 justify-end items-center flex-grow mb-4">
+        <div className="flex flex-row gap-4 justify-end items-center flex-grow">
           <div className="flex items-center">
             <SortFiltersOption translation={translation} />
           </div>
