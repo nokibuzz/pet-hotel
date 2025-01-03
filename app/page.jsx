@@ -11,7 +11,7 @@ import { getTranslations } from "./utils/getTranslations";
 
 const adSlots = [
   // 6533344719
-]
+];
 
 const Home = async ({ searchParams }) => {
   const listings = await getListings(searchParams);
@@ -22,12 +22,15 @@ const Home = async ({ searchParams }) => {
     let index = 0;
     while (indices.size < adCount) {
       const randomIndex = Math.floor(Math.random() * arrayLength);
-      indices.add({slot: adSlots[index++], position: randomIndex});
+      indices.add({ slot: adSlots[index++], position: randomIndex });
     }
     return Array.from(indices);
   };
 
-  const adIndices = getRandomIndices(listings.length + adSlots.length, adSlots.length);
+  const adIndices = getRandomIndices(
+    listings.length + adSlots.length,
+    adSlots.length
+  );
 
   const translation = await getTranslations(currentUser?.locale, "listings");
 
@@ -35,8 +38,8 @@ const Home = async ({ searchParams }) => {
     return (
       <ClientOnly>
         <EmptyState
-          title={translation.EmptyState.reservationTitle}
-          subtitle={translation.EmptyState.listingSubtitle}
+          title={translation.EmptyState.title}
+          subtitle={translation.EmptyState.subtitle}
           resetButtonLabel={translation.EmptyState.resetFilters}
           showReset
         />
@@ -48,7 +51,7 @@ const Home = async ({ searchParams }) => {
       <Container>
         <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
           {listings.map((listing, index) => {
-            const ad = adIndices.find(item => item.position === index);
+            const ad = adIndices.find((item) => item.position === index);
             if (ad) {
               return (
                 <div key={`ad-${ad.position}`}>

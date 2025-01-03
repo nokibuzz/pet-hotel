@@ -61,56 +61,84 @@ const BasicFilters = ({ translation }) => {
     if (petCount) {
       filters.push({
         label: "Number of pets",
-        value: `Number of pets: [${petCount}]`
+        value: `${
+          translation.Basic?.numberOfPets || "Number of pets:"
+        } [${petCount}]`,
       });
     }
 
     if (startDate && endDate) {
       filters.push({
         label: "Date Range",
-        value: `Date Range: [${formatISO(startDate).split('T')[0]}-${formatISO(endDate).split('T')[0]}]`,
+        value: `${translation.Basic?.dateRange || "Date Range:"} [${
+          formatISO(startDate).split("T")[0]
+        }-${formatISO(endDate).split("T")[0]}]`,
       });
     }
 
     if (minPrice && maxPrice) {
       filters.push({
         label: "Price Range",
-        value: `Price Range: [${minPrice}-${maxPrice}]`,
+        value: `${
+          translation.Basic?.priceRange || "Price Range:"
+        } [${minPrice}-${maxPrice}]`,
       });
     } else if (minPrice) {
       filters.push({
         label: "Minimal Price",
-        value: `Minimal Price: ${minPrice}`,
+        value: `${
+          translation.Basic?.minimalPrice || "Minimal Price:"
+        } ${minPrice}`,
       });
     } else if (maxPrice) {
       filters.push({
         label: "Maximal Price",
-        value: `Maximal Price: ${maxPrice}`,
+        value: `${
+          translation.Basic?.maximalPrice || "Maximal Price:"
+        } ${maxPrice}`,
       });
     }
 
     if (category) {
-      filters.push({ label: "Category", value: `Category: ${category}` });
+      filters.push({
+        label: "Category",
+        value: `${translation.Basic?.category || "Category:"} ${category}`,
+      });
     }
 
     if (nearMe) {
-      filters.push({ label: "Distance", value: `Distance: ${nearMe}km` });
+      filters.push({
+        label: "Distance",
+        value: `${translation.Basic?.distance || "Distance:"} ${nearMe}km`,
+      });
     }
 
     if (facility) {
-      filters.push({ label: "Facilities", value: `Facilities: ${facility}` });
+      filters.push({
+        label: "Facilities",
+        value: `${translation.Basic?.facilities || "Facilities:"} ${facility}`,
+      });
     }
 
     if (hasCancelation) {
-      filters.push({ label: "Has Cancelation", value: "Has Cancelation" });
+      filters.push({
+        label: "Has Cancelation",
+        value: `${translation.Basic?.hasCancelation || "Has Cancelation"}`,
+      });
     }
 
     if (paymentMethodsCards) {
-      filters.push({ label: "Accept cards", value: "Accept cards" });
+      filters.push({
+        label: "Accept cards",
+        value: `${translation.Basic?.acceptCards || "Accept cards"}`,
+      });
     }
 
     if (paymentMethodsCash) {
-      filters.push({ label: "Accept cash", value: "Accept cash" });
+      filters.push({
+        label: "Accept cash",
+        value: `${translation.Basic?.acceptCach || "Accept cash"}`,
+      });
     }
 
     if (review) {
@@ -155,7 +183,7 @@ const BasicFilters = ({ translation }) => {
         {advancedFilters ? (
           <div className="flex justify-center items-center gap-4 mb-9">
             <div className="text-lg font-semibold text-gray-800">
-              Current Search
+              {translation.Basic?.currentSearch || "Current Search"}
             </div>
             <div className="flex flex-wrap justify-center items-center gap-4">
               {visibleFilters.map((filter) => (
@@ -168,7 +196,7 @@ const BasicFilters = ({ translation }) => {
               ))}
               {hiddenFiltersCount > 0 && (
                 <div className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center">
-                  +{hiddenFiltersCount} more
+                  +{hiddenFiltersCount} {translation.more || "more"}
                 </div>
               )}
             </div>
@@ -178,14 +206,14 @@ const BasicFilters = ({ translation }) => {
             {options.map((item) => (
               <BasicFilterOption
                 key={item.label}
-                label={item.label}
+                label={translation?.[item.label] || item.label}
                 selected={category === item.label}
                 icon={item.icon}
               />
             ))}
           </div>
         )}
-        
+
         <div className="flex flex-row gap-4 justify-end items-center flex-grow mb-4">
           <div className="flex items-center">
             <SortFiltersOption translation={translation} />
