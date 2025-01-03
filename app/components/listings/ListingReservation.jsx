@@ -26,6 +26,7 @@ const ListingReservation = ({
         value={dateRange}
         disabledDates={disabledDates}
         onChange={(value) => onChangeDate(value.selection)}
+        locale={translation.locale || "sr"}
       />
       <hr />
       <div className="p-4">
