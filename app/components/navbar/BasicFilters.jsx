@@ -148,15 +148,15 @@ const BasicFilters = ({ translation }) => {
 
   return (
     <Container>
-      <div
-        className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden"
+      <div 
+        className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden" 
         ref={filtersRef}
-      >
+        >
         {advancedFilters ? (
           <div className="flex justify-center items-center gap-4 mb-9">
             <div className="text-lg font-semibold text-gray-800">
               Current Search
-            </div>
+              </div>
             <div className="flex flex-wrap justify-center items-center gap-4">
               {visibleFilters.map((filter) => (
                 <div
@@ -174,7 +174,7 @@ const BasicFilters = ({ translation }) => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-row gap-3 flex-grow justify-around">
+          <div className="flex flex-row gap-3 justify-evenly items-center w-full">
             {options.map((item) => (
               <BasicFilterOption
                 key={item.label}
