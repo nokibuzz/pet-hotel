@@ -9,7 +9,11 @@ import RangeInput from "../inputs/RangeInput";
 import { options } from "../navbar/BasicFilters";
 import AdvancedFiltersOption from "../AdvancedFiltersOption";
 import DescreteSlider from "../inputs/DiscreteSlider";
-import { faBone, faShower, faUserDoctor } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBone,
+  faShower,
+  faUserDoctor,
+} from "@fortawesome/free-solid-svg-icons";
 import Toggle from "../inputs/Toggle";
 import Counter from "../inputs/Counter";
 import Calendar from "../inputs/Calendar";
@@ -31,334 +35,386 @@ export const facilityOptions = [
 ];
 
 const AdvancedFilters = ({ defaultPriceRange }) => {
-    const router = useRouter();
-    const params = useSearchParams();
-    const advancedFiltersModal = useAdvancedFiltersModal();
+  const router = useRouter();
+  const params = useSearchParams();
+  const advancedFiltersModal = useAdvancedFiltersModal();
 
-    const [petCount, setPetCount] = useState();
-    const [dateRange, setDateRange] = useState({
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    });
-    const [priceRange, setPriceRange] = useState([1, 100]);
-    const [category, setCategory] = useState("");
-    const [nearMe, setNearMe] = useState("");
-    const [facility, setFacility] = useState("");
-    const [hasCancelation, setHasCancelation] = useState(false);
-    const [paymentMethodsCards, setPaymentMethodsCards] = useState(false);
-    const [paymentMethodsCash, setPaymentMethodsCash] = useState(false);
-    const [review, setReview] = useState("");
+  const [petCount, setPetCount] = useState();
+  const [dateRange, setDateRange] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
+  const [priceRange, setPriceRange] = useState([1, 100]);
+  const [category, setCategory] = useState("");
+  const [nearMe, setNearMe] = useState("");
+  const [facility, setFacility] = useState("");
+  const [hasCancelation, setHasCancelation] = useState(false);
+  const [paymentMethodsCards, setPaymentMethodsCards] = useState(false);
+  const [paymentMethodsCash, setPaymentMethodsCash] = useState(false);
+  const [review, setReview] = useState("");
 
-    useEffect(() => {
-      if (advancedFiltersModal.isOpen) {
-          setPetCount(parseInt(params?.get("petCount") || 1));
-          setDateRange({
-            startDate: new Date(params?.get("startDate") || new Date()),
-            endDate: new Date(params?.get("endDate") || new Date()),
-            key: "selection",
-          });
-          setPriceRange([parseInt(params?.get("minPrice") || defaultPriceRange.min), parseInt(params?.get("maxPrice") || defaultPriceRange.max)]);
-          setCategory(params?.get("category") || "");
-          setNearMe(params?.get("nearMe") || "");
-          setFacility(params?.get("facility") || "");
-          setHasCancelation(JSON.parse(params?.get("hasCancelation")) || false);
-          setPaymentMethodsCards(JSON.parse(params?.get("paymentMethodsCards")) || false);
-          setPaymentMethodsCash(JSON.parse(params?.get("paymentMethodsCash")) || false);
-          setReview(params?.get("review") || "");
-      }
-    }, [advancedFiltersModal.isOpen, params]);
+  useEffect(() => {
+    if (advancedFiltersModal.isOpen) {
+      setPetCount(parseInt(params?.get("petCount") || 1));
+      setDateRange({
+        startDate: new Date(params?.get("startDate") || new Date()),
+        endDate: new Date(params?.get("endDate") || new Date()),
+        key: "selection",
+      });
+      setPriceRange([
+        parseInt(params?.get("minPrice") || defaultPriceRange.min),
+        parseInt(params?.get("maxPrice") || defaultPriceRange.max),
+      ]);
+      setCategory(params?.get("category") || "");
+      setNearMe(params?.get("nearMe") || "");
+      setFacility(params?.get("facility") || "");
+      setHasCancelation(JSON.parse(params?.get("hasCancelation")) || false);
+      setPaymentMethodsCards(
+        JSON.parse(params?.get("paymentMethodsCards")) || false
+      );
+      setPaymentMethodsCash(
+        JSON.parse(params?.get("paymentMethodsCash")) || false
+      );
+      setReview(params?.get("review") || "");
+    }
+  }, [advancedFiltersModal.isOpen, params]);
 
-    const changeCategory = (value, isSelected) => {
-      if (isSelected) {
-        setCategory((previousValue) => {
-          if (!previousValue) {
-            return value;
-          }
-      
-          return `${previousValue},${value}`;
-        });
-      }
-      else {
-        setCategory((previousValue) => {
-          const updated = previousValue
-            .split(",")
-            .filter((item) => item !== value)
-            .join(",");
+  const changeCategory = (value, isSelected) => {
+    if (isSelected) {
+      setCategory((previousValue) => {
+        if (!previousValue) {
+          return value;
+        }
 
-            return updated;
-        });
+        return `${previousValue},${value}`;
+      });
+    } else {
+      setCategory((previousValue) => {
+        const updated = previousValue
+          .split(",")
+          .filter((item) => item !== value)
+          .join(",");
+
+        return updated;
+      });
+    }
+  };
+
+  const changeFacility = (value, isSelected) => {
+    if (isSelected) {
+      setFacility((previousValue) => {
+        if (!previousValue) {
+          return value;
+        }
+
+        return `${previousValue},${value}`;
+      });
+    } else {
+      setFacility((previousValue) => {
+        const updated = previousValue
+          .split(",")
+          .filter((item) => item !== value)
+          .join(",");
+
+        return updated;
+      });
+    }
+  };
+
+  const onSubmit = useCallback(async () => {
+    let currentQuery = {};
+
+    if (params) {
+      currentQuery = qs.parse(params.toString());
+      delete currentQuery.advancedFilters;
+    }
+
+    if (petCount) {
+      currentQuery.petCount = petCount;
+    }
+
+    if (dateRange.startDate) {
+      currentQuery.startDate = formatISO(dateRange.startDate);
+    }
+
+    if (dateRange.endDate) {
+      currentQuery.endDate = formatISO(dateRange.endDate);
+    }
+
+    if (
+      parseInt(params?.get("minPrice") || defaultPriceRange.min) !=
+      priceRange[0]
+    ) {
+      currentQuery.minPrice = priceRange[0];
+    }
+
+    if (
+      parseInt(params?.get("maxPrice") || defaultPriceRange.max) !=
+      priceRange[1]
+    ) {
+      currentQuery.maxPrice = priceRange[1];
+    }
+
+    if (category && category != "") {
+      currentQuery.category = category;
+    }
+
+    if (nearMe != "") {
+      if (nearMe == 0.1) {
+        delete currentQuery.nearMe;
+      } else {
+        currentQuery.nearMe = nearMe;
       }
     }
 
-    const changeFacility = (value, isSelected) => {
-      if (isSelected) {
-        setFacility((previousValue) => {
-          if (!previousValue) {
-            return value;
-          }
-      
-          return `${previousValue},${value}`;
-        });
-      }
-      else {
-        setFacility((previousValue) => {
-          const updated = previousValue
-            .split(",")
-            .filter((item) => item !== value)
-            .join(",");
+    if (facility && facility != "") {
+      currentQuery.facility = facility;
+    }
 
-            return updated;
-        });
+    if (hasCancelation) {
+      currentQuery.hasCancelation = hasCancelation;
+    } else {
+      delete currentQuery.hasCancelation;
+    }
+
+    if (paymentMethodsCards) {
+      currentQuery.paymentMethodsCards = paymentMethodsCards;
+    } else {
+      delete currentQuery.paymentMethodsCards;
+    }
+
+    if (paymentMethodsCash) {
+      currentQuery.paymentMethodsCash = paymentMethodsCash;
+    } else {
+      delete currentQuery.paymentMethodsCash;
+    }
+
+    if (review != "") {
+      if (review == 0.1) {
+        delete currentQuery.review;
+      } else {
+        currentQuery.review = review;
       }
     }
 
-    const onSubmit = useCallback(async () => {
-        let currentQuery = {};
-    
-        if (params) {
-          currentQuery = qs.parse(params.toString());
-          delete currentQuery.advancedFilters;
-        }
+    if (Object.keys(currentQuery).length !== 0) {
+      currentQuery.advancedFilters = true;
+    }
 
-        if (petCount)
-        {
-          currentQuery.petCount = petCount;
-        }
-
-        if (dateRange.startDate) {
-          currentQuery.startDate = formatISO(dateRange.startDate);
-        }
-    
-        if (dateRange.endDate) {
-          currentQuery.endDate = formatISO(dateRange.endDate);
-        }
-
-        if (parseInt(params?.get("minPrice") || defaultPriceRange.min) != priceRange[0]) {
-          currentQuery.minPrice = priceRange[0];
-        }
-
-        if (parseInt(params?.get("maxPrice") || defaultPriceRange.max) != priceRange[1]) {
-          currentQuery.maxPrice = priceRange[1];
-        }
-
-        if (category && category != "") {
-          currentQuery.category = category;
-        }
-
-        if (nearMe != "") {
-          if (nearMe == 0.1) {
-            delete currentQuery.nearMe;
-          }
-          else {
-            currentQuery.nearMe = nearMe;
-          }
-        }
-
-        if (facility && facility != "") {
-          currentQuery.facility = facility;
-        }
-
-        if(hasCancelation) {
-          currentQuery.hasCancelation = hasCancelation;
-        } 
-        else {
-          delete currentQuery.hasCancelation;
-        }
-
-        if(paymentMethodsCards) {
-          currentQuery.paymentMethodsCards = paymentMethodsCards;
-        }
-        else {
-          delete currentQuery.paymentMethodsCards;
-        }
-
-        if(paymentMethodsCash) {
-          currentQuery.paymentMethodsCash = paymentMethodsCash;
-        }
-        else {
-          delete currentQuery.paymentMethodsCash;
-        }
-
-        if (review != "") {
-          if (review == 0.1) {
-            delete currentQuery.review;
-          }
-          else {
-            currentQuery.review = review;
-          }
-        }
-
-        if (Object.keys(currentQuery).length !== 0) {
-          currentQuery.advancedFilters = true;
-        }
-
-        const url = qs.stringifyUrl(
-          {
-            url: "/",
-            query: currentQuery,
-          },
-          { skipNull: true }
-        );
-    
-        advancedFiltersModal.onClose();
-    
-        router.push(url);
-      }, [
-        advancedFiltersModal,
-        router,
-        params,
-        petCount,
-        dateRange,
-        priceRange,
-        category,
-        nearMe,
-        facility,
-        hasCancelation,
-        paymentMethodsCards,
-        paymentMethodsCash,
-        review,
-    ]);
-
-    const onReset = useCallback(async () => {
-      advancedFiltersModal.onClose();
-      router.push("/")
-    });
-
-    let bodyContent = (
-        <div className="flex flex-col gap-6 max-h-[70vh] overflow-y-scroll scrollbar-hide p-6 hide-scrollbar">
-          <div className="border-b pb-4">
-            <h3 className="font-semibold text-lg mb-2">Pet count</h3>
-            <Counter
-              subtitle="How many pets you want to leave?"
-              value={petCount}
-              onChange={(value) => setPetCount(value)}
-            />
-          </div>
-
-          <div className="border-b pb-4">
-            <h3 className="font-semibold text-lg mb-2">Date Range</h3>
-              <Calendar
-                value={dateRange}
-                onChange={(value) => setDateRange(value.selection)}
-              />
-          </div>
-
-          <div className="border-b pb-4">
-            <h3 className="font-semibold text-lg mb-2">Price (per night)</h3>
-            <RangeInput 
-              min={defaultPriceRange.min} 
-              max={defaultPriceRange.max}
-              value={priceRange}
-              onChange={setPriceRange}
-              rangeElementLabel={'$'} 
-            /> 
-          </div>
-      
-          <div className="border-b pb-4">
-            <h3 className="font-semibold text-lg mb-2">Accommodation Type</h3>
-            <div className="flex flex-row gap-3 flex-grow justify-around">
-              {options.map((item) => (
-                <AdvancedFiltersOption
-                  key={item.label}
-                  label={item.label}
-                  selected={category.includes(item.label)}
-                  icon={item.icon}
-                  onClick={(value, isSelected) => changeCategory(value, isSelected)}
-                />
-              ))}
-            </div>
-          </div>
-      
-          <div className="border-b pb-10">
-            <h3 className="font-semibold text-lg mb-2">Distance from me</h3>
-            <DescreteSlider 
-              values={{
-                0.1: 'X',
-                1: '1km',
-                3: '3km',
-                5: '5km',
-                10: '10km',
-              }}
-              value={nearMe}
-              onChange={setNearMe}
-            />
-          </div>
-      
-          <div className="border-b pb-4">
-            <h3 className="font-semibold text-lg mb-2">Facilities</h3>
-            <div className="flex flex-row gap-3 flex-grow justify-around">
-              {facilityOptions.map((item) => (
-                <AdvancedFiltersOption
-                  key={item.label}
-                  label={item.label}
-                  selected={facility.includes(item.label)}
-                  icon={item.icon}
-                  onClick={(value, isSelected) => changeFacility(value, isSelected)}
-                />
-              ))}
-            </div>
-          </div>
-      
-          <div className="border-b pb-10">
-            <h3 className="font-semibold text-lg mb-2">Reviews</h3>
-            <DescreteSlider 
-              values={{
-                0.1: 'X',
-                1: '1 paw',
-                2: '2 paw',
-                3: '3 paw',
-                4: '4 paw',
-                5: '5 paw',
-              }}
-              value={review}
-              onChange={setReview}
-            />
-          </div>
-      
-          <div className="border-b pb-4">
-            <h3 className="font-semibold text-lg mb-2">House rules</h3>
-            <div className="flex flex-row gap-3 flex-grow justify-around">
-              <Toggle
-                id="hasCancelation"
-                label="Has cancelation policy"
-                value={hasCancelation}
-                onChange={setHasCancelation}
-                col={true}
-              />
-      
-              <Toggle
-                id="paymentMethodsCards"
-                label="Accept cards"
-                value={paymentMethodsCards}
-                onChange={setPaymentMethodsCards}
-                col={true}
-              />
-      
-              <Toggle
-                id="paymentMethodsCash"
-                label="Accept cash"
-                value={paymentMethodsCash}
-                onChange={setPaymentMethodsCash}
-                col={true}
-              />
-            </div>
-          </div>
-        </div>
+    const url = qs.stringifyUrl(
+      {
+        url: "/",
+        query: currentQuery,
+      },
+      { skipNull: true }
     );
 
-    return (
-        <Modal
-          isOpen={advancedFiltersModal.isOpen}
-          onClose={advancedFiltersModal.onClose}
-          onSubmit={onSubmit}
-          title="Advanced Filters"
-          actionLabel={'Search'}
-          secondaryAction={onReset}
-          secondaryActionLabel={'Reset filters'}
-          body={bodyContent}
+    advancedFiltersModal.onClose();
+
+    router.push(url);
+  }, [
+    advancedFiltersModal,
+    router,
+    params,
+    petCount,
+    dateRange,
+    priceRange,
+    category,
+    nearMe,
+    facility,
+    hasCancelation,
+    paymentMethodsCards,
+    paymentMethodsCash,
+    review,
+  ]);
+
+  const onReset = useCallback(async () => {
+    advancedFiltersModal.onClose();
+    router.push("/");
+  });
+
+  let bodyContent = (
+    <div className="flex flex-col gap-6 max-h-[70vh] overflow-y-scroll scrollbar-hide p-6 hide-scrollbar">
+      <div className="border-b pb-4">
+        <h3 className="font-semibold text-lg mb-2">
+          {advancedFiltersModal.translation.Advanced?.petCount || "Pet count"}
+        </h3>
+        <Counter
+          subtitle={
+            advancedFiltersModal.translation.Advanced?.petCountSubtitle ||
+            "How many pets you want to leave?"
+          }
+          value={petCount}
+          onChange={(value) => setPetCount(value)}
         />
-      );
-}
+      </div>
+
+      <div className="border-b pb-4">
+        <h3 className="font-semibold text-lg mb-2">
+          {advancedFiltersModal.translation.Advanced?.dateRange || "Date Range"}
+        </h3>
+        <Calendar
+          value={dateRange}
+          onChange={(value) => setDateRange(value.selection)}
+          locale={advancedFiltersModal.translation.Advanced?.locale || "sr"}
+        />
+      </div>
+
+      <div className="border-b pb-4">
+        <h3 className="font-semibold text-lg mb-2">
+          {advancedFiltersModal.translation.Advanced?.pricePerNight ||
+            "Price (per night)"}
+        </h3>
+        <RangeInput
+          min={defaultPriceRange.min}
+          max={defaultPriceRange.max}
+          value={priceRange}
+          onChange={setPriceRange}
+          rangeElementLabel={"$"}
+        />
+      </div>
+
+      <div className="border-b pb-4">
+        <h3 className="font-semibold text-lg mb-2">
+          {advancedFiltersModal.translation.Advanced?.accomodationType ||
+            "Accommodation Type"}
+        </h3>
+        <div className="flex flex-row gap-3 flex-grow justify-around">
+          {options.map((item) => (
+            <AdvancedFiltersOption
+              key={item.label}
+              label={
+                advancedFiltersModal.translation?.[item.label] || item.label
+              }
+              value={item.label}
+              selected={category.includes(item.label)}
+              icon={item.icon}
+              onClick={(value, isSelected) => changeCategory(value, isSelected)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="border-b pb-10">
+        <h3 className="font-semibold text-lg mb-2">
+          {advancedFiltersModal.translation.Advanced?.distanceFromMe ||
+            "Distance from me"}
+        </h3>
+        <DescreteSlider
+          values={{
+            0.1: "X",
+            1: "1km",
+            3: "3km",
+            5: "5km",
+            10: "10km",
+          }}
+          value={nearMe}
+          onChange={setNearMe}
+        />
+      </div>
+
+      <div className="border-b pb-4">
+        <h3 className="font-semibold text-lg mb-2">
+          {advancedFiltersModal.translation.Advanced?.facilities ||
+            "Facilities"}
+        </h3>
+        <div className="flex flex-row gap-3 flex-grow justify-around">
+          {facilityOptions.map((item) => (
+            <AdvancedFiltersOption
+              key={item.label}
+              label={
+                advancedFiltersModal.translation.Advanced?.[item.label] ||
+                item.label
+              }
+              value={item.label}
+              selected={facility.includes(item.label)}
+              icon={item.icon}
+              onClick={(value, isSelected) => changeFacility(value, isSelected)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="border-b pb-10">
+        <h3 className="font-semibold text-lg mb-2">
+          {advancedFiltersModal.translation.Advanced?.reviews || "Reviews"}
+        </h3>
+        <DescreteSlider
+          values={{
+            0.1: "X",
+            1: advancedFiltersModal.translation.Advanced?.onePaw || "1 paw",
+            2: advancedFiltersModal.translation.Advanced?.twoPaw || "2 paws",
+            3: advancedFiltersModal.translation.Advanced?.threePaw || "3 paws",
+            4: advancedFiltersModal.translation.Advanced?.fourPaw || "4 paws",
+            5: advancedFiltersModal.translation.Advanced?.fivePaw || "5 paws",
+          }}
+          value={review}
+          onChange={setReview}
+        />
+      </div>
+
+      <div className="border-b pb-4">
+        <h3 className="font-semibold text-lg mb-2">
+          {advancedFiltersModal.translation.Advanced?.houseRules ||
+            "House rules"}
+        </h3>
+        <div className="flex flex-row gap-3 flex-grow justify-around">
+          <Toggle
+            id="hasCancelation"
+            label={
+              advancedFiltersModal.translation.Advanced?.hasCancelation ||
+              "Has cancelation policy"
+            }
+            value={hasCancelation}
+            onChange={setHasCancelation}
+            col={true}
+          />
+
+          <Toggle
+            id="paymentMethodsCards"
+            label={
+              advancedFiltersModal.translation.Advanced?.paymentMethodsCards ||
+              "Accept cards"
+            }
+            value={paymentMethodsCards}
+            onChange={setPaymentMethodsCards}
+            col={true}
+          />
+
+          <Toggle
+            id="paymentMethodsCash"
+            label={
+              advancedFiltersModal.translation.Advanced?.paymentMethodsCash ||
+              "Accept cash"
+            }
+            value={paymentMethodsCash}
+            onChange={setPaymentMethodsCash}
+            col={true}
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <Modal
+      isOpen={advancedFiltersModal.isOpen}
+      onClose={advancedFiltersModal.onClose}
+      onSubmit={onSubmit}
+      title={
+        advancedFiltersModal.translation.Advanced?.title || "Advanced Filters"
+      }
+      actionLabel={
+        advancedFiltersModal.translation.Advanced?.submit || "Search"
+      }
+      secondaryAction={onReset}
+      secondaryActionLabel={
+        advancedFiltersModal.translation.Advanced?.reset || "Reset filters"
+      }
+      body={bodyContent}
+    />
+  );
+};
 
 export default AdvancedFilters;

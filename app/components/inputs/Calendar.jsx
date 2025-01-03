@@ -1,11 +1,18 @@
 "use client";
 
 import { DateRange } from "react-date-range";
+import { srLatn, enUS } from "date-fns/locale";
 
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-const Calendar = ({ value, onChange, disabledDates, readonly=false }) => {
+const Calendar = ({
+  value,
+  onChange,
+  disabledDates,
+  readonly = false,
+  locale,
+}) => {
   return (
     <DateRange
       className={readonly ? "readonly-date-range" : ""}
@@ -17,6 +24,7 @@ const Calendar = ({ value, onChange, disabledDates, readonly=false }) => {
       showDateDisplay={false}
       minDate={new Date()}
       disabledDates={disabledDates}
+      locale={locale === "sr" ? srLatn : enUS}
     />
   );
 };

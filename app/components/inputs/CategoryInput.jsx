@@ -1,11 +1,11 @@
 "use client";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const CategoryInput = ({ label, icon: Icon, onClick, selected }) => {
+const CategoryInput = ({ label, icon: Icon, onClick, selected, value }) => {
   return (
     <div
-      onClick={() => onClick(label)}
+      onClick={() => onClick(value)}
       className={`rounded-xl border-2 p-4 flex flex-col gap-3 hover:border-black transition cursor-pointer ${
         selected ? "border-black" : "border-neutral-200"
       }`}
