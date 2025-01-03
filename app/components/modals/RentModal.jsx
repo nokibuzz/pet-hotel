@@ -38,7 +38,6 @@ const RentModal = ({ currentUser }) => {
   const [step, setStep] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState(false);
   const [localImageSrc, setLocalImageSrc] = useState([]);
-  const [imagesUploaded, setImagesUploaded] = useState(false);
   const [guestChanged, setGuestChanged] = useState(false);
   const [priceChanged, setPriceChanged] = useState(false);
 
@@ -56,7 +55,7 @@ const RentModal = ({ currentUser }) => {
   } = useForm({
     defaultValues: {
       category: "",
-      guestCount: 1,
+      guestCount: 0,
       imageSrc: [],
       price: 1,
       title: "",
@@ -110,6 +109,18 @@ const RentModal = ({ currentUser }) => {
   };
 
   const onNext = () => {
+    if (step === STEPS.CATEGORY && category === "") {
+      toast.error("Category should be selected!");
+      return;
+    }
+    if (step === STEPS.LOCATION && locationLongitude === "" && locationLatitude === "") {
+      toast.error("Location should be selected!");
+      return;
+    }
+    if (step === STEPS.INFO && guestCount === 0) {
+      toast.error("Capacity should be entered!");
+      return;
+    }
     setStep((value) => value + 1);
   };
 
@@ -159,7 +170,6 @@ const RentModal = ({ currentUser }) => {
 
   const onSubmit = (data) => {
     if (step == STEPS.IMAGES) {
-      setImagesUploaded(false);
       if (
         !localImageSrc ||
         !Array.isArray(localImageSrc) ||
@@ -175,7 +185,6 @@ const RentModal = ({ currentUser }) => {
 
       uploadImages()
         .then((response) => {
-          setImagesUploaded(true);
         })
         .catch((e) => console.error("Woof, woof, images not uploaded!", e));
     }
