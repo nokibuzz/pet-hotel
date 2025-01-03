@@ -116,7 +116,7 @@ const UserMenu = ({ currentUser, translation }) => {
                 {currentUser?.hotelOwner && (
                   <MenuItem
                     onClick={() => {
-                      rentModal.onOpen();
+                      rentModal.onOpen(translation.RentModal);
                       closeMenu();
                     }}
                     label={translation.UserMenu.addProperty || "Add property"}

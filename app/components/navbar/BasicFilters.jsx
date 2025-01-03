@@ -63,7 +63,7 @@ const BasicFilters = ({ translation }) => {
         label: "Number of pets",
         value: `${
           translation.Basic?.numberOfPets || "Number of pets:"
-        } [${petCount}]`,
+        } ${petCount}`,
       });
     }
 
@@ -72,7 +72,7 @@ const BasicFilters = ({ translation }) => {
         label: "Date Range",
         value: `${translation.Basic?.dateRange || "Date Range:"} [${
           formatISO(startDate).split("T")[0]
-        }-${formatISO(endDate).split("T")[0]}]`,
+        } - ${formatISO(endDate).split("T")[0]}]`,
       });
     }
 
@@ -177,11 +177,11 @@ const BasicFilters = ({ translation }) => {
   return (
     <Container>
       <div
-        className="pt-4 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden"
+        className="py-1 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden"
         ref={filtersRef}
       >
         {advancedFilters ? (
-          <div className="flex justify-center items-center gap-4 mb-9">
+          <div className="flex justify-center items-center gap-4">
             <div className="text-lg font-semibold text-gray-800">
               {translation.Basic?.currentSearch || "Current Search"}
             </div>
@@ -189,20 +189,20 @@ const BasicFilters = ({ translation }) => {
               {visibleFilters.map((filter) => (
                 <div
                   key={filter.label}
-                  className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center"
+                  className="px-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center"
                 >
                   {filter.value}
                 </div>
               ))}
               {hiddenFiltersCount > 0 && (
-                <div className="px-4 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center">
+                <div className="px-1 py-1 rounded-full border-2 border-amber-800 text-amber-800 font-semibold text-center">
                   +{hiddenFiltersCount} {translation.more || "more"}
                 </div>
               )}
             </div>
           </div>
         ) : (
-          <div className="flex flex-row gap-3 flex-grow justify-around">
+          <div className="flex flex-row gap-3 justify-evenly items-center w-full">
             {options.map((item) => (
               <BasicFilterOption
                 key={item.label}

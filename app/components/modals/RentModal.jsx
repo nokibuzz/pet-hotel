@@ -38,7 +38,6 @@ const RentModal = ({ currentUser }) => {
   const [step, setStep] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState(false);
   const [localImageSrc, setLocalImageSrc] = useState([]);
-  const [imagesUploaded, setImagesUploaded] = useState(false);
   const [guestChanged, setGuestChanged] = useState(false);
   const [priceChanged, setPriceChanged] = useState(false);
 
@@ -56,7 +55,7 @@ const RentModal = ({ currentUser }) => {
   } = useForm({
     defaultValues: {
       category: "",
-      guestCount: 1,
+      guestCount: 0,
       imageSrc: [],
       price: 1,
       title: "",
@@ -110,6 +109,31 @@ const RentModal = ({ currentUser }) => {
   };
 
   const onNext = () => {
+    if (step === STEPS.CATEGORY && category === "") {
+      toast.error(
+        rentModal.translation?.errorCategoryNotSelected ||
+          "Category should be selected!"
+      );
+      return;
+    }
+    if (
+      step === STEPS.LOCATION &&
+      locationLongitude === "" &&
+      locationLatitude === ""
+    ) {
+      toast.error(
+        rentModal.translation?.errorLocationNotSelected ||
+          "Location should be selected!"
+      );
+      return;
+    }
+    if (step === STEPS.INFO && guestCount === 0) {
+      toast.error(
+        rentModal.translation?.errorCapacityNotSelected ||
+          "Capacity should be entered!"
+      );
+      return;
+    }
     setStep((value) => value + 1);
   };
 
@@ -119,7 +143,9 @@ const RentModal = ({ currentUser }) => {
       !Array.isArray(localImageSrc) ||
       localImageSrc.length === 0
     ) {
-      toast.error("No images to upload!");
+      toast.error(
+        rentModal.translation?.errorNoImagesToUpload || "No images to upload!"
+      );
       return;
     }
 
@@ -150,16 +176,21 @@ const RentModal = ({ currentUser }) => {
       }
 
       setCustomValue("imageSrc", uploaded);
-      toast.success("All images uploaded successfully!");
+      toast.success(
+        rentModal.translation?.imagesUploadedSuccessfully ||
+          "All images uploaded successfully!"
+      );
     } catch (error) {
       console.error(error);
-      toast.error("Error uploading images!");
+      toast.error(
+        rentModal.translation?.errorImagesNotUploaded ||
+          "Error uploading images!"
+      );
     }
   };
 
   const onSubmit = (data) => {
     if (step == STEPS.IMAGES) {
-      setImagesUploaded(false);
       if (
         !localImageSrc ||
         !Array.isArray(localImageSrc) ||
@@ -174,9 +205,7 @@ const RentModal = ({ currentUser }) => {
       }
 
       uploadImages()
-        .then((response) => {
-          setImagesUploaded(true);
-        })
+        .then((response) => {})
         .catch((e) => console.error("Woof, woof, images not uploaded!", e));
     }
 
@@ -192,38 +221,50 @@ const RentModal = ({ currentUser }) => {
       axios
         .put("/api/listing", updatedData)
         .then(() => {
-          toast.success("Successfully updated!");
+          toast.success(
+            rentModal.translation?.successfullyUpdated ||
+              "Successfully updated!"
+          );
           router.refresh();
           // Resetting form, from react-form-hook library
           reset();
           setStep(STEPS.CATEGORY);
           rentModal.onClose();
         })
-        .catch(() => toast.error("Something went wrong!"))
+        .catch(() =>
+          toast.error(rentModal.translation?.error || "Something went wrong!")
+        )
         .finally(() => setIsLoading(false));
     } else {
       setIsLoading(false);
       axios
         .post("/api/listing", data)
         .then(() => {
-          toast.success("Successfully created!");
+          toast.success(
+            rentModal.translation?.successfullyCreated ||
+              "Successfully created!"
+          );
           router.refresh();
           // reseting form, from react-form-hook library
           reset();
           setStep(STEPS.CATEGORY);
           rentModal.onClose();
         })
-        .catch(() => toast.error("Something went wrong!"))
+        .catch(() =>
+          toast.error(rentModal.translation?.error || "Something went wrong!")
+        )
         .finally(() => setIsLoading(false));
     }
   };
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.PRICE) {
-      return rentModal.isEdit ? "Update" : "Create";
+      return rentModal.isEdit
+        ? rentModal.translation?.submitUpdate || "Update"
+        : rentModal.translation?.submitCreate || "Create";
     }
 
-    return "Next";
+    return rentModal.translation?.next || "Next";
   }, [step]);
 
   const secondartActionLabel = useMemo(() => {
@@ -231,7 +272,7 @@ const RentModal = ({ currentUser }) => {
       return undefined;
     }
 
-    return "Back";
+    return rentModal.translation?.back || "Back";
   }, [step]);
 
   // for edit modal, prepopulate values
@@ -306,8 +347,11 @@ const RentModal = ({ currentUser }) => {
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
-        title="Which of these best describe you pet care?"
-        subtitle="Pick one"
+        title={
+          rentModal.translation?.categoryTitle ||
+          "Which of these best describe you pet care?"
+        }
+        subtitle={rentModal.translation?.categorySubtitle || "Pick one"}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
         {options.map((item) => (
@@ -317,7 +361,8 @@ const RentModal = ({ currentUser }) => {
                 setCustomValue("category", category);
               }}
               selected={category === item.label}
-              label={item.label}
+              label={rentModal.translation?.[item.label] || item.label}
+              value={item.label}
               icon={item.icon}
             />
           </div>
@@ -341,8 +386,13 @@ const RentModal = ({ currentUser }) => {
 
     bodyContent = (
       <MapSelect
-        title="Where is your pet house located?"
-        subtitle="Help dog lovers find you"
+        title={
+          rentModal.translation?.locationTitle ||
+          "Where is your pet house located?"
+        }
+        subtitle={
+          rentModal.translation?.locationSubtitle || "Help dog lovers find you"
+        }
         defaultCoordinates={defaultCoordinates}
         onSelect={(location) => onLocationSelect(location)}
       />
@@ -353,12 +403,20 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="What are your capacity"
-          subtitle="How many pets can you take care of"
+          title={
+            rentModal.translation?.capacityTitle || "What are your capacity"
+          }
+          subtitle={
+            rentModal.translation?.capacitySubtitle ||
+            "How many pets can you take care of"
+          }
         />
         <Counter
-          title="Pets"
-          subtitle="How many pets you can take?"
+          title={rentModal.translation?.petsCounterTitle || "Pets"}
+          subtitle={
+            rentModal.translation?.petCounterSubtitle ||
+            "How many pets you can take in your object?"
+          }
           value={guestCount}
           onChange={(value) => setCustomValue("guestCount", value)}
         />
@@ -370,13 +428,20 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-4">
         <Heading
-          title="Add photos of your home/hotel"
-          subtitle="Let owners know how your pet care looks like"
+          title={
+            rentModal.translation?.imagesTitle ||
+            "Add photos of your home/hotel"
+          }
+          subtitle={
+            rentModal.translation?.imagesSubtitle ||
+            "Let owners know how your pet care looks like"
+          }
         />
         <ImageUpload
           value={imageSrc}
           onChange={(value) => setLocalImageSrc(value)}
           maxImages={MAX_IMAGES_FOR_RENT}
+          translation={rentModal.translation?.ImageUpload}
         />
       </div>
     );
@@ -386,12 +451,17 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Describe your object"
-          subtitle="Simple explanation works the best"
+          title={
+            rentModal.translation?.descriptionTitle || "Describe your object"
+          }
+          subtitle={
+            rentModal.translation?.descriptionSubtitle ||
+            "Simple explanation works the best"
+          }
         />
         <Input
           id="title"
-          label="Title"
+          label={rentModal.translation?.descriptionInputTitle || "Title"}
           disabled={isLoading}
           register={register}
           errors={errors}
@@ -400,7 +470,9 @@ const RentModal = ({ currentUser }) => {
         <hr />
         <TextArea
           id="description"
-          label="Description"
+          label={
+            rentModal.translation?.descriptionInputDescription || "Description"
+          }
           defaultNumberOfRows={5}
           disabled={isLoading}
           register={register}
@@ -415,15 +487,26 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="House rules"
-          subtitle="House rules are a set of guidelines or regulations that outline expected behaviors, responsibilities, and standards within a specific property or environment to ensure a respectful, safe, and harmonious experience for all occupants or visitors."
+          title={rentModal.translation?.houseRulesTitle || "House rules"}
+          subtitle={
+            rentModal.translation?.houseRulesSubtitle ||
+            "House rules are a set of guidelines or regulations that outline expected behaviors, responsibilities, and standards within a specific property or environment to ensure a respectful, safe, and harmonious experience for all occupants or visitors."
+          }
         />
 
         <div className="flex flex-row gap-4">
           <Dropdown
             id="checkInTime"
-            label={category === "Petgarten" ? "Earliest pet stay" : "Check-In"}
-            placeholder="Select time..."
+            label={
+              category === "Petgarten"
+                ? rentModal.translation?.houseRulesChechInPetgarden ||
+                  "Earliest pet stay"
+                : rentModal.translation?.houseRulesChechIn || "Check-In"
+            }
+            placeholder={
+              rentModal.translation?.houseRulesChechInPlaceholder ||
+              "Select time..."
+            }
             onChange={(value) => setCustomValue("checkInTime", value)}
             options={hours}
             register={register}
@@ -434,9 +517,15 @@ const RentModal = ({ currentUser }) => {
           <Dropdown
             id="checkOutTime"
             label={
-              category === "Petgarten" ? "Leatest pet pick up" : "Check-In"
+              category === "Petgarten"
+                ? rentModal.translation?.houseRulesChechOutPetgarden ||
+                  "Leatest pet pick up"
+                : rentModal.translation?.houseRulesChechOut || "Check-Out"
             }
-            placeholder="Select time..."
+            placeholder={
+              rentModal.translation?.houseRulesChechOutPlaceholder ||
+              "Select time..."
+            }
             onChange={(value) => setCustomValue("checkOutTime", value)}
             options={hours}
             register={register}
@@ -451,14 +540,20 @@ const RentModal = ({ currentUser }) => {
             <div className="flex flex-row gap-4">
               <Toggle
                 id="hasCancelation"
-                label="Has cancelation policy"
+                label={
+                  rentModal.translation?.houseRulesCancelationPolicy ||
+                  "Has cancelation policy"
+                }
                 value={hasCancelation}
                 onChange={(value) => setCustomValue("hasCancelation", value)}
                 errors={errors}
               />
               <Toggle
                 id="allowBooking"
-                label="Allow booking"
+                label={
+                  rentModal.translation?.houseRulesAllowBooking ||
+                  "Allow booking"
+                }
                 value={allowBooking}
                 onChange={(value) => setCustomValue("allowBooking", value)}
                 errors={errors}
@@ -470,14 +565,16 @@ const RentModal = ({ currentUser }) => {
         <div className="flex flex-row gap-4">
           <Toggle
             id="paymentMethodsCards"
-            label="Accept cards"
+            label={
+              rentModal.translation?.houseRulesAcceptCards || "Accept cards"
+            }
             value={paymentMethodsCards}
             onChange={(value) => setCustomValue("paymentMethodsCards", value)}
             errors={errors}
           />
           <Toggle
             id="paymentMethodsCash"
-            label="Accept cash"
+            label={rentModal.translation?.houseRulesAcceptCash || "Accept cash"}
             value={paymentMethodsCash}
             onChange={(value) => setCustomValue("paymentMethodsCash", value)}
             errors={errors}
@@ -491,26 +588,40 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Addional options"
-          subtitle="Extra customizable services or amenities for pets, such as grooming, feeding, and extended care, enhancing the overall experience and comfort during stay."
+          title={
+            rentModal.translation?.additionalOptionsTitle || "Addional options"
+          }
+          subtitle={
+            rentModal.translation?.additionalOptionsSubtitle ||
+            "Extra customizable services or amenities for pets, such as grooming, feeding, and extended care, enhancing the overall experience and comfort during stay."
+          }
         />
         <Toggle
           id="hasFood"
-          label="Has food option (alergies)"
+          label={
+            rentModal.translation?.additionalOptionsHasFood ||
+            "Has food option (alergies)"
+          }
           value={hasFood}
           onChange={(value) => setCustomValue("hasFood", value)}
           errors={errors}
         />
         <Toggle
           id="hasGrooming"
-          label="Has grooming"
+          label={
+            rentModal.translation?.additionalOptionsHasGrooming ||
+            "Has grooming"
+          }
           value={hasGrooming}
           onChange={(value) => setCustomValue("hasGrooming", value)}
           errors={errors}
         />
         <Toggle
           id="hasVet"
-          label="Has veterinarian"
+          label={
+            rentModal.translation?.additionalOptionsHasVeterinarian ||
+            "Has veterinarian"
+          }
           value={hasVet}
           onChange={(value) => setCustomValue("hasVet", value)}
           errors={errors}
@@ -519,7 +630,10 @@ const RentModal = ({ currentUser }) => {
         <div className="flex flex-row gap-4">
           <TextArea
             id="addionalInformation"
-            label="Addional information"
+            label={
+              rentModal.translation?.additionalOptionsInfo ||
+              "Addional information"
+            }
             defaultNumberOfRows={2}
             disabled={isLoading}
             register={register}
@@ -533,10 +647,16 @@ const RentModal = ({ currentUser }) => {
   if (step === STEPS.PRICE) {
     bodyContent = (
       <div className="flex flex-col gap-8">
-        <Heading title="Price" subtitle="How much would it cost per night?" />
+        <Heading
+          title={rentModal.translation?.priceTitle || "Price"}
+          subtitle={
+            rentModal.translation?.priceSubtitle ||
+            "How much would it cost per night?"
+          }
+        />
         <Input
           id="price"
-          label="Price"
+          label={rentModal.translation?.priceInput || "Price"}
           formatPrice
           type="number"
           disabled={isLoading}
@@ -557,7 +677,11 @@ const RentModal = ({ currentUser }) => {
         rentModal.onClose();
       }}
       onSubmit={handleSubmit(onSubmit)}
-      title={rentModal.isEdit ? "Edit property" : "Add property"}
+      title={
+        rentModal.isEdit
+          ? rentModal.translation?.edit || "Edit property"
+          : rentModal.translation?.submit || "Add property"
+      }
       actionLabel={actionLabel}
       secondaryActionLabel={secondartActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}

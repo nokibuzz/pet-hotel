@@ -47,6 +47,7 @@ const ReservationInfo = ({
         className="readonly-date-range"
         value={dateRange}
         readonly={true}
+        locale={translation.locale || "sr"}
       />
       <hr />
       <div className="p-4">

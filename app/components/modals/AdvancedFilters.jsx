@@ -257,6 +257,7 @@ const AdvancedFilters = ({ defaultPriceRange }) => {
         <Calendar
           value={dateRange}
           onChange={(value) => setDateRange(value.selection)}
+          locale={advancedFiltersModal.translation.Advanced?.locale || "sr"}
         />
       </div>
 

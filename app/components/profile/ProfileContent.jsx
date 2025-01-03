@@ -25,8 +25,8 @@ const ProfileContent = ({
   };
 
   const onRent = useCallback(() => {
-    rentModal.onOpen();
-  }, [currentUser, rentModal]);
+    rentModal.onOpen(translation.RentModal);
+  }, [currentUser, rentModal, translation]);
 
   return (
     <div className="p-4">
