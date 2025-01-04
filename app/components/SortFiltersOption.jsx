@@ -67,7 +67,7 @@ const SortFiltersOption = ({ translation }) => {
         className={`flex flex-col items-center gap-2 p-3 border-b-2 hover:text-neutral-800 transition cursor-pointer border rounded-lg border-gray-300 text-neutral-500`}
       >
         <FontAwesomeIcon icon={faSort} size="lg" className="text-neutral-500" />
-        <div className="font-normal text-xs">{translation.sort || "Sort"}</div>
+        <div className="font-normal text-xs hidden sm:block">{translation.sort || "Sort"}</div>
       </div>
 
       {isOpen && (

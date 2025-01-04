@@ -44,7 +44,7 @@ const BasicFilterOption = ({ icon: Icon, label, selected }) => {
       } ${selected ? "text-neutral-800" : "text-neutral-500"}`}
     >
       <FontAwesomeIcon icon={Icon} size="lg" className="text-neutral-500" />
-      <div className="font-medium text-sm">{label}</div>
+      <div className="font-medium text-sm hidden sm:block">{label}</div>
     </div>
   );
 };
