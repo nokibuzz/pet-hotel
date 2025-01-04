@@ -93,6 +93,7 @@
       "errorOnCancelation": "Error on reservation cancelation!",
       "perDay": "per day",
       "cancelReservation": "Cancel reservation",
+      "cancelReservationNotPossbile": "Cancelation not possible",
       "total": "Total",
       "locale": "en"
     },
@@ -222,6 +223,7 @@
       "errorOnCancelation": "Greška pri otkazivanju rezervacije!",
       "perDay": "po danu",
       "cancelReservation": "Otkaži rezervaciju",
+      "cancelReservationNotPossbile": "Otkazivanje nije moguće",
       "total": "Ukupno",
       "locale": "sr"
     },

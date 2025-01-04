@@ -16,6 +16,7 @@
     },
     "ListingCard": {
       "cancelReservation": "Cancel reservation",
+      "cancelReservationNotPossbile": "Cancelation not possible",
       "perDay": "per day"
     }
   },
@@ -36,7 +37,8 @@
     },
     "ListingCard": {
       "perDay": "po danu",
-      "cancelReservation": "Otkaži rezervaciju"
+      "cancelReservation": "Otkaži rezervaciju",
+      "cancelReservationNotPossbile": "Otkazivanje nije moguće"
     }
   }
 }

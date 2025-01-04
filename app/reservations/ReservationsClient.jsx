@@ -14,6 +14,11 @@ const ReservationsClient = ({ reservations, currentUser, translation }) => {
 
   const onCancel = useCallback(
     (id) => {
+      
+      if (!reservations.find(reservation  => reservation.id === id).listing.hasCancelation){
+        return;
+      }
+
       setDeletingId(id);
 
       axios
@@ -59,7 +64,7 @@ const ReservationsClient = ({ reservations, currentUser, translation }) => {
             onAction={onCancel}
             disabled={deletingId === reservation.id}
             actionLabel={
-              translation.ListingCard.cancelReservation || "Cancel reservation"
+              reservation.listing.hasCancelation ? translation.ListingCard.cancelReservation || "Cancel reservation" : translation.ListingCard.cancelReservationNotPossbile || "Cancelation not possible"
             }
             currentUser={currentUser}
             nextPage="reservations"

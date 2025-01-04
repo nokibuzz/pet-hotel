@@ -4,35 +4,24 @@ import getCurrentUser from "./actions/getCurrentUser";
 import getListings from "./actions/getListings";
 import AdSense from "./components/AdSense";
 import ClientOnly from "./components/ClientOnly";
-import Container from "./components/Container";
+import CustomContainer from "./components/CustomContainer";
 import EmptyState from "./components/EmptyState";
 import ListingCard from "./components/listings/ListingCard";
 import { getTranslations } from "./utils/getTranslations";
 
 const adSlots = [
-  // 6533344719
+  6533344719,
 ];
+
+const adClient = "ca-pub-7467390618217637";
 
 const Home = async ({ searchParams }) => {
   const listings = await getListings(searchParams);
   const currentUser = await getCurrentUser();
 
-  const getRandomIndices = (arrayLength, adCount) => {
-    const indices = new Set();
-    let index = 0;
-    while (indices.size < adCount) {
-      const randomIndex = Math.floor(Math.random() * arrayLength);
-      indices.add({ slot: adSlots[index++], position: randomIndex });
-    }
-    return Array.from(indices);
-  };
-
-  const adIndices = getRandomIndices(
-    listings.length + adSlots.length,
-    adSlots.length
-  );
-
   const translation = await getTranslations(currentUser?.locale, "listings");
+
+  let currentSlot = 0;
 
   if (listings.length === 0) {
     return (
@@ -46,32 +35,38 @@ const Home = async ({ searchParams }) => {
       </ClientOnly>
     );
   }
+
   return (
     <ClientOnly>
-      <Container>
-        <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
-          {listings.map((listing, index) => {
-            const ad = adIndices.find((item) => item.position === index);
-            if (ad) {
-              return (
-                <div key={`ad-${ad.position}`}>
-                  <AdSense client="ca-pub-7467390618217637" slot={ad.slot} />
-                </div>
-              );
-            }
-            return (
-              <ListingCard
-                key={listing.id}
-                actionId={listing.id}
-                data={listing}
-                currentUser={currentUser}
-                currentSearchParams={searchParams}
-                translation={translation.ListingCard}
-              />
-            );
-          })}
-        </div>
-      </Container>
+      <CustomContainer>
+          <div className="pt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4">
+            {listings.flatMap((listing, index) => {
+              const elements = [
+                <ListingCard
+                  key={`listing-${listing.id}`}
+                  actionId={listing.id}
+                  data={listing}
+                  currentUser={currentUser}
+                  currentSearchParams={searchParams}
+                  translation={translation.ListingCard}
+                />,
+              ];
+
+              if (index != 0  && index % 5 === 0 && currentSlot < adSlots.length) {
+                elements.push(
+                  <AdSense
+                    key={`ad-${index}`}
+                    client={adClient}
+                    slot={adSlots[currentSlot]}
+                  />
+                );
+                currentSlot = currentSlot + 1;
+              }
+
+              return elements;
+            })}
+          </div>
+      </CustomContainer>
     </ClientOnly>
   );
 };
