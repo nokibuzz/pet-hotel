@@ -16,7 +16,7 @@ const AdvancedFiltersButton = ({ selected, onClick, translation }) => {
         size="lg"
         className="text-neutral-500"
       />
-      <div className="font-normal text-xs">
+      <div className="font-normal text-xs hidden sm:block">
         {translation.filters || "Filters"}
       </div>
     </div>
