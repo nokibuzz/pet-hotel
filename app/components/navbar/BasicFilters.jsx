@@ -177,7 +177,7 @@ const BasicFilters = ({ translation }) => {
   return (
     <Container>
       <div
-        className="py-1 flex flex-row items-center justify-between gap-3 overflow-x-auto overflow-y-hidden"
+        className="py-1 flex flex-row items-center justify-between gap-1 sm:gap-3 overflow-x-auto overflow-y-hidden"
         ref={filtersRef}
       >
         {advancedFilters ? (
