@@ -14,8 +14,6 @@ import AdvancedFilters from "./components/modals/AdvancedFilters";
 import ReviewModal from "./components/modals/ReviewModal";
 import ChangePasswordModal from "./components/modals/ChangePasswordModal";
 import UploadImageModal from "./components/modals/UploadImageModal";
-import CustomBackground from './components/CustomBackground';
-import BottomBackground from "./components/ButtomBackground";
 import { getTranslations } from "./utils/getTranslations";
 
 const font = Nunito({
@@ -36,8 +34,6 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={font.className}>
-      <BottomBackground />
-      <CustomBackground />
         <ClientOnly>
           <ToasterProvider />
           <LoginModal />

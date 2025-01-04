@@ -31,10 +31,17 @@ const MessageInput = ({ value, onSend, translation }) => {
       <textarea
         id="message-input"
         placeholder={translation.writeAMessage || "Write a message..."}
-        className={`w-full border-[1px] border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 flex resize-none bg-background px-3 py-2 text-sm ring-offset-background overflow-hidden`}
+        className={`w-full border-[1px] border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 flex resize-none bg-background px-3 py-2 text-sm ring-offset-background`}
         value={text}
         onChange={handleInputChange}
         rows={1}
+        style={{
+          resize: "none",
+          lineHeight: "1.5em",
+          maxHeight: "4.5em",
+          overflowY: "scroll",
+          scrollbarWidth: "none",
+        }}
       />
       <SendButton onClick={onClick} />
     </div>

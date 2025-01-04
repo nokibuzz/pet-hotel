@@ -92,13 +92,13 @@ const Conversation = ({
             ))
           )}
           <div ref={messagesEndRef} />
-          <div className="sticky bottom-0 -mt-4">
+        </div>
+        <div className="sticky bottom-0 px-2 py-1">
             <MessageInput
               onSend={(message) => onSendMessageHandler(message)}
               translation={translation}
             />
           </div>
-        </div>
       </div>
     </div>
   );
