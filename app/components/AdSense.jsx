@@ -6,7 +6,7 @@ const AdSense = ({ client, slot }) => {
   useEffect(() => {
     if (!window.adsbygoogle) {
       const script = document.createElement('script');
-      script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7467390618217637';
+      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`;
       script.async = true;
       script.crossOrigin = 'anonymous';
       document.head.appendChild(script);
@@ -18,7 +18,7 @@ const AdSense = ({ client, slot }) => {
   }, []); 
 
   return (
-    <div>
+    <div className='col-span-1'>
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}

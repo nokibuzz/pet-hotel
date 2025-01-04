@@ -64,17 +64,14 @@ body,
   scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Gray thumb on transparent track */
 }
 
-.pawprints-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  pointer-events: none;
+.pawprint-background {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  z-index: -10;
 }
 
 .pawprint {
-  object-fit: cover;
   opacity: 0.8;
+  transition: transform 0.3s ease;
 }

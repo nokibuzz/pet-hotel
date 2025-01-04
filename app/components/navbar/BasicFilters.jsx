@@ -202,7 +202,7 @@ const BasicFilters = ({ translation }) => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-row gap-3 justify-evenly items-center w-full">
+          <div className="flex flex-row gap-1 sm:gap-3 justify-evenly items-center w-full pt-2">
             {options.map((item) => (
               <BasicFilterOption
                 key={item.label}
@@ -214,7 +214,7 @@ const BasicFilters = ({ translation }) => {
           </div>
         )}
 
-        <div className="flex flex-row gap-4 justify-end items-center flex-grow mb-4">
+        <div className="flex flex-row gap-1 sm:gap-4 justify-end items-center flex-grow">
           <div className="flex items-center">
             <SortFiltersOption translation={translation} />
           </div>

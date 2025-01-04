@@ -13,9 +13,15 @@ const ReservationInfo = ({
   totalPrice,
   dateRange,
   translation,
+  hasCancelation
 }) => {
   const router = useRouter();
   const onCancel = useCallback(() => {
+
+    if (!hasCancelation){
+      return;
+    }
+
     setDeletingId(reservationId);
 
     axios
@@ -52,7 +58,9 @@ const ReservationInfo = ({
       <hr />
       <div className="p-4">
         <Button
-          label={translation.cancelReservation || "Cancel reservation"}
+          label={
+            hasCancelation ?  translation.cancelReservation || "Cancel reservation" : translation.cancelReservationNotPossbile || "Cancelation not possible"
+          }
           onClick={onCancel}
         />
       </div>

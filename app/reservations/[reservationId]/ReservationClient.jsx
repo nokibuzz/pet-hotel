@@ -1,6 +1,5 @@
 "use client";
 
-import Container from "@/app/components/Container";
 import ListingAddionalInformation from "@/app/components/listings/ListingAddionalInformation";
 import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
@@ -8,6 +7,7 @@ import ReservationInfo from "@/app/components/reservations/ReservationInfo";
 import { options } from "@/app/components/navbar/BasicFilters";
 import React, { useMemo, useEffect, useState } from "react";
 import Conversation from "@/app/components/conversation/Conversation";
+import CustomContainer from "@/app/components/CustomContainer";
 
 const ReservationClient = ({ reservation, currentUser, translation }) => {
   const listing = reservation.listing;
@@ -43,8 +43,8 @@ const ReservationClient = ({ reservation, currentUser, translation }) => {
   }, [listing.category]);
 
   return (
-    <Container>
-      <div className="max-w-screen-lg mx-auto">
+    <CustomContainer>
+      <div className="max-w-screen-lg mx-auto px-4">
         <div className="flex flex-col gap-6">
           <ListingHead
             id={listing.id}
@@ -77,6 +77,7 @@ const ReservationClient = ({ reservation, currentUser, translation }) => {
                 totalPrice={reservation.totalPrice}
                 dateRange={initialDateRange}
                 translation={translation.ReservationInfo}
+                hasCancelation={reservation.listing.hasCancelation}
               />
               <ListingAddionalInformation
                 hasFood={listing.hasFood}
@@ -92,11 +93,10 @@ const ReservationClient = ({ reservation, currentUser, translation }) => {
                 translation={translation.Conversation}
               />
             </div>
-            {/* TODO: add review like on listing client */}
           </div>
         </div>
       </div>
-    </Container>
+    </CustomContainer>
   );
 };
 
