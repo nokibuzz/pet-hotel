@@ -2,11 +2,9 @@
 
 import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import MenuItem from "./MenuItem";
-
 import { signOut } from "next-auth/react";
-
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useRentModal from "@/app/hooks/useRentModal";
@@ -39,6 +37,20 @@ const UserMenu = ({ currentUser, translation }) => {
     });
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".user-menu-container")) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="relative z-50">
       <div className="flex flex-row items-center">
@@ -60,7 +72,7 @@ const UserMenu = ({ currentUser, translation }) => {
       </div>
 
       {isOpen && (
-        <div className="absolute rounded-xl shadow-md w-[35vw] bg-white overflow-hidden right-0 top-12 text-sm">
+        <div className="absolute rounded-xl shadow-md w-[35vw] bg-white overflow-hidden right-0 top-12 text-sm user-menu-container">
           {currentUser && <LanguageSelector onChange={handleLanguageChange} />}
           <div className="flex flex-col cursor-pointer ">
             {currentUser ? (

@@ -17,7 +17,7 @@ const Counter = ({ title, subtitle, value, onChange }) => {
   }, [onChange, value]);
 
   return (
-    <div className="flex flex-row items-center justify-between">
+    <div className="flex flex-row items-center justify-between gap-1">
       <div className="flex flex-col">
         <div className="font-medium">{title}</div>
         <div className="font-light text-gray-600">{subtitle}</div>
