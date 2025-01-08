@@ -38,6 +38,11 @@ const ListingHead = ({
       />
       <div className="w-full h-[60vh] overflow-hidden rounded-xl relative">
         <ImageGallery images={imageSrc} />
+        {listing && typeof listing.overallReview === "number" && listing.overallReview > 1 && (
+          <div className="absolute top-3 left-3 bg-white text-black px-3 py-1 rounded-full border border-gray-300 font-semibold shadow">
+            {listing.overallReview.toFixed(1)}
+          </div>
+        )}
         {currentUser?.hotelOwner !== true && (
           <div className="absolute top-5 right-5">
             <HeartButton listingId={id} currentUser={currentUser} />
