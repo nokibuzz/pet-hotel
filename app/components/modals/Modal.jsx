@@ -35,6 +35,39 @@ const Modal = ({
     }, 300);
   }, [disabled, onClose]);
 
+  const handleEscape = useCallback(
+    (event) => {
+      if (event.key === "Escape" && !disabled) {
+        handleClose();
+      }
+    },
+    [disabled, handleClose]
+  );
+  const handleClickOutside = useCallback(
+    (event) => {
+      const modalElement = document.querySelector(".modal-container");
+      if (
+        !modalElement?.contains(event.target) &&
+        !disabled
+      ) {
+        handleClose();
+      }
+    },
+    [disabled, handleClose]
+  );
+
+  useEffect(() => {
+    if (showModal) {
+      document.addEventListener("keydown", handleEscape);
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showModal, handleEscape, handleClickOutside]);  
+
   const handleSubmit = useCallback(() => {
     if (disabled) {
       return;
@@ -57,12 +90,12 @@ const Modal = ({
 
   return (
     <>
-      <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-neutral-800/70">
+      <div className="justify-center items-center flex overflow-x-hidden overflow-y-hidden fixed inset-0 z-50 outline-none focus:outline-none bg-neutral-800/70">
         <div className="relative w-full md:w-4/6 lg:w-3/6 xl:w-2/5 mx-auto my-10 max-h-[calc(100%-80px)]">
           {/* CONTENT */}
           {/* here is duration 300 for the animation */}
           <div
-            className={`translate duration-300 h-full ${
+            className={`modal-container translate duration-300 h-full ${
               showModal ? "translate-y-0" : "translate-y-full"
             } ${showModal ? "opacity-100" : "opacity-0"}`}
           >
