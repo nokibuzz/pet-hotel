@@ -82,6 +82,11 @@ const ListingCard = ({
             src={data.imageSrc?.[0]}
             className="object-cover h-full w-full group-hover:scale-110 transition"
           />
+          {typeof data.overallReview === "number" && data.overallReview > 1 && (
+            <div className="absolute top-3 left-3 bg-white text-black px-3 py-1 rounded-full border border-gray-300 font-semibold shadow">
+              {data.overallReview.toFixed(1)}
+            </div>
+          )}
           {currentUser?.hotelOwner !== true && (
             <div className="absolute top-3 right-3">
               <HeartButton listingId={data.id} currentUser={currentUser} />

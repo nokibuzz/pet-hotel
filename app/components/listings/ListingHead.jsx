@@ -43,6 +43,11 @@ const ListingHead = ({
             <HeartButton listingId={id} currentUser={currentUser} />
           </div>
         )}
+        {listing && typeof listing.overallReview === "number" && listing.overallReview > 1 && (
+          <div className="absolute top-3 left-3 bg-white text-black px-3 py-1 rounded-full border border-gray-300 font-semibold shadow">
+            {listing.overallReview.toFixed(1)}
+          </div>
+        )}
       </div>
     </>
   );
