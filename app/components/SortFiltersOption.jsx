@@ -1,4 +1,6 @@
-import { useState, useRef } from "react";
+"use client";
+
+import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -57,6 +59,20 @@ const SortFiltersOption = ({ translation }) => {
     return { top: 0, left: 0 };
   };
 
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (!event.target.closest(".sort-options")) {
+          setIsOpen(false);
+        }
+      };
+  
+      document.addEventListener("mousedown", handleClickOutside);
+  
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
+
   const { top, left } = getDropdownPosition();
 
   return (
@@ -72,7 +88,7 @@ const SortFiltersOption = ({ translation }) => {
 
       {isOpen && (
         <div
-          className="fixed w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+          className="fixed w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 sort-options"
           style={{ top: `${top}px`, left: `${left}px` }}
         >
           <div className="py-1">
