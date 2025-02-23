@@ -3,7 +3,6 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-
 import { prisma } from "@/app/libs/prismadb";
 
 export const authOptions = {
@@ -47,6 +46,53 @@ export const authOptions = {
       },
     }),
   ],
+  callbacks: {
+    async signIn({ user, account, profile }) {     
+      try {
+        const existingUser = await prisma.user.findUnique({
+          where: {
+            email: user.email,
+          },
+          include: {
+            accounts: true,
+          },
+        });
+
+        if (existingUser) {
+          const googleAccount = existingUser.accounts.find(account => account.provider === 'google');
+          if (googleAccount && googleAccount.providerAccountId == account.providerAccountId) {
+            return true;
+          }
+          return false;
+        }
+        else {
+          const newUser = await prisma.user.create({
+            data: {
+              email: user.email,
+              name: user.name,
+              image: user.image || null,
+              accounts: {
+                create: {
+                  type: account.type,
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId,
+                  access_token: account.access_token,
+                  expires_at: account.expires_at,
+                  token_type: account.token_type,
+                  scope: account.scope,
+                  id_token: account.id_token,
+                }
+              }
+            },
+          });
+
+          return true;
+        }
+      } catch (error) {
+        return false; 
+      }
+    },
+  },
   pages: {
     signIn: "/",
   },
