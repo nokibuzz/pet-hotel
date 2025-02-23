@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import Button from "../Button";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import Toggle from "../inputs/Toggle";
+import { signIn } from "next-auth/react";
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
@@ -143,7 +144,7 @@ const RegisterModal = () => {
         }
         icon={FcGoogle}
         onClick={() => {
-          toast.error("Sorry, we didn't implement this yet!");
+          signIn("google");
         }}
       />
       <div className="text-neutral-500 text-center mt-4 font-light">

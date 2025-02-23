@@ -96,8 +96,8 @@ const LoginModal = () => {
           "Continue with Google"
         }
         icon={FcGoogle}
-        onClick={() => {
-          toast.error("Sorry, we didn't implement this yet!");
+        onClick={() => { 
+          signIn("google");
         }}
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
