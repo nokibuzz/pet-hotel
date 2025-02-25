@@ -48,6 +48,11 @@ export const authOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {     
+
+      if (account.provider !== 'google') {
+        return true;
+      }
+
       try {
         const existingUser = await prisma.user.findUnique({
           where: {
