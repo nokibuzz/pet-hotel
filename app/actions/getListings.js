@@ -4,7 +4,7 @@ export default async function getListings(params) {
   try {
     const {
       userId,
-      guestCount, 
+      guestCount,
       startDate,
       endDate,
       latitude,
@@ -13,7 +13,7 @@ export default async function getListings(params) {
       minPrice,
       maxPrice,
       nearMe,
-      facility,        
+      facility,
       hasCancelation,
       paymentMethodsCards,
       paymentMethodsCash,
@@ -157,8 +157,7 @@ export default async function getListings(params) {
           });
           break;
       }
-    }
-    else {
+    } else {
       pipeline.push({
         $sort: {
           createdAt: -1,

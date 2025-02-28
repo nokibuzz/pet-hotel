@@ -10,6 +10,8 @@ export default async function getListingById(params) {
       },
       include: {
         user: true,
+        pricing: true,
+        types: true,
       },
     });
 
