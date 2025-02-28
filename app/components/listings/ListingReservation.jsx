@@ -2,8 +2,10 @@
 
 import Calendar from "../inputs/Calendar";
 import Button from "../Button";
+import useReservationModal from "@/app/hooks/useReservationModal";
 
 const ListingReservation = ({
+  listing,
   price,
   totalPrice,
   dateRange,
@@ -13,6 +15,8 @@ const ListingReservation = ({
   disabledDates,
   translation,
 }) => {
+  const reservationModal = useReservationModal();
+
   return (
     <div className="bg-white rounded-xl border-[1px] border-neutral-200 overflow-hidden">
       <div className="flex flex-row items-center gap-1 p-4">
@@ -33,7 +37,7 @@ const ListingReservation = ({
         <Button
           disabled={disabled}
           label={translation.reserve || "Reserve"}
-          onClick={onSubmit}
+          onClick={() => reservationModal.onOpen(listing)}
         />
       </div>
       <div className="p-4 flex flex-row items-center justify-between font-semibold text-lg">

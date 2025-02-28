@@ -15,14 +15,15 @@ import ReviewModal from "./components/modals/ReviewModal";
 import ChangePasswordModal from "./components/modals/ChangePasswordModal";
 import UploadImageModal from "./components/modals/UploadImageModal";
 import { getTranslations } from "./utils/getTranslations";
+import ReservationModal from "./components/modals/ReservationModal";
 
 const font = Nunito({
   subsets: ["latin", "cyrillic"],
 });
 
 export const metadata = {
-  title: "Pet Hotel",
-  description: "Pet Hotel manager",
+  title: "FurLand",
+  description: "Sigurno mesto za tvog ljubimca",
 };
 
 export default async function RootLayout({ children }) {
@@ -38,6 +39,7 @@ export default async function RootLayout({ children }) {
           <ToasterProvider />
           <LoginModal />
           <RegisterModal />
+          <ReservationModal />
           <RentModal currentUser={currentUser} />
           <SearchModal currentUser={currentUser} />
           <AdvancedFilters defaultPriceRange={minMaxPrices} />

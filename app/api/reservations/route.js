@@ -14,7 +14,7 @@ export async function POST(request) {
 
   const body = await request.json();
 
-  const { listingId, startDate, endDate, totalPrice } = body;
+  const { listingId, startDate, endDate, typeId, totalPrice } = body;
 
   if (!listingId || !startDate || !endDate || !totalPrice) {
     return NextResponse.error();
@@ -28,12 +28,19 @@ export async function POST(request) {
       reservations: {
         create: {
           userId: currentUser.id,
+          typeId,
           startDate,
           endDate,
           totalPrice,
+          status: "pending",
         },
       },
     },
+  });
+
+  await prisma.types.update({
+    where: { id: typeId },
+    data: { capacity: { decrement: 1 } },
   });
 
   return NextResponse.json(listingAndReservation);
