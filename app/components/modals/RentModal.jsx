@@ -7,7 +7,7 @@ import Heading from "../Heading";
 import { options } from "../navbar/BasicFilters";
 import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
-import Counter from "../inputs/Counter";
+import InputWithSeparateLabel from "../inputs/InputWithSeparateLabel";
 import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
 import axios from "axios";
@@ -17,16 +17,18 @@ import TextArea from "../inputs/TextArea";
 import Dropdown from "../inputs/Dropdown";
 import Toggle from "../inputs/Toggle";
 import MapSelect from "../MapSelect";
+import { IoMdClose } from "react-icons/io";
+import CustomInput from "../inputs/CustomInput";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
   LOCATION: 1,
   INFO: 2,
-  IMAGES: 3,
-  DESCRIPTION: 4,
-  HOUSE_RULES: 5,
-  ADDIONAL_OPTIONS: 6,
-  PRICE: 7,
+  PRICE: 3,
+  IMAGES: 4,
+  DESCRIPTION: 5,
+  HOUSE_RULES: 6,
+  ADDIONAL_OPTIONS: 7,
 });
 
 const MAX_IMAGES_FOR_RENT = 10;
@@ -38,8 +40,6 @@ const RentModal = ({ currentUser }) => {
   const [step, setStep] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState(false);
   const [localImageSrc, setLocalImageSrc] = useState([]);
-  const [guestChanged, setGuestChanged] = useState(false);
-  const [priceChanged, setPriceChanged] = useState(false);
 
   const hours = Array.from({ length: 24 }, (_, index) =>
     index < 10 ? `0${index}:00` : `${index}:00`
@@ -55,7 +55,7 @@ const RentModal = ({ currentUser }) => {
   } = useForm({
     defaultValues: {
       category: "",
-      guestCount: 0,
+      totalPlaces: 0,
       imageSrc: [],
       price: 1,
       title: "",
@@ -73,6 +73,9 @@ const RentModal = ({ currentUser }) => {
       locationLongitude: "",
       locationLatitude: "",
       addressLabel: "",
+      capacityType: "",
+      types: [],
+      pricing: [],
     },
   });
 
@@ -80,8 +83,7 @@ const RentModal = ({ currentUser }) => {
   const title = watch("title");
   const description = watch("description");
   const category = watch("category");
-  const guestCount = watch("guestCount");
-  const price = watch("price");
+  const totalPlaces = watch("totalPlaces");
   const imageSrc = watch("imageSrc");
   const checkInTime = watch("checkInTime");
   const checkOutTime = watch("checkOutTime");
@@ -95,6 +97,9 @@ const RentModal = ({ currentUser }) => {
   const addionalInformation = watch("addionalInformation");
   const locationLongitude = watch("locationLongitude");
   const locationLatitude = watch("locationLatitude");
+  const capacityType = watch("capacityType");
+  const types = watch("types");
+  const pricing = watch("pricing");
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -127,12 +132,14 @@ const RentModal = ({ currentUser }) => {
       );
       return;
     }
-    if (step === STEPS.INFO && guestCount === 0) {
-      toast.error(
-        rentModal.translation?.errorCapacityNotSelected ||
-          "Capacity should be entered!"
-      );
-      return;
+    if (step === STEPS.INFO) {
+      if (capacityType === "TOTAL" && totalPlaces === 0) {
+        toast.error(
+          rentModal.translation?.errorCapacityNotSelected ||
+            "Capacity should be entered!"
+        );
+        return;
+      }
     }
     setStep((value) => value + 1);
   };
@@ -209,12 +216,18 @@ const RentModal = ({ currentUser }) => {
         .catch((e) => console.error("Woof, woof, images not uploaded!", e));
     }
 
-    if (step !== STEPS.PRICE) {
+    if (step === STEPS.PRICE) {
+      storePricesInPricingArray();
+    }
+
+    if (step !== STEPS.ADDIONAL_OPTIONS) {
       return onNext();
     }
 
     setIsLoading(true);
     setLocalImageSrc([]);
+    setGuestTypes([]);
+    setPricingTemp([]);
 
     if (rentModal.isEdit) {
       const updatedData = { ...data, id: rentModal.listing.id };
@@ -236,7 +249,6 @@ const RentModal = ({ currentUser }) => {
         )
         .finally(() => setIsLoading(false));
     } else {
-      setIsLoading(false);
       axios
         .post("/api/listing", data)
         .then(() => {
@@ -258,7 +270,7 @@ const RentModal = ({ currentUser }) => {
   };
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.PRICE) {
+    if (step === STEPS.ADDIONAL_OPTIONS) {
       return rentModal.isEdit
         ? rentModal.translation?.submitUpdate || "Update"
         : rentModal.translation?.submitCreate || "Create";
@@ -304,22 +316,6 @@ const RentModal = ({ currentUser }) => {
         rentModal.listing.location.coordinates?.[1]
       );
     }
-    if (
-      rentModal.listing?.guestCount &&
-      guestCount !== rentModal.listing.guestCount &&
-      !guestChanged
-    ) {
-      setGuestChanged(true);
-      setCustomValue("guestCount", rentModal.listing.guestCount);
-    }
-    if (
-      rentModal.listing?.price &&
-      price !== rentModal.listing.price &&
-      !priceChanged
-    ) {
-      setPriceChanged(true);
-      setCustomValue("price", rentModal.listing.price);
-    }
     if (Array.isArray(rentModal.listing?.imageSrc) && imageSrc.length === 0) {
       setCustomValue("imageSrc", rentModal.listing.imageSrc);
     }
@@ -328,6 +324,26 @@ const RentModal = ({ currentUser }) => {
         "addionalInformation",
         rentModal.listing.addionalInformation
       );
+    }
+    if (rentModal.listing?.capacityType && !capacityType) {
+      const capType = rentModal.listing.capacityType;
+      setCustomValue("capacityType", capType);
+      if (capType === "ADVANCED") {
+        if (rentModal?.listing?.types?.length) {
+          const types = rentModal.listing.types.map((type) => ({
+            name: type.name,
+            capacity: type.capacity,
+          }));
+
+          setCustomValue("types", types);
+          setGuestTypes(types);
+        }
+      } else if (
+        rentModal?.listing?.totalPlaces &&
+        totalPlaces !== rentModal.listing.totalPlaces
+      ) {
+        setCustomValue("totalPlaces", rentModal.listing.totalPlaces);
+      }
     }
   }, [
     rentModal.listing,
@@ -338,9 +354,10 @@ const RentModal = ({ currentUser }) => {
     checkOutTime,
     locationLatitude,
     locationLongitude,
-    guestCount,
+    totalPlaces,
     imageSrc,
     addionalInformation,
+    capacityType,
     setCustomValue,
   ]);
 
@@ -399,6 +416,47 @@ const RentModal = ({ currentUser }) => {
     );
   }
 
+  const [guestTypes, setGuestTypes] = useState([]);
+
+  const handleToggleAdvanced = () => {
+    if (capacityType === "TOTAL") {
+      setGuestTypes([{ name: "", capacity: 1 }]); // Start with one row
+    } else {
+      setGuestTypes([]); // Clear list when hiding Advanced
+    }
+    console.log("capType", capacityType);
+    setCustomValue(
+      "capacityType",
+      capacityType === "TOTAL" ? "ADVANCED" : "TOTAL"
+    );
+  };
+
+  const handleAddType = () => {
+    setGuestTypes([...guestTypes, { name: "", capacity: 1 }]);
+  };
+
+  const handleRemoveType = (index) => {
+    const updatedTypes = [...guestTypes];
+    updatedTypes.splice(index, 1);
+    setGuestTypes(updatedTypes);
+    setCustomValue("types", updatedTypes);
+  };
+
+  const handleTypeChange = (index, field, value) => {
+    if (
+      field === "capacity" &&
+      value !== null &&
+      value !== undefined &&
+      value !== ""
+    ) {
+      value = parseInt(value);
+    }
+    const updatedTypes = [...guestTypes];
+    updatedTypes[index][field] = value;
+    setGuestTypes(updatedTypes);
+    setCustomValue("types", updatedTypes);
+  };
+
   if (step === STEPS.INFO) {
     bodyContent = (
       <div className="flex flex-col gap-8">
@@ -411,15 +469,75 @@ const RentModal = ({ currentUser }) => {
             "How many pets can you take care of"
           }
         />
-        <Counter
-          title={rentModal.translation?.petsCounterTitle || "Pets"}
-          subtitle={
-            rentModal.translation?.petCounterSubtitle ||
-            "How many pets you can take in your object?"
-          }
-          value={guestCount}
-          onChange={(value) => setCustomValue("guestCount", value)}
-        />
+        {capacityType !== "ADVANCED" && (
+          <InputWithSeparateLabel
+            title={rentModal.translation?.petsCounterTitle || "Pets"}
+            subtitle={
+              rentModal.translation?.petCounterSubtitle ||
+              "How many pets you can take in your object?"
+            }
+            value={totalPlaces}
+            onChange={(e) => {
+              console.log("value", e.target.value);
+              setCustomValue("totalPlaces", parseInt(e.target.value));
+            }}
+          />
+        )}
+
+        {/* Advanced Button */}
+        <button
+          onClick={handleToggleAdvanced}
+          className="text-blue-500 underline text-sm self-start"
+        >
+          {capacityType === "ADVANCED" ? "Hide Advanced Options" : "Advanced"}
+        </button>
+
+        {/* Advanced Section */}
+        {capacityType === "ADVANCED" && (
+          <div className="flex flex-col gap-4">
+            {guestTypes.map((type, index) => (
+              <div key={index} className="flex items-center gap-4">
+                {/* Dropdown */}
+                <select
+                  value={type.name}
+                  onChange={(e) =>
+                    handleTypeChange(index, "name", e.target.value)
+                  }
+                  className="border rounded-md p-2 w-1/2"
+                >
+                  <option value="">Select Type</option>
+                  <option value="Small Dogs">Small Dogs</option>
+                  <option value="Medium Dogs">Medium Dogs</option>
+                  <option value="Big Dogs">Big Dogs</option>
+                  <option value="Cats">Cats</option>
+                </select>
+
+                {/* Number Input */}
+                <input
+                  type="number"
+                  value={type.capacity}
+                  onChange={(e) =>
+                    handleTypeChange(index, "capacity", e.target.value)
+                  }
+                  className="border rounded-md p-2 w-1/4"
+                />
+
+                {/* Remove Button */}
+                <button onClick={() => handleRemoveType(index)}>
+                  <IoMdClose size={18} className="text-red-500" />
+                </button>
+              </div>
+            ))}
+
+            {/* Add Another Type */}
+            <button
+              onClick={handleAddType}
+              className="text-blue-500 underline text-sm self-start"
+            >
+              Add another type
+            </button>
+          </div>
+        )}
       </div>
     );
   }
@@ -644,6 +762,43 @@ const RentModal = ({ currentUser }) => {
     );
   }
 
+  const [pricingTemp, setPricingTemp] = useState([]);
+  const [weekPrice, setWeekPrice] = useState(0);
+  const [weekendPrice, setWeekendPrice] = useState(0);
+
+  const storePricesInPricingArray = () => {
+    if (capacityType === "TOTAL") {
+      const pricingObj = [
+        {
+          typeName: "TOTAL",
+          defaultPrice: parseFloat(weekPrice) || 0,
+          weekendPrice: parseFloat(weekendPrice) || 0,
+        },
+      ];
+      setCustomValue("pricing", pricingObj);
+    } else {
+      setCustomValue("pricing", pricingTemp);
+    }
+  };
+
+  // Function to handle changes in price inputs
+  const handlePriceChange = (index, field, value) => {
+    setPricingTemp((prevPricing) => {
+      const updatedPricing = [...prevPricing];
+
+      if (!updatedPricing[index]) {
+        updatedPricing[index] = {
+          typeName: guestTypes[index]?.name || `Type ${index + 1}`,
+          defaultPrice: 0,
+          weekendPrice: 0,
+        };
+      }
+
+      updatedPricing[index][field] = value ? parseFloat(value) : 0;
+      return updatedPricing;
+    });
+  };
+
   if (step === STEPS.PRICE) {
     bodyContent = (
       <div className="flex flex-col gap-8">
@@ -654,16 +809,63 @@ const RentModal = ({ currentUser }) => {
             "How much would it cost per night?"
           }
         />
-        <Input
-          id="price"
-          label={rentModal.translation?.priceInput || "Price"}
-          formatPrice
-          type="number"
-          disabled={isLoading}
-          register={register}
-          errors={errors}
-          required
-        />
+        {/* If NOT using Advanced Options, show basic Week/Weekend Price */}
+        {capacityType === "TOTAL" ? (
+          <>
+            <CustomInput
+              id="weekPrice"
+              label={rentModal.translation?.weekPriceInput || "Week Price"}
+              formatPrice
+              type="number"
+              disabled={isLoading}
+              onChange={(e) => setWeekPrice(parseFloat(e.target.value) || 0)}
+            />
+            <CustomInput
+              id="weekendPrice"
+              label={
+                rentModal.translation?.weekendPriceInput || "Weekend Price"
+              }
+              formatPrice
+              type="number"
+              disabled={isLoading}
+              onChange={(e) => setWeekendPrice(parseFloat(e.target.value) || 0)}
+            />
+          </>
+        ) : (
+          <>
+            {/* Show Prices Per Type When Advanced Options are Enabled */}
+            {guestTypes.map((type, index) => (
+              <div
+                key={index}
+                className="flex flex-col gap-4 border p-4 rounded-md"
+              >
+                <h3 className="text-lg font-semibold">
+                  {type.name || `Type ${index + 1}`}
+                </h3>
+                <CustomInput
+                  id={`price-${type.name || index}-week`}
+                  label={`Week Price (${type.name || `Type ${index + 1}`})`}
+                  formatPrice
+                  type="number"
+                  disabled={isLoading}
+                  onChange={(e) =>
+                    handlePriceChange(index, "defaultPrice", e.target.value)
+                  }
+                />
+                <CustomInput
+                  id={`price-${type.name || index}-weekend`}
+                  label={`Weekend Price (${type.name || `Type ${index + 1}`})`}
+                  formatPrice
+                  type="number"
+                  disabled={isLoading}
+                  onChange={(e) =>
+                    handlePriceChange(index, "weekendPrice", e.target.value)
+                  }
+                />
+              </div>
+            ))}
+          </>
+        )}
       </div>
     );
   }
@@ -686,6 +888,8 @@ const RentModal = ({ currentUser }) => {
       secondaryActionLabel={secondartActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
       body={bodyContent}
+      disabled={isLoading}
+      canCloseDisabled
     />
   );
 };

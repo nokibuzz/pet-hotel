@@ -38,6 +38,7 @@ model User {
     reservations Reservation[]
     pet          Pet[]
     reviews      Review[]
+    Notification Notification[]
 }
 
 model Account {
@@ -60,14 +61,13 @@ model Account {
 }
 
 model Listing {
-    id                  String        @id @default(auto()) @map("_id") @db.ObjectId
-    userId              String?       @db.ObjectId
+    id                  String         @id @default(auto()) @map("_id") @db.ObjectId
+    userId              String?        @db.ObjectId
     title               String
     description         String
     imageSrc            String[]
-    createdAt           DateTime      @default(now())
+    createdAt           DateTime       @default(now())
     category            String
-    guestCount          Int
     price               Int
     checkInTime         String
     checkOutTime        String
@@ -80,27 +80,97 @@ model Listing {
     hasVet              Boolean
     addionalInformation String?
     location            Json
+    capacityType        CapacityType   @default(TOTAL) // TOTAL or ADVANCED
+    totalPlaces         Int?
     reservations        Reservation[]
-    totalReviews        Int           @default(0)
-    overallReview       Float         @default(0)
+    types               Type[]
+    blockedDates        BlockedDate[]
+    notifications       Notification[]
+    totalReviews        Int            @default(0)
+    overallReview       Float          @default(0)
     addressLabel        String
     // TODO: add accomulated ratings
 
-    user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    reviews Review[]
+    user         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    reviews      Review[]
+    pricing      TypePricing[]
+    SpecialPrice SpecialPrice[]
+}
+
+model TypePricing {
+    id           String  @id @default(auto()) @map("_id") @db.ObjectId
+    listingId    String  @db.ObjectId
+    typeId       String  @db.ObjectId
+    defaultPrice Float
+    weekendPrice Float?
+    listing      Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    type         Type    @relation(fields: [typeId], references: [id], onDelete: Cascade)
+}
+
+model SpecialPrice {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    listingId String   @db.ObjectId
+    typeId    String   @db.ObjectId
+    startDate DateTime
+    endDate   DateTime
+    price     Float
+    listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    type      Type     @relation(fields: [typeId], references: [id], onDelete: Cascade)
+}
+
+enum CapacityType {
+    TOTAL
+    ADVANCED
+}
+
+model Type {
+    id           String         @id @default(auto()) @map("_id") @db.ObjectId
+    listingId    String         @db.ObjectId
+    name         String
+    capacity     Int
+    listing      Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    TypePricing  TypePricing[]
+    SpecialPrice SpecialPrice[]
+    Reservation  Reservation[]
 }
 
 model Reservation {
     id         String   @id @default(auto()) @map("_id") @db.ObjectId
     userId     String?  @db.ObjectId
     listingId  String?  @db.ObjectId
+    typeId     String?  @db.ObjectId
     startDate  DateTime
     endDate    DateTime
-    totalPrice Int
+    status     String   @default("pending") // pending, approved, canceled, completed
+    totalPrice Float
     createdAt  DateTime @default(now())
+
+    stripePaymentId String? // For refund tracking
+    refundStatus    String? // pending, refunded, partial_refunded
+    type            Type?   @relation(fields: [typeId], references: [id], onDelete: Cascade)
 
     user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
     listing Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model BlockedDate {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    listingId String   @db.ObjectId
+    startDate DateTime
+    endDate   DateTime
+    reason    String?
+    listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    listingId String   @db.ObjectId
+    userId    String?  @db.ObjectId
+    message   String
+    status    String   @default("unread")
+    createdAt DateTime @default(now())
+    listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Pet {
