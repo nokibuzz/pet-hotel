@@ -4,7 +4,7 @@ import useReservationModal from "@/app/hooks/useReservationModal";
 import Modal from "./Modal";
 import { useMemo, useState } from "react";
 import Heading from "../Heading";
-import { options } from "../PetTypes";
+import { petTypes } from "../PetTypes";
 import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -125,7 +125,7 @@ const ReservationModal = () => {
     <div className="flex flex-col gap-8">
       <Heading title={"Choose type of your pet?"} subtitle={"Pick one"} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-        {options.map((item) => (
+        {petTypes.map((item) => (
           <div key={item.label} className="col-span-1">
             <CategoryInput
               onClick={(type) => {
