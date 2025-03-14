@@ -14,9 +14,9 @@ export async function POST(request) {
 
   const body = await request.json();
 
-  const { startDate, endDate, typeId, totalPrice } = body;
+  const { startDate, endDate, typeId, typeName, totalPrice } = body;
 
-  if (!typeId || !startDate || !endDate || !totalPrice) {
+  if (!typeId || !startDate || !endDate || !totalPrice || !typeName) {
     return NextResponse.error();
   }
 
@@ -101,6 +101,7 @@ export async function POST(request) {
             prisma.availability.create({
               data: {
                 typeId,
+                typeName,
                 date: new Date(currentDate),
                 totalSlots: totalCapacity - 1,
                 available: totalCapacity > 1,

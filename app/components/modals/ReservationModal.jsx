@@ -195,6 +195,7 @@ const ReservationModal = () => {
     axios
       .post("/api/reservations", {
         typeId,
+        typeName: type?.name,
         totalPrice,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,

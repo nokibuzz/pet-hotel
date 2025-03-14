@@ -7,7 +7,7 @@ export default async function getTypes(params) {
       startDate,
       endDate,
       title,
-      typeName,
+      petType,
       latitude,
       longitude,
       category,
@@ -24,8 +24,10 @@ export default async function getTypes(params) {
 
     const typeFilters = {};
 
-    if (typeName) {
-      typeFilters.name = typeName;
+    console.log("param", JSON.stringify(params));
+
+    if (petType) {
+      typeFilters.name = petType;
     }
 
     if (minPrice && maxPrice) {
@@ -100,12 +102,13 @@ export default async function getTypes(params) {
     }
 
     const availabilityFilter =
-      startDate && endDate
+      startDate && endDate && petType
         ? {
             Availability: {
               none: {
                 available: false,
                 date: { gte: startDate, lte: endDate },
+                typeName: petType,
               },
             },
           }

@@ -132,6 +132,7 @@ model Type {
 model Availability {
     id         String   @id @default(auto()) @map("_id") @db.ObjectId
     typeId     String   @db.ObjectId
+    typeName   String?
     date       DateTime
     available  Boolean  @default(true) // If false, no slots are left
     totalSlots Int? // Available slots per type (or total if typeId is null)
@@ -246,5 +247,7 @@ model Message {
 
 // username:dogohotel
 // password:dogohoteltest0
+
+// mongosh "mongodb+srv://cluster0.qilbo.mongodb.net/" --apiVersion 1 --username dogohotel --password dogohoteltest0
 
 //create index on listings { "location": "2dsphere" }
