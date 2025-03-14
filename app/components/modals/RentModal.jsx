@@ -5,6 +5,7 @@ import Modal from "./Modal";
 import { useMemo, useState, useEffect } from "react";
 import Heading from "../Heading";
 import { options } from "../navbar/BasicFilters";
+import { petTypes } from "../PetTypes";
 import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
 import InputWithSeparateLabel from "../inputs/InputWithSeparateLabel";
@@ -17,18 +18,19 @@ import TextArea from "../inputs/TextArea";
 import Dropdown from "../inputs/Dropdown";
 import Toggle from "../inputs/Toggle";
 import MapSelect from "../MapSelect";
-import { IoMdClose } from "react-icons/io";
 import CustomInput from "../inputs/CustomInput";
+import { faOtter } from "@fortawesome/free-solid-svg-icons";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
   LOCATION: 1,
-  INFO: 2,
-  PRICE: 3,
-  IMAGES: 4,
-  DESCRIPTION: 5,
-  HOUSE_RULES: 6,
-  ADDIONAL_OPTIONS: 7,
+  PET_TYPES: 2,
+  INFO: 3,
+  PRICE: 4,
+  IMAGES: 5,
+  DESCRIPTION: 6,
+  HOUSE_RULES: 7,
+  ADDIONAL_OPTIONS: 8,
 });
 
 const MAX_IMAGES_FOR_RENT = 10;
@@ -75,7 +77,6 @@ const RentModal = ({ currentUser }) => {
       addressLabel: "",
       capacityType: "",
       types: [],
-      pricing: [],
     },
   });
 
@@ -83,7 +84,6 @@ const RentModal = ({ currentUser }) => {
   const title = watch("title");
   const description = watch("description");
   const category = watch("category");
-  const totalPlaces = watch("totalPlaces");
   const imageSrc = watch("imageSrc");
   const checkInTime = watch("checkInTime");
   const checkOutTime = watch("checkOutTime");
@@ -98,8 +98,8 @@ const RentModal = ({ currentUser }) => {
   const locationLongitude = watch("locationLongitude");
   const locationLatitude = watch("locationLatitude");
   const capacityType = watch("capacityType");
+  const totalPlaces = watch("totalPlaces");
   const types = watch("types");
-  const pricing = watch("pricing");
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -133,7 +133,7 @@ const RentModal = ({ currentUser }) => {
       return;
     }
     if (step === STEPS.INFO) {
-      if (capacityType === "TOTAL" && totalPlaces === 0) {
+      if (totalPlaces === 0) {
         toast.error(
           rentModal.translation?.errorCapacityNotSelected ||
             "Capacity should be entered!"
@@ -216,8 +216,17 @@ const RentModal = ({ currentUser }) => {
         .catch((e) => console.error("Woof, woof, images not uploaded!", e));
     }
 
-    if (step === STEPS.PRICE) {
-      storePricesInPricingArray();
+    if (step === STEPS.PET_TYPES) {
+      setCustomValue(
+        "capacityType",
+        petTypesSupported.length === 1 && petTypesSupported[0]?.name === "TOTAL"
+          ? "TOTAL"
+          : "ADVANCED"
+      );
+
+      if (rentModal.isEdit) {
+        return onNext();
+      }
     }
 
     if (step !== STEPS.ADDIONAL_OPTIONS) {
@@ -226,8 +235,7 @@ const RentModal = ({ currentUser }) => {
 
     setIsLoading(true);
     setLocalImageSrc([]);
-    setGuestTypes([]);
-    setPricingTemp([]);
+    setPetTypesSupported([]);
 
     if (rentModal.isEdit) {
       const updatedData = { ...data, id: rentModal.listing.id };
@@ -328,21 +336,19 @@ const RentModal = ({ currentUser }) => {
     if (rentModal.listing?.capacityType && !capacityType) {
       const capType = rentModal.listing.capacityType;
       setCustomValue("capacityType", capType);
-      if (capType === "ADVANCED") {
-        if (rentModal?.listing?.types?.length) {
-          const types = rentModal.listing.types.map((type) => ({
-            name: type.name,
-            capacity: type.capacity,
-          }));
 
-          setCustomValue("types", types);
-          setGuestTypes(types);
-        }
-      } else if (
-        rentModal?.listing?.totalPlaces &&
-        totalPlaces !== rentModal.listing.totalPlaces
-      ) {
-        setCustomValue("totalPlaces", rentModal.listing.totalPlaces);
+      if (rentModal?.listing?.types?.length) {
+        const types = rentModal.listing.types.map((type) => ({
+          id: type.id,
+          name: type.name,
+          capacity: type.capacity,
+          defaultPrice: type.defaultPrice,
+          weekendPrice: type.weekendPrice,
+        }));
+
+        setCustomValue("types", types);
+        setPetTypesSupported(types);
+        setCustomValue("totalPlaces", rentModal.listing?.totalPlaces);
       }
     }
   }, [
@@ -354,7 +360,6 @@ const RentModal = ({ currentUser }) => {
     checkOutTime,
     locationLatitude,
     locationLongitude,
-    totalPlaces,
     imageSrc,
     addionalInformation,
     capacityType,
@@ -416,46 +421,75 @@ const RentModal = ({ currentUser }) => {
     );
   }
 
-  const [guestTypes, setGuestTypes] = useState([]);
-
-  const handleToggleAdvanced = () => {
-    if (capacityType === "TOTAL") {
-      setGuestTypes([{ name: "", capacity: 1 }]); // Start with one row
-    } else {
-      setGuestTypes([]); // Clear list when hiding Advanced
+  const handleTypeChange = (index, field, value) => {
+    if (value !== null && value !== undefined && value !== "") {
+      value = parseInt(value);
     }
-    console.log("capType", capacityType);
-    setCustomValue(
-      "capacityType",
-      capacityType === "TOTAL" ? "ADVANCED" : "TOTAL"
+    const updatedTypes = [...petTypesSupported];
+    updatedTypes[index][field] = value;
+    setPetTypesSupported(updatedTypes);
+    setCustomValue("types", updatedTypes);
+
+    calculateTotalCapacity(updatedTypes);
+  };
+
+  const calculateTotalCapacity = (types) => {
+    const totalPlaces = types.reduce(
+      (total, item) => total + (item.capacity || 0),
+      0
+    );
+    setCustomValue("totalPlaces", totalPlaces);
+  };
+
+  const [petTypesSupported, setPetTypesSupported] = useState([]);
+
+  const updatePetTypes = (typeName) => {
+    setPetTypesSupported(
+      (prevSelected) =>
+        prevSelected.some((item) => item.name === typeName)
+          ? prevSelected.filter((item) => item.name !== typeName) // Remove item by name
+          : [...prevSelected, { name: typeName, capacity: 1 }] // Add new item
     );
   };
 
-  const handleAddType = () => {
-    setGuestTypes([...guestTypes, { name: "", capacity: 1 }]);
-  };
-
-  const handleRemoveType = (index) => {
-    const updatedTypes = [...guestTypes];
-    updatedTypes.splice(index, 1);
-    setGuestTypes(updatedTypes);
-    setCustomValue("types", updatedTypes);
-  };
-
-  const handleTypeChange = (index, field, value) => {
-    if (
-      field === "capacity" &&
-      value !== null &&
-      value !== undefined &&
-      value !== ""
-    ) {
-      value = parseInt(value);
-    }
-    const updatedTypes = [...guestTypes];
-    updatedTypes[index][field] = value;
-    setGuestTypes(updatedTypes);
-    setCustomValue("types", updatedTypes);
-  };
+  if (step === STEPS.PET_TYPES) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading title={"Choose type of your pet?"} subtitle={"Pick one"} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
+          <div className="col-span-1">
+            <CategoryInput
+              onClick={() => {
+                setPetTypesSupported([{ name: "TOTAL", capacity: 1 }]);
+              }}
+              selected={
+                petTypesSupported.length === 1 &&
+                petTypesSupported[0]?.name === "TOTAL"
+              }
+              label="All Pets"
+              value="TOTAL"
+              icon={faOtter}
+            />
+          </div>
+          {petTypes.map((item) => (
+            <div key={item.label} className="col-span-1">
+              <CategoryInput
+                onClick={(type) => {
+                  updatePetTypes(type);
+                }}
+                selected={petTypesSupported.some(
+                  (selectedItem) => selectedItem.name === item.label
+                )}
+                label={item.label}
+                value={item.label}
+                icon={item.icon}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (step === STEPS.INFO) {
     bodyContent = (
@@ -469,73 +503,40 @@ const RentModal = ({ currentUser }) => {
             "How many pets can you take care of"
           }
         />
-        {capacityType !== "ADVANCED" && (
-          <InputWithSeparateLabel
-            title={rentModal.translation?.petsCounterTitle || "Pets"}
-            subtitle={
-              rentModal.translation?.petCounterSubtitle ||
-              "How many pets you can take in your object?"
-            }
-            value={totalPlaces}
-            onChange={(e) => {
-              console.log("value", e.target.value);
-              setCustomValue("totalPlaces", parseInt(e.target.value));
-            }}
-          />
-        )}
 
-        {/* Advanced Button */}
-        <button
-          onClick={handleToggleAdvanced}
-          className="text-blue-500 underline text-sm self-start"
-        >
-          {capacityType === "ADVANCED" ? "Hide Advanced Options" : "Advanced"}
-        </button>
+        {/* {petTypesSupported.length === 1 &&
+          petTypesSupported[0]?.name === "TOTAL" && (
+            <InputWithSeparateLabel
+              title={rentModal.translation?.petsCounterTitle || "Pets"}
+              subtitle={
+                rentModal.translation?.petCounterSubtitle ||
+                "How many pets you can take in your object?"
+              }
+              value={totalPlaces}
+              onChange={(e) => {
+                let value = e.target.value;
+                if (value !== null && value !== undefined && value !== "") {
+                  value = parseInt(value);
+                }
+                setCustomValue("totalPlaces", value);
+              }}
+            />
+          )} */}
 
-        {/* Advanced Section */}
-        {capacityType === "ADVANCED" && (
+        {petTypesSupported.length > 0 && (
           <div className="flex flex-col gap-4">
-            {guestTypes.map((type, index) => (
+            {petTypesSupported.map((type, index) => (
               <div key={index} className="flex items-center gap-4">
-                {/* Dropdown */}
-                <select
-                  value={type.name}
-                  onChange={(e) =>
-                    handleTypeChange(index, "name", e.target.value)
-                  }
-                  className="border rounded-md p-2 w-1/2"
-                >
-                  <option value="">Select Type</option>
-                  <option value="Small Dogs">Small Dogs</option>
-                  <option value="Medium Dogs">Medium Dogs</option>
-                  <option value="Big Dogs">Big Dogs</option>
-                  <option value="Cats">Cats</option>
-                </select>
-
-                {/* Number Input */}
-                <input
-                  type="number"
+                <InputWithSeparateLabel
+                  title={type.name}
+                  subtitle="Pets of type"
                   value={type.capacity}
                   onChange={(e) =>
                     handleTypeChange(index, "capacity", e.target.value)
                   }
-                  className="border rounded-md p-2 w-1/4"
                 />
-
-                {/* Remove Button */}
-                <button onClick={() => handleRemoveType(index)}>
-                  <IoMdClose size={18} className="text-red-500" />
-                </button>
               </div>
             ))}
-
-            {/* Add Another Type */}
-            <button
-              onClick={handleAddType}
-              className="text-blue-500 underline text-sm self-start"
-            >
-              Add another type
-            </button>
           </div>
         )}
       </div>
@@ -762,41 +763,23 @@ const RentModal = ({ currentUser }) => {
     );
   }
 
-  const [pricingTemp, setPricingTemp] = useState([]);
-  const [weekPrice, setWeekPrice] = useState(0);
-  const [weekendPrice, setWeekendPrice] = useState(0);
-
-  const storePricesInPricingArray = () => {
-    if (capacityType === "TOTAL") {
-      const pricingObj = [
-        {
-          typeName: "TOTAL",
-          defaultPrice: parseFloat(weekPrice) || 0,
-          weekendPrice: parseFloat(weekendPrice) || 0,
-        },
-      ];
-      setCustomValue("pricing", pricingObj);
-    } else {
-      setCustomValue("pricing", pricingTemp);
+  const handlePriceChange = (index, field, value) => {
+    if (value !== null && value !== undefined && value !== "") {
+      value = parseFloat(value);
     }
+    const updatedTypes = [...petTypesSupported];
+    updatedTypes[index][field] = value || 0;
+    setPetTypesSupported(updatedTypes);
+    setCustomValue("types", updatedTypes);
   };
 
-  // Function to handle changes in price inputs
-  const handlePriceChange = (index, field, value) => {
-    setPricingTemp((prevPricing) => {
-      const updatedPricing = [...prevPricing];
-
-      if (!updatedPricing[index]) {
-        updatedPricing[index] = {
-          typeName: guestTypes[index]?.name || `Type ${index + 1}`,
-          defaultPrice: 0,
-          weekendPrice: 0,
-        };
-      }
-
-      updatedPricing[index][field] = value ? parseFloat(value) : 0;
-      return updatedPricing;
-    });
+  const getPriceByName = (name, priceType) => {
+    const item = petTypesSupported?.find((entry) => entry.name === name);
+    return item && item.hasOwnProperty(priceType)
+      ? item[priceType] > 0
+        ? item[priceType]
+        : null
+      : null;
   };
 
   if (step === STEPS.PRICE) {
@@ -818,7 +801,9 @@ const RentModal = ({ currentUser }) => {
               formatPrice
               type="number"
               disabled={isLoading}
-              onChange={(e) => setWeekPrice(parseFloat(e.target.value) || 0)}
+              onChange={(e) =>
+                handlePriceChange(0, "defaultPrice", e.target.value)
+              }
             />
             <CustomInput
               id="weekendPrice"
@@ -828,13 +813,15 @@ const RentModal = ({ currentUser }) => {
               formatPrice
               type="number"
               disabled={isLoading}
-              onChange={(e) => setWeekendPrice(parseFloat(e.target.value) || 0)}
+              onChange={(e) =>
+                handlePriceChange(0, "weekendPrice", e.target.value)
+              }
             />
           </>
         ) : (
           <>
             {/* Show Prices Per Type When Advanced Options are Enabled */}
-            {guestTypes.map((type, index) => (
+            {petTypesSupported.map((type, index) => (
               <div
                 key={index}
                 className="flex flex-col gap-4 border p-4 rounded-md"
@@ -847,6 +834,7 @@ const RentModal = ({ currentUser }) => {
                   label={`Week Price (${type.name || `Type ${index + 1}`})`}
                   formatPrice
                   type="number"
+                  value={getPriceByName(type.name, "defaultPrice")}
                   disabled={isLoading}
                   onChange={(e) =>
                     handlePriceChange(index, "defaultPrice", e.target.value)
@@ -857,6 +845,7 @@ const RentModal = ({ currentUser }) => {
                   label={`Weekend Price (${type.name || `Type ${index + 1}`})`}
                   formatPrice
                   type="number"
+                  value={getPriceByName(type.name, "weekendPrice")}
                   disabled={isLoading}
                   onChange={(e) =>
                     handlePriceChange(index, "weekendPrice", e.target.value)

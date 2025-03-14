@@ -14,36 +14,115 @@ export async function POST(request) {
 
   const body = await request.json();
 
-  const { listingId, startDate, endDate, typeId, totalPrice } = body;
+  const { startDate, endDate, typeId, totalPrice } = body;
 
-  if (!listingId || !startDate || !endDate || !totalPrice) {
+  if (!typeId || !startDate || !endDate || !totalPrice) {
     return NextResponse.error();
   }
 
-  const listingAndReservation = await prisma.listing.update({
+  // Fetch Existing Availability for Selected Dates
+  const existingAvailability = await prisma.availability.findMany({
     where: {
-      id: listingId,
-    },
-    data: {
-      reservations: {
-        create: {
-          userId: currentUser.id,
-          typeId,
-          startDate,
-          endDate,
-          totalPrice,
-          status: "pending",
-        },
-      },
+      typeId,
+      date: { gte: startDate, lte: endDate },
     },
   });
 
-  await prisma.types.update({
-    where: { id: typeId },
-    data: { capacity: { decrement: 1 } },
-  });
+  console.log("existingAvailability", JSON.stringify(existingAvailability));
+  const hasNoSlotsLeft = availabilityList.some((item) => item.totalSlots <= 0);
+  if (hasNoSlotsLeft) {
+    console.error(
+      "There are availability slots with no remaining slots available to book!"
+    );
+    return NextResponse.error();
+  }
 
-  return NextResponse.json(listingAndReservation);
+  return await prisma.$transaction(
+    async (prisma) => {
+      // Create the Reservation
+      const reservationData = {
+        userId: currentUser.id,
+        typeId,
+        startDate,
+        endDate,
+        totalPrice,
+        status: "pending",
+      };
+
+      console.log("reservationData", JSON.stringify(reservationData));
+
+      const reservation = await prisma.reservation.create({
+        data: reservationData,
+      });
+
+      // Determine Capacity if No Existing Availability
+      let totalCapacity =
+        existingAvailability?.length > 0
+          ? null
+          : (
+              await prisma.type.findUnique({
+                where: { id: typeId },
+                select: { capacity: true },
+              })
+            )?.capacity || 0;
+
+      console.log("totalCapacity", totalCapacity);
+
+      // Prepare Availability Updates
+      const availabilityUpdates = [];
+
+      let currentDate = new Date(startDate);
+
+      while (currentDate <= new Date(endDate)) {
+        const dateKey = currentDate.toISOString().split("T")[0];
+        const existingEntry = existingAvailability.find(
+          (a) => a.date.toISOString().split("T")[0] === dateKey
+        );
+
+        if (existingEntry) {
+          // Update existing availability
+          console.log("updating existing availability");
+          availabilityUpdates.push(
+            prisma.availability.update({
+              where: { id: existingEntry.id },
+              data: {
+                totalSlots: { decrement: 1 },
+                available: existingEntry.totalSlots > 0,
+              },
+            })
+          );
+        } else {
+          // Create new availability entry
+          console.log(
+            "creating new availability, totalCapacity ",
+            totalCapacity
+          );
+          availabilityUpdates.push(
+            prisma.availability.create({
+              data: {
+                typeId,
+                date: new Date(currentDate),
+                totalSlots: totalCapacity - 1,
+                available: totalCapacity > 1,
+              },
+            })
+          );
+        }
+
+        currentDate = new Date(currentDate);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      // Execute all updates in parallel
+      const avUpdates = await Promise.all(availabilityUpdates);
+      console.log("Availability updated", JSON.stringify(avUpdates));
+
+      return NextResponse.json(reservation);
+    },
+    {
+      timeout: 10000, // 10 seconds timeout (default is 5s)
+    }
+  );
 }
 
 export async function DELETE(request) {

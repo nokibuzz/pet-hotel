@@ -27,7 +27,6 @@ const ListingClient = ({
   const loginModal = useLoginModal();
   const router = useRouter();
 
-  console.log("res", JSON.stringify(reservations));
   console.log("lis", JSON.stringify(listing));
 
   const disabledDates = useMemo(() => {
@@ -197,7 +196,7 @@ const ListingClient = ({
                 <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
                   <div>
                     {translation.ListingClient.petCapacity || "Pet capacity:"}{" "}
-                    {listing.guestCount}
+                    {listing.totalPlaces}
                   </div>
                 </div>
               </div>

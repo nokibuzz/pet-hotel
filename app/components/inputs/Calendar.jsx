@@ -12,6 +12,7 @@ const Calendar = ({
   disabledDates,
   readonly = false,
   locale,
+  customDayRenderer = undefined,
 }) => {
   return (
     <DateRange
@@ -25,6 +26,7 @@ const Calendar = ({
       minDate={new Date()}
       disabledDates={disabledDates}
       locale={locale === "sr" ? srLatn : enUS}
+      dayContentRenderer={customDayRenderer}
     />
   );
 };

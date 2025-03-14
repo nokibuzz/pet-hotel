@@ -10,6 +10,7 @@ import qs from "query-string";
 
 const ListingCard = ({
   data,
+  types,
   reservation,
   onAction,
   disabled,
@@ -35,13 +36,22 @@ const ListingCard = ({
     [onAction, actionId, disabled]
   );
 
+  const calculateMinimalPricePerDay = (data) => {
+    const minPrice = types?.reduce(
+      (min, item) => (item.defaultPrice < min ? item.defaultPrice : min),
+      Infinity
+    );
+
+    return minPrice;
+  };
+
   const price = useMemo(() => {
     if (reservation) {
       return reservation.totalPrice;
     }
 
-    return data.price;
-  }, [reservation, data.price]);
+    return calculateMinimalPricePerDay(data);
+  }, [reservation, types]);
 
   const reservationDate = useMemo(() => {
     if (!reservation) {
@@ -73,7 +83,10 @@ const ListingCard = ({
   }, [nextPage, actionId, router, currentSearchParams]);
 
   return (
-    <div onClick={onSelect} className="col-span-1 cursor-pointer group bg-white">
+    <div
+      onClick={onSelect}
+      className="col-span-1 cursor-pointer group bg-white"
+    >
       <div className="flex flex-col gap-2 w-full">
         <div className="aspect-square w-full relative overflow-hidden rounded-xl">
           <Image
@@ -83,9 +96,9 @@ const ListingCard = ({
             className="object-cover h-full w-full group-hover:scale-110 transition"
           />
           {typeof data.overallReview === "number" && data.overallReview > 1 && (
-              <div className="absolute top-3 left-3 bg-white text-black px-3 py-1 rounded-full border border-gray-300 font-semibold shadow">
-                {data.overallReview.toFixed(1)}
-              </div>
+            <div className="absolute top-3 left-3 bg-white text-black px-3 py-1 rounded-full border border-gray-300 font-semibold shadow">
+              {data.overallReview.toFixed(1)}
+            </div>
           )}
           {currentUser?.hotelOwner !== true && (
             <div className="absolute top-3 right-3">
@@ -109,7 +122,10 @@ const ListingCard = ({
           {reservationDate || data.category}
         </div>
         <div className="flex flex-row items-center gap-1">
-          <div className="font-semibold">$ {price}</div>
+          <div className="font-semibold">
+            {reservation ? "" : "from "}
+            {price} RSD
+          </div>
           {!reservation && (
             <div className="font-light">
               {translation.perDay || "per night"}

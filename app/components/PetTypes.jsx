@@ -7,7 +7,7 @@ import {
   faCat,
 } from "@fortawesome/free-solid-svg-icons";
 
-export const options = [
+export const petTypes = [
   {
     label: "Small Dogs",
     icon: faPaw,
