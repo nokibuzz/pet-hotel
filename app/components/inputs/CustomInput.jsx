@@ -2,7 +2,15 @@
 
 import { BiDollar } from "react-icons/bi";
 
-const CustomInput = ({ id, label, type, disabled, formatPrice, onChange }) => {
+const CustomInput = ({
+  id,
+  label,
+  type,
+  disabled,
+  formatPrice,
+  onChange,
+  value,
+}) => {
   return (
     <div className="w-full relative">
       {formatPrice && (
@@ -16,6 +24,7 @@ const CustomInput = ({ id, label, type, disabled, formatPrice, onChange }) => {
         disabled={disabled}
         placeholder=" "
         type={type}
+        value={value}
         className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed ${
           formatPrice ? "pl-9" : "pl-4"
         } border-neutral-300 focus:border-black`}

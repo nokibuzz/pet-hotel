@@ -6,7 +6,6 @@ import ToasterProvider from "./providers/ToasterProvider";
 import LoginModal from "./components/modals/LoginModal";
 import RegisterModal from "./components/modals/RegisterModal";
 import getCurrentUser from "./actions/getCurrentUser";
-import getMinMaxPrices from "./actions/getMinMaxPrices";
 import RentModal from "./components/modals/RentModal";
 import PetModal from "./components/modals/PetModal";
 import SearchModal from "./components/modals/SearchModal";
@@ -28,7 +27,6 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const currentUser = await getCurrentUser();
-  const minMaxPrices = await getMinMaxPrices();
 
   const translation = await getTranslations(currentUser?.locale, "common");
 
@@ -42,7 +40,7 @@ export default async function RootLayout({ children }) {
           <ReservationModal />
           <RentModal currentUser={currentUser} />
           <SearchModal currentUser={currentUser} />
-          <AdvancedFilters defaultPriceRange={minMaxPrices} />
+          <AdvancedFilters />
           <PetModal />
           <ReviewModal currentUser={currentUser} />
           <ChangePasswordModal />
