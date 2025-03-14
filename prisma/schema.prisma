@@ -82,7 +82,6 @@ model Listing {
     location            Json
     capacityType        CapacityType   @default(TOTAL) // TOTAL or ADVANCED
     totalPlaces         Int?
-    reservations        Reservation[]
     types               Type[]
     blockedDates        BlockedDate[]
     notifications       Notification[]
@@ -91,31 +90,21 @@ model Listing {
     addressLabel        String
     // TODO: add accomulated ratings
 
-    user         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
-    reviews      Review[]
-    pricing      TypePricing[]
-    SpecialPrice SpecialPrice[]
-}
-
-model TypePricing {
-    id           String  @id @default(auto()) @map("_id") @db.ObjectId
-    listingId    String  @db.ObjectId
-    typeId       String  @db.ObjectId
-    defaultPrice Float
-    weekendPrice Float?
-    listing      Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
-    type         Type    @relation(fields: [typeId], references: [id], onDelete: Cascade)
+    user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    reviews Review[]
 }
 
 model SpecialPrice {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    listingId String   @db.ObjectId
-    typeId    String   @db.ObjectId
-    startDate DateTime
-    endDate   DateTime
-    price     Float
-    listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
-    type      Type     @relation(fields: [typeId], references: [id], onDelete: Cascade)
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    typeId       String   @db.ObjectId
+    startDate    DateTime
+    endDate      DateTime
+    defaultPrice Float
+    weekendPrice Float?
+    reason       String?
+    type         Type     @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
+    @@index([typeId, startDate, endDate]) // Faster filtering
 }
 
 enum CapacityType {
@@ -128,16 +117,33 @@ model Type {
     listingId    String         @db.ObjectId
     name         String
     capacity     Int
+    defaultPrice Float
+    weekendPrice Float?
     listing      Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
-    TypePricing  TypePricing[]
     SpecialPrice SpecialPrice[]
     Reservation  Reservation[]
+    Availability Availability[]
+    BlockedDate  BlockedDate[]
+
+    @@index([listingId]) // Faster queries on types per listing
+    @@index([defaultPrice])
+}
+
+model Availability {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    typeId     String   @db.ObjectId
+    date       DateTime
+    available  Boolean  @default(true) // If false, no slots are left
+    totalSlots Int? // Available slots per type (or total if typeId is null)
+    type       Type     @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
+    @@index([typeId, date]) // Faster lookups
+    @@index([typeId, date, available])
 }
 
 model Reservation {
     id         String   @id @default(auto()) @map("_id") @db.ObjectId
     userId     String?  @db.ObjectId
-    listingId  String?  @db.ObjectId
     typeId     String?  @db.ObjectId
     startDate  DateTime
     endDate    DateTime
@@ -149,17 +155,22 @@ model Reservation {
     refundStatus    String? // pending, refunded, partial_refunded
     type            Type?   @relation(fields: [typeId], references: [id], onDelete: Cascade)
 
-    user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    listing Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([typeId, startDate, endDate]) // Optimized for availability checks
 }
 
 model BlockedDate {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     listingId String   @db.ObjectId
+    typeId    String   @db.ObjectId
     startDate DateTime
     endDate   DateTime
     reason    String?
     listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+    type      Type     @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
+    @@index([listingId, startDate, endDate]) // Optimized lookups
 }
 
 model Notification {

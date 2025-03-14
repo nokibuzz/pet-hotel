@@ -114,7 +114,7 @@ const Modal = ({
               </div>
               {/* FOOTER */}
               <div className="p-6 bg-white sticky bottom-0">
-                <div className="flex flex-row items-center gap-4 w-full">
+                <div className="flex flex-row items-center gap-4 w-full z-50">
                   {secondaryAction && secondaryActionLabel && (
                     <Button
                       outline

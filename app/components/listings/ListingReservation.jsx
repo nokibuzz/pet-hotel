@@ -1,6 +1,5 @@
 "use client";
 
-import Calendar from "../inputs/Calendar";
 import Button from "../Button";
 import useReservationModal from "@/app/hooks/useReservationModal";
 
@@ -26,13 +25,13 @@ const ListingReservation = ({
         </div>
       </div>
       <hr />
-      <Calendar
+      {/* <Calendar
         value={dateRange}
         disabledDates={disabledDates}
         onChange={(value) => onChangeDate(value.selection)}
         locale={translation.locale || "sr"}
       />
-      <hr />
+      <hr /> */}
       <div className="p-4">
         <Button
           disabled={disabled}
