@@ -43,12 +43,12 @@ const BasicFilters = ({ translation }) => {
   const filtersRef = useRef(null);
 
   const getCurrentFilters = () => {
-    const petCount = params?.get("petCount");
     const startDate = params?.get("startDate");
     const endDate = params?.get("endDate");
     const minPrice = params?.get("minPrice");
     const maxPrice = params?.get("maxPrice");
     const category = params?.get("category");
+    const petType = params?.get("petType");
     const nearMe = params?.get("nearMe");
     const facility = params?.get("facility");
     const hasCancelation = params?.get("hasCancelation");
@@ -57,15 +57,6 @@ const BasicFilters = ({ translation }) => {
     const review = params?.get("review");
 
     let filters = [];
-
-    if (petCount) {
-      filters.push({
-        label: "Number of pets",
-        value: `${
-          translation.Basic?.numberOfPets || "Number of pets:"
-        } ${petCount}`,
-      });
-    }
 
     if (startDate && endDate) {
       filters.push({
@@ -103,6 +94,13 @@ const BasicFilters = ({ translation }) => {
       filters.push({
         label: "Category",
         value: `${translation.Basic?.category || "Category:"} ${category}`,
+      });
+    }
+
+    if (petType) {
+      filters.push({
+        label: "Pet Type",
+        value: `Pet Type: ${petType}`,
       });
     }
 

@@ -13,12 +13,11 @@ const ReservationInfo = ({
   totalPrice,
   dateRange,
   translation,
-  hasCancelation
+  hasCancelation,
 }) => {
   const router = useRouter();
   const onCancel = useCallback(() => {
-
-    if (!hasCancelation){
+    if (!hasCancelation) {
       return;
     }
 
@@ -42,11 +41,9 @@ const ReservationInfo = ({
 
   return (
     <div className="bg-white rounded-xl border-[1px] border-neutral-200 overflow-hidden">
-      <div className="flex flex-row items-center gap-1 p-4">
-        <div className="text-2xl font-semibold">$ {price}</div>
-        <div className="font-light text-neutral-600">
-          {translation.perDay || "per day"}
-        </div>
+      <div className="p-4 flex flex-row items-center justify-between font-semibold text-lg">
+        <div>{translation.total || "Total"}</div>
+        <div>$ {totalPrice}</div>
       </div>
       <hr />
       <Calendar
@@ -59,14 +56,13 @@ const ReservationInfo = ({
       <div className="p-4">
         <Button
           label={
-            hasCancelation ?  translation.cancelReservation || "Cancel reservation" : translation.cancelReservationNotPossbile || "Cancelation not possible"
+            hasCancelation
+              ? translation.cancelReservation || "Cancel reservation"
+              : translation.cancelReservationNotPossbile ||
+                "Cancelation not possible"
           }
           onClick={onCancel}
         />
-      </div>
-      <div className="p-4 flex flex-row items-center justify-between font-semibold text-lg">
-        <div>{translation.total || "Total"}</div>
-        <div>$ {totalPrice}</div>
       </div>
     </div>
   );

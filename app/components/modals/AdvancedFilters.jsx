@@ -15,9 +15,9 @@ import {
   faUserDoctor,
 } from "@fortawesome/free-solid-svg-icons";
 import Toggle from "../inputs/Toggle";
-import Counter from "../inputs/Counter";
 import Calendar from "../inputs/Calendar";
 import { formatISO } from "date-fns";
+import { petTypes } from "../PetTypes";
 
 export const facilityOptions = [
   {
@@ -46,6 +46,7 @@ const AdvancedFilters = () => {
   });
   const [priceRange, setPriceRange] = useState([1, 1000000]);
   const [category, setCategory] = useState("");
+  const [petType, setPetType] = useState("");
   const [nearMe, setNearMe] = useState("");
   const [facility, setFacility] = useState("");
   const [hasCancelation, setHasCancelation] = useState(false);
@@ -65,6 +66,7 @@ const AdvancedFilters = () => {
         parseInt(params?.get("maxPrice") || 1000000),
       ]);
       setCategory(params?.get("category") || "");
+      setPetType(params?.get("petType") || "");
       setNearMe(params?.get("nearMe") || "");
       setFacility(params?.get("facility") || "");
       setHasCancelation(JSON.parse(params?.get("hasCancelation")) || false);
@@ -96,6 +98,14 @@ const AdvancedFilters = () => {
 
         return updated;
       });
+    }
+  };
+
+  const changePetType = (value, isSelected) => {
+    if (isSelected) {
+      setPetType(value);
+    } else {
+      setPetType("");
     }
   };
 
@@ -146,6 +156,10 @@ const AdvancedFilters = () => {
 
     if (category && category != "") {
       currentQuery.category = category;
+    }
+
+    if (petType && petType != "") {
+      currentQuery.petType = petType;
     }
 
     if (nearMe != "") {
@@ -208,6 +222,7 @@ const AdvancedFilters = () => {
     dateRange,
     priceRange,
     category,
+    petType,
     nearMe,
     facility,
     hasCancelation,
@@ -232,6 +247,22 @@ const AdvancedFilters = () => {
           onChange={(value) => setDateRange(value.selection)}
           locale={advancedFiltersModal.translation.Advanced?.locale || "sr"}
         />
+      </div>
+
+      <div className="border-b pb-4">
+        <h3 className="font-semibold text-lg mb-2">Pet Type</h3>
+        <div className="flex flex-row gap-3 flex-grow justify-around">
+          {petTypes.map((item) => (
+            <AdvancedFiltersOption
+              key={item.label}
+              label={item.label}
+              value={item.label}
+              selected={petType === item.label}
+              icon={item.icon}
+              onClick={(value, isSelected) => changePetType(value, isSelected)}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="border-b pb-4">
