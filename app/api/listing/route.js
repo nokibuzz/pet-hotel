@@ -47,6 +47,8 @@ export async function POST(request) {
       category,
       totalPlaces: parseInt(totalPlaces),
       price: 10, // for now, delete in the future and see how to calculate
+      totalPlaces: parseInt(totalPlaces),
+      price: 10, // for now, delete in the future and see how to calculate
       userId: currentUser.id,
       checkInTime,
       checkOutTime,
@@ -152,19 +154,6 @@ export async function PUT(request) {
         totalPlaces,
       },
     });
-
-    await Promise.all(
-      types.map((type) =>
-        prisma.type.update({
-          where: { id: type.id },
-          data: {
-            capacity: type.capacity,
-            defaultPrice: type.defaultPrice,
-            weekendPrice: type.weekendPrice,
-          },
-        })
-      )
-    );
 
     return NextResponse.json(updatedListing);
   } catch (error) {
