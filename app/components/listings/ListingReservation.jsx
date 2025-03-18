@@ -7,11 +7,7 @@ const ListingReservation = ({
   listing,
   price,
   totalPrice,
-  dateRange,
-  onChangeDate,
-  onSubmit,
   disabled,
-  disabledDates,
   translation,
 }) => {
   const reservationModal = useReservationModal();
@@ -25,13 +21,6 @@ const ListingReservation = ({
         </div>
       </div>
       <hr />
-      {/* <Calendar
-        value={dateRange}
-        disabledDates={disabledDates}
-        onChange={(value) => onChangeDate(value.selection)}
-        locale={translation.locale || "sr"}
-      />
-      <hr /> */}
       <div className="p-4">
         <Button
           disabled={disabled}

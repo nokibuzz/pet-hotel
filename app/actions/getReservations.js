@@ -26,9 +26,11 @@ export default async function getReservations(params) {
       include: {
         type: {
           include: {
-            listing: true, // Fetch the listing associated with the type
+            listing: true, // Fetch the listing associated with the type,
+            // TODO: finetune, to return only needed values
           },
         },
+        user: true,
       },
       where: query,
       orderBy: {
@@ -41,10 +43,7 @@ export default async function getReservations(params) {
       createdAt: reservation.createdAt.toISOString(),
       startDate: reservation.startDate.toISOString(),
       endDate: reservation.endDate.toISOString(),
-      listing: {
-        ...reservation.type?.listing,
-        createdAt: reservation?.type?.listing?.createdAt.toISOString(),
-      },
+      listingId: reservation.type.listingId,
       type: {
         ...reservation.type,
       },
