@@ -13,23 +13,36 @@ const ReservationGroupInfo = ({ reservations, currentUser, translation }) => {
     return acc;
   }, {});
 
+  const [openStates, setOpenStates] = useState(
+    Object.keys(groupedReservations).reduce((acc, listingId) => {
+      acc[listingId] = true; // Default: all open
+      return acc;
+    }, {})
+  );
+
+  const toggleOpen = (listingId) => {
+    setOpenStates((prev) => ({
+      ...prev,
+      [listingId]: !prev[listingId],
+    }));
+  };
+
   return (
     <div className="mt-10  space-y-4">
       {Object.entries(groupedReservations).map(([listingId, ress]) => {
-        const [isOpen, setIsOpen] = useState(true);
         return (
           <div
             key={listingId}
             className="border border-gray-300 rounded-lg p-2"
           >
             <button
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => toggleOpen(listingId)}
               className="w-full flex justify-between items-center font-semibold p-2 bg-gray-100 hover:bg-gray-200 rounded-md"
             >
               <span>{ress[0].type.listing.title}</span>
               <span>Num of reservations: {ress.length}</span>
             </button>
-            {isOpen && (
+            {openStates[listingId] && (
               <div className="mt-2 space-y-2">
                 {ress.map((reservation) => (
                   <ReservationRow
