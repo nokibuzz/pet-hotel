@@ -11,7 +11,7 @@ import { getTranslations } from "@/app/utils/getTranslations";
 
 const ListingPage = async ({ params }) => {
   const listing = await getListingById(params);
-  const reservations = await getReservations(params);
+  // const reservations = await getReservations(params);
   const currentUser = await getCurrentUser();
   const awaitedParams = await params;
   const { reviews, totalReviews } = await getReviews({
@@ -49,7 +49,6 @@ const ListingPage = async ({ params }) => {
       <ListingClient
         listing={listing}
         currentUser={currentUser}
-        reservations={reservations}
         reviews={reviews}
         totalReviews={totalReviews}
         translation={translation}

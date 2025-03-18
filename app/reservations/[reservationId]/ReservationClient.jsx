@@ -10,7 +10,10 @@ import Conversation from "@/app/components/conversation/Conversation";
 import CustomContainer from "@/app/components/CustomContainer";
 
 const ReservationClient = ({ reservation, currentUser, translation }) => {
-  const listing = reservation.listing;
+  console.log("reserv", JSON.stringify(reservation));
+  const user = reservation.type.user;
+
+  const listing = reservation.type.listing;
   const initialDateRange = {
     startDate: reservation.startDate,
     endDate: reservation.endDate,
@@ -21,7 +24,7 @@ const ReservationClient = ({ reservation, currentUser, translation }) => {
   useEffect(() => {
     const id =
       currentUser?.id === reservation.userId
-        ? reservation.listing.userId
+        ? listing.userId
         : reservation.userId;
 
     const fetchData = async () => {
@@ -56,7 +59,7 @@ const ReservationClient = ({ reservation, currentUser, translation }) => {
           />
           <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-10">
             <ListingInfo
-              user={listing.user}
+              user={user}
               category={category}
               description={listing.description}
               guestCount={listing.guestCount}
@@ -77,7 +80,7 @@ const ReservationClient = ({ reservation, currentUser, translation }) => {
                 totalPrice={reservation.totalPrice}
                 dateRange={initialDateRange}
                 translation={translation.ReservationInfo}
-                hasCancelation={reservation.listing.hasCancelation}
+                hasCancelation={listing.hasCancelation}
               />
               <ListingAddionalInformation
                 hasFood={listing.hasFood}
