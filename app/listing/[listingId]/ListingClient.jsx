@@ -18,7 +18,6 @@ import CustomContainer from "@/app/components/CustomContainer";
 
 const ListingClient = ({
   listing,
-  reservations = [],
   reviews,
   totalReviews,
   currentUser,
@@ -26,50 +25,6 @@ const ListingClient = ({
 }) => {
   const loginModal = useLoginModal();
   const router = useRouter();
-
-  console.log("lis", JSON.stringify(listing));
-
-  const disabledDates = useMemo(() => {
-    let result = new Set();
-    let reservedDates = {};
-
-    // 🏨 Track blocked dates
-    // blockedDates.forEach((block) => {
-    //   const range = eachDayOfInterval({
-    //     start: new Date(block.startDate),
-    //     end: new Date(block.endDate),
-    //   });
-    //   range.forEach((date) => result.add(date.toISOString().split("T")[0]));
-    // });
-
-    // 🛑 Track reservations and availability
-    reservations.forEach((reservation) => {
-      const range = eachDayOfInterval({
-        start: new Date(reservation.startDate),
-        end: new Date(reservation.endDate),
-      });
-
-      range.forEach((date) => {
-        const formattedDate = date.toISOString().split("T")[0];
-
-        // Count reservations per type
-        reservedDates[formattedDate] = (reservedDates[formattedDate] || 0) + 1;
-
-        // Disable if fully booked
-        const typeAvailability = listing.types.find(
-          (t) => t.id === reservation.typeId
-        );
-        if (
-          typeAvailability &&
-          reservedDates[formattedDate] >= typeAvailability.capacity
-        ) {
-          result.add(formattedDate);
-        }
-      });
-    });
-
-    return [...result];
-  }, [reservations, /*blockDates,*/ listing]);
 
   const searchParams = useSearchParams();
   const initialDateRange = {
@@ -119,51 +74,6 @@ const ListingClient = ({
       });
   }, [totalPrice, dateRange, listing?.id, router, currentUser, loginModal]);
 
-  // useEffect(() => {
-  //   if (dateRange.startDate && dateRange.endDate && selectedType) {
-  //     const dayCount = differenceInCalendarDays(
-  //       dateRange.endDate,
-  //       dateRange.startDate
-  //     );
-
-  //     if (dayCount > 0) {
-  //       let total = 0;
-
-  //       // Iterate over each night
-  //       eachDayOfInterval({
-  //         start: dateRange.startDate,
-  //         end: dateRange.endDate,
-  //       }).forEach((date) => {
-  //         let price = selectedType.defaultPrice; // Base price
-  //         const formattedDate = date.toISOString().split("T")[0];
-
-  //         // Apply special price if available
-  //         const special = specialPrices.find(
-  //           (sp) =>
-  //             formattedDate >= sp.startDate &&
-  //             formattedDate <= sp.endDate &&
-  //             sp.typeId === selectedType.id
-  //         );
-  //         if (special) {
-  //           price = special.price;
-  //         } else {
-  //           // Check weekend pricing
-  //           const isWeekend = [5, 6].includes(getDay(date)); // 5 = Saturday, 6 = Sunday
-  //           if (isWeekend && selectedType.weekendPrice) {
-  //             price = selectedType.weekendPrice;
-  //           }
-  //         }
-
-  //         total += price;
-  //       });
-
-  //       setTotalPrice(total);
-  //     } else {
-  //       setTotalPrice(selectedType.defaultPrice);
-  //     }
-  //   }
-  // }, [dateRange, selectedType, specialPrices]);
-
   const category = useMemo(() => {
     return options.find((item) => item.label === listing.category);
   }, [listing.category]);
@@ -205,11 +115,7 @@ const ListingClient = ({
                 listing={listing}
                 price={listing.price}
                 totalPrice={totalPrice}
-                onChangeDate={(value) => setDateRange(value)}
-                dateRange={dateRange}
-                onSubmit={onCreateReservation}
                 disabled={isLoading}
-                disabledDates={disabledDates}
                 translation={translation.ListingClient}
               />
               <ListingAddionalInformation

@@ -143,14 +143,15 @@ model Availability {
 }
 
 model Reservation {
-    id         String   @id @default(auto()) @map("_id") @db.ObjectId
-    userId     String?  @db.ObjectId
-    typeId     String?  @db.ObjectId
-    startDate  DateTime
-    endDate    DateTime
-    status     String   @default("pending") // pending, approved, canceled, completed
-    totalPrice Float
-    createdAt  DateTime @default(now())
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    userId       String?  @db.ObjectId
+    typeId       String?  @db.ObjectId
+    startDate    DateTime
+    endDate      DateTime
+    status       String   @default("pending") // pending, approved, canceled, completed
+    totalPrice   Float
+    createdAt    DateTime @default(now())
+    rejectReason String?
 
     stripePaymentId String? // For refund tracking
     refundStatus    String? // pending, refunded, partial_refunded

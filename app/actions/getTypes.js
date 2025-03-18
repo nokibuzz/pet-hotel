@@ -24,8 +24,6 @@ export default async function getTypes(params) {
 
     const typeFilters = {};
 
-    console.log("param", JSON.stringify(params));
-
     if (petType) {
       typeFilters.name = petType;
     }
