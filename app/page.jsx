@@ -7,6 +7,7 @@ import ClientOnly from "./components/ClientOnly";
 import CustomContainer from "./components/CustomContainer";
 import EmptyState from "./components/EmptyState";
 import ListingCard from "./components/listings/ListingCard";
+import AddionalRegistrationModal from "./components/modals/AddionalRegistrationModal";
 import { getTranslations } from "./utils/getTranslations";
 
 const adSlots = [6533344719];
@@ -36,6 +37,12 @@ const Home = async ({ searchParams }) => {
 
   return (
     <ClientOnly>
+      {
+        currentUser?.isNewUser && 
+        (
+          <AddionalRegistrationModal translations={translation.AddionalRegistrationModal}/>
+        )
+      }
       <CustomContainer>
         <div className="pt-20 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4">
           {listingTypes.flatMap((listingType, index) => {
