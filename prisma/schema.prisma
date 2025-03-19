@@ -9,13 +9,14 @@ generator client {
 }
 
 datasource db {
-    provider = "mongodb"
-    url      = env("DATABASE_URL")
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
 }
 
 // password and other stuffs are optional cause of social login option
 model User {
-    id              String           @id @default(auto()) @map("_id") @db.ObjectId
+    id              String           @id @default(uuid())
     name            String?
     businessName    String?
     email           String?          @unique
@@ -27,7 +28,7 @@ model User {
     locale          String           @default("sr")
     createdAt       DateTime         @default(now())
     updatedAt       DateTime         @updatedAt
-    favouriteIds    String[]         @db.ObjectId
+    favouriteIds    String[]
     totalReviews    Int              @default(0)
     likedReviews    Int              @default(0)
     dislikedReviews Int              @default(0)
@@ -42,17 +43,17 @@ model User {
 }
 
 model Account {
-    id                String  @id @default(auto()) @map("_id") @db.ObjectId
-    userId            String? @db.ObjectId
+    id                String  @id @default(uuid())
+    userId            String?
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? @db.String
-    access_token      String? @db.String
+    refresh_token     String?
+    access_token      String?
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? @db.String
+    id_token          String?
     session_state     String?
 
     user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -61,11 +62,11 @@ model Account {
 }
 
 model Listing {
-    id                  String         @id @default(auto()) @map("_id") @db.ObjectId
-    userId              String?        @db.ObjectId
+    id                  String         @id @default(uuid())
+    userId              String?
     title               String
     description         String
-    imageSrc            String[]
+    imageSrc            String[] // Storing images as String array
     createdAt           DateTime       @default(now())
     category            String
     price               Int
@@ -79,7 +80,7 @@ model Listing {
     hasGrooming         Boolean
     hasVet              Boolean
     addionalInformation String?
-    location            Json
+    location            Json // Storing location as JSONB or JSON in PostgreSQL
     capacityType        CapacityType   @default(TOTAL) // TOTAL or ADVANCED
     totalPlaces         Int?
     types               Type[]
@@ -95,8 +96,8 @@ model Listing {
 }
 
 model SpecialPrice {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
-    typeId       String   @db.ObjectId
+    id           String   @id @default(uuid())
+    typeId       String
     startDate    DateTime
     endDate      DateTime
     defaultPrice Float
@@ -104,7 +105,7 @@ model SpecialPrice {
     reason       String?
     type         Type     @relation(fields: [typeId], references: [id], onDelete: Cascade)
 
-    @@index([typeId, startDate, endDate]) // Faster filtering
+    @@index([typeId, startDate, endDate])
 }
 
 enum CapacityType {
@@ -113,8 +114,8 @@ enum CapacityType {
 }
 
 model Type {
-    id           String         @id @default(auto()) @map("_id") @db.ObjectId
-    listingId    String         @db.ObjectId
+    id           String         @id @default(uuid())
+    listingId    String
     name         String
     capacity     Int
     defaultPrice Float
@@ -125,27 +126,27 @@ model Type {
     Availability Availability[]
     BlockedDate  BlockedDate[]
 
-    @@index([listingId]) // Faster queries on types per listing
+    @@index([listingId])
     @@index([defaultPrice])
 }
 
 model Availability {
-    id         String   @id @default(auto()) @map("_id") @db.ObjectId
-    typeId     String   @db.ObjectId
+    id         String   @id @default(uuid())
+    typeId     String
     typeName   String?
     date       DateTime
-    available  Boolean  @default(true) // If false, no slots are left
-    totalSlots Int? // Available slots per type (or total if typeId is null)
+    available  Boolean  @default(true)
+    totalSlots Int?
     type       Type     @relation(fields: [typeId], references: [id], onDelete: Cascade)
 
-    @@index([typeId, date]) // Faster lookups
+    @@index([typeId, date])
     @@index([typeId, date, available])
 }
 
 model Reservation {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
-    userId       String?  @db.ObjectId
-    typeId       String?  @db.ObjectId
+    id           String   @id @default(uuid())
+    userId       String?
+    typeId       String?
     startDate    DateTime
     endDate      DateTime
     status       String   @default("pending") // pending, approved, canceled, completed
@@ -153,32 +154,32 @@ model Reservation {
     createdAt    DateTime @default(now())
     rejectReason String?
 
-    stripePaymentId String? // For refund tracking
-    refundStatus    String? // pending, refunded, partial_refunded
+    stripePaymentId String?
+    refundStatus    String?
     type            Type?   @relation(fields: [typeId], references: [id], onDelete: Cascade)
 
     user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([typeId, startDate, endDate]) // Optimized for availability checks
+    @@index([typeId, startDate, endDate])
 }
 
 model BlockedDate {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    listingId String   @db.ObjectId
-    typeId    String   @db.ObjectId
+    id        String   @id @default(uuid())
+    listingId String
+    typeId    String
     startDate DateTime
     endDate   DateTime
     reason    String?
     listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
     type      Type     @relation(fields: [typeId], references: [id], onDelete: Cascade)
 
-    @@index([listingId, startDate, endDate]) // Optimized lookups
+    @@index([listingId, startDate, endDate])
 }
 
 model Notification {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    listingId String   @db.ObjectId
-    userId    String?  @db.ObjectId
+    id        String   @id @default(uuid())
+    listingId String
+    userId    String?
     message   String
     status    String   @default("unread")
     createdAt DateTime @default(now())
@@ -187,7 +188,7 @@ model Notification {
 }
 
 model Pet {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    id          String   @id @default(uuid())
     name        String
     breed       String
     age         Int
@@ -195,15 +196,15 @@ model Pet {
     vaccinated  Boolean
     imageSrc    String[]
     description String?
-    userId      String   @db.ObjectId
+    userId      String
 
     owner User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Review {
-    id        String @id @default(auto()) @map("_id") @db.ObjectId
-    userId    String @db.ObjectId
-    listingId String @db.ObjectId
+    id        String @id @default(uuid())
+    userId    String
+    listingId String
 
     overallRating  Int
     locationRating Int
@@ -225,20 +226,20 @@ model Review {
 }
 
 model ReviewReaction {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    reviewId  String   @db.ObjectId
-    userId    String   @db.ObjectId
-    reaction  String // "like" or "dislike"
+    id        String   @id @default(uuid())
+    reviewId  String
+    userId    String
+    reaction  String
     createdAt DateTime @default(now())
 
     review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([reviewId, userId]) // Ensure one reaction per user per review
+    @@unique([reviewId, userId])
 }
 
 model Message {
-    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    id         String   @id @default(uuid())
     senderId   String
     receiverId String
     content    String
@@ -246,9 +247,6 @@ model Message {
     chatId     String
 }
 
-// username:dogohotel
-// password:dogohoteltest0
-
-// mongosh "mongodb+srv://cluster0.qilbo.mongodb.net/" --apiVersion 1 --username dogohotel --password dogohoteltest0
-
 //create index on listings { "location": "2dsphere" }
+// create migration: npx prisma migrate dev --name init
+// run migration: npx prisma db push
