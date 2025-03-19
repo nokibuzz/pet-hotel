@@ -444,12 +444,14 @@ const RentModal = ({ currentUser }) => {
   const [petTypesSupported, setPetTypesSupported] = useState([]);
 
   const updatePetTypes = (typeName) => {
-    setPetTypesSupported(
-      (prevSelected) =>
-        prevSelected.some((item) => item.name === typeName)
-          ? prevSelected.filter((item) => item.name !== typeName) // Remove item by name
-          : [...prevSelected, { name: typeName, capacity: 1 }] // Add new item
-    );
+    setPetTypesSupported((prevSelected) => {
+      // Remove "TOTAL" record first
+      const filteredList = prevSelected.filter((item) => item.name !== "TOTAL");
+
+      return filteredList.some((item) => item.name === typeName)
+        ? filteredList.filter((item) => item.name !== typeName) // Remove item by name
+        : [...filteredList, { name: typeName, capacity: 1 }]; // Add new item
+    });
   };
 
   if (step === STEPS.PET_TYPES) {
