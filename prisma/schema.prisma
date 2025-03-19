@@ -21,6 +21,7 @@ model User {
     businessName    String?
     email           String?          @unique
     emailVerified   DateTime?
+    isNewUser       Boolean
     hotelOwner      Boolean          @default(false)
     image           String?
     hashedPassword  String?
@@ -32,6 +33,8 @@ model User {
     totalReviews    Int              @default(0)
     likedReviews    Int              @default(0)
     dislikedReviews Int              @default(0)
+    positiveFeedback Int              @default(0)
+    negativeFeedback Int              @default(0)
     reactions       ReviewReaction[]
 
     accounts     Account[]

@@ -76,6 +76,7 @@ export const authOptions = {
               email: user.email,
               name: user.name,
               image: user.image || null,
+              isNewUser: true,
               accounts: {
                 create: {
                   type: account.type,
@@ -99,7 +100,7 @@ export const authOptions = {
     },
   },
   pages: {
-    signIn: "/",
+    signIn: '/',
   },
   debug: process.env.NODE_ENV === "development",
   session: {

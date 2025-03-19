@@ -16,6 +16,7 @@ export async function POST(request) {
       hashedPassword,
       businessName,
       hotelOwner,
+      isNewUser: false
     },
   });
 
@@ -58,4 +59,21 @@ export async function PUT(request) {
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+export async function PATCH(request) {
+  const body = await request.json();
+  const { hotelOwner, businessName } = body;
+  const currentUser = await getCurrentUser();
+
+  const user = await prisma.user.update({
+    where: { id: currentUser.id },
+    data: {
+      hotelOwner,
+      businessName,
+      isNewUser: false
+    },
+  });
+
+  return NextResponse.json(user);
 }
