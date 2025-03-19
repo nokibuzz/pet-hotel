@@ -29,7 +29,9 @@ export async function POST(request) {
   });
 
   console.log("existingAvailability", JSON.stringify(existingAvailability));
-  const hasNoSlotsLeft = availabilityList.some((item) => item.totalSlots <= 0);
+  const hasNoSlotsLeft = existingAvailability.some(
+    (item) => item.totalSlots <= 0
+  );
   if (hasNoSlotsLeft) {
     console.error(
       "There are availability slots with no remaining slots available to book!"
@@ -87,7 +89,7 @@ export async function POST(request) {
               where: { id: existingEntry.id },
               data: {
                 totalSlots: { decrement: 1 },
-                available: existingEntry.totalSlots > 0,
+                available: existingEntry.totalSlots > 1,
               },
             })
           );

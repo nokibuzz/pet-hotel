@@ -41,7 +41,7 @@ const LoginModal = () => {
 
       if (callback?.ok) {
         toast.success(
-          loginModal.translation.LoginModal.successfullyLoggedIn ||
+          loginModal.translation.LoginModal?.successfullyLoggedIn ||
             "Successfully logged in"
         );
         router.refresh();
@@ -96,7 +96,7 @@ const LoginModal = () => {
           "Continue with Google"
         }
         icon={FcGoogle}
-        onClick={() => { 
+        onClick={() => {
           signIn("google");
         }}
       />

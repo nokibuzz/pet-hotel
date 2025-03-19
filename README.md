@@ -25,6 +25,12 @@ Dummy
 
 https://authjs.dev/getting-started/adapters/prisma
 
+### Creating db migration file
+
+```bash
+npx prisma migrate dev --name <name_of_migration>
+```
+
 ```bash
 npx prisma db push # will push initial schema to the db
 ```
