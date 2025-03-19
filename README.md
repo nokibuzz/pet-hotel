@@ -25,7 +25,19 @@ Dummy
 
 https://authjs.dev/getting-started/adapters/prisma
 
-### Creating db migration file
+### Crating and migrating to prod
+
+On .env file change schema to prod (instead of dev) and run next commands:
+
+```bash
+npx prisma migrate dev --name <name_of_migration>
+```
+
+```bash
+npx prisma migrate deploy
+```
+
+### Creating db migration file for dev
 
 ```bash
 npx prisma migrate dev --name <name_of_migration>
