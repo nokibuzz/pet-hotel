@@ -33,6 +33,8 @@ model User {
     totalReviews    Int              @default(0)
     likedReviews    Int              @default(0)
     dislikedReviews Int              @default(0)
+    positiveFeedback Int              @default(0)
+    negativeFeedback Int              @default(0)
     reactions       ReviewReaction[]
 
     accounts     Account[]
