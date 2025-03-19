@@ -21,6 +21,7 @@ model User {
     businessName    String?
     email           String?          @unique
     emailVerified   DateTime?
+    isNewUser       Boolean
     hotelOwner      Boolean          @default(false)
     image           String?
     hashedPassword  String?

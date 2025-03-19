@@ -7,6 +7,14 @@
     },
     "ListingCard": {
       "perDay": "per day"
+    },
+    "AddionalRegistrationModal": {
+      "businessAccount": "Business account",
+      "businessName": "Business Name",
+      "modalTitle": "Welcome to Hotels for dogs",
+      "submit": "Complete your account",
+      "successfullyRegistrated": "Successfully registered!",
+      "registrationError": "Woof, woof, something went wrong on registration!"
     }
   },
   "sr": {
@@ -17,6 +25,14 @@
     },
     "ListingCard": {
       "perDay": "po danu"
+    },
+    "AddionalRegistrationModal": {
+      "businessAccount": "Biznis nalog",
+      "businessName": "Ima Vašeg smeštaja",
+      "modalTitle": "Dobrodošli u Hotele za ljubimce",
+      "submit": "Sačuvajte nalog",
+      "successfullyRegistrated": "Uspešno ste registrovani!",
+      "registrationError": "Vuf, vuf, dogodila se greška prilikom registracije!"
     }
   }
 }
