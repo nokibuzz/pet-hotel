@@ -14,9 +14,16 @@ export async function POST(request) {
 
   const body = await request.json();
 
-  const { startDate, endDate, typeId, typeName, totalPrice } = body;
+  const { startDate, endDate, typeId, typeName, totalPrice, ownerId } = body;
 
-  if (!typeId || !startDate || !endDate || !totalPrice || !typeName) {
+  if (
+    !typeId ||
+    !startDate ||
+    !endDate ||
+    !totalPrice ||
+    !typeName ||
+    !ownerId
+  ) {
     return NextResponse.error();
   }
 
@@ -49,6 +56,7 @@ export async function POST(request) {
         endDate,
         totalPrice,
         status: "pending",
+        ownerId,
       };
 
       console.log("reservationData", JSON.stringify(reservationData));
