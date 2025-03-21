@@ -133,7 +133,8 @@ const RentModal = ({ currentUser }) => {
       return;
     }
     if (step === STEPS.INFO) {
-      if (totalPlaces === 0) {
+      calculateTotalCapacity(petTypesSupported);
+      if (petTypesSupported.reduce((total, item) => total + (item.capacity || 0), 0) === 0) {
         toast.error(
           rentModal.translation?.errorCapacityNotSelected ||
             "Capacity should be entered!"
