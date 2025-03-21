@@ -33,7 +33,6 @@ const ReservationModal = () => {
   const [totalWeekendDays, setTotalWeekendDays] = useState(0);
   const [disabledDates, setDisabledDates] = useState(new Set()); // Store as Set for fast lookups
   const [fetchedRanges, setFetchedRanges] = useState([]); // Track already fetched periods
-  // Assuming `unavailableDates` is a Set containing the dates
   const disabledDatesArray = [...disabledDates];
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -199,6 +198,7 @@ const ReservationModal = () => {
         totalPrice,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
+        ownerId: type?.userId,
       })
       .then(() => {
         toast.success("Successfully reserved pet stay!");
