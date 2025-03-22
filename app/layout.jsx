@@ -39,7 +39,7 @@ export default async function RootLayout({ children }) {
           <LoginModal />
           <RegisterModal />
           <ReservationModal />
-          <ReservationInfoModal />
+          <ReservationInfoModal currentUser={currentUser} />
           <RentModal currentUser={currentUser} />
           <SearchModal currentUser={currentUser} />
           <AdvancedFilters />

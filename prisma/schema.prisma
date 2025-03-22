@@ -16,26 +16,26 @@ datasource db {
 
 // password and other stuffs are optional cause of social login option
 model User {
-    id              String           @id @default(uuid())
-    name            String?
-    businessName    String?
-    email           String?          @unique
-    emailVerified   DateTime?
-    isNewUser       Boolean
-    hotelOwner      Boolean          @default(false)
-    image           String?
-    hashedPassword  String?
-    defaultLocation Json?
-    locale          String           @default("sr")
-    createdAt       DateTime         @default(now())
-    updatedAt       DateTime         @updatedAt
-    favouriteIds    String[]
-    totalReviews    Int              @default(0)
-    likedReviews    Int              @default(0)
-    dislikedReviews Int              @default(0)
+    id               String           @id @default(uuid())
+    name             String?
+    businessName     String?
+    email            String?          @unique
+    emailVerified    DateTime?
+    isNewUser        Boolean
+    hotelOwner       Boolean          @default(false)
+    image            String?
+    hashedPassword   String?
+    defaultLocation  Json?
+    locale           String           @default("sr")
+    createdAt        DateTime         @default(now())
+    updatedAt        DateTime         @updatedAt
+    favouriteIds     String[]
+    totalReviews     Int              @default(0)
+    likedReviews     Int              @default(0)
+    dislikedReviews  Int              @default(0)
     positiveFeedback Int              @default(0)
     negativeFeedback Int              @default(0)
-    reactions       ReviewReaction[]
+    reactions        ReviewReaction[]
 
     accounts     Account[]
     listings     Listing[]
@@ -149,6 +149,7 @@ model Availability {
 model Reservation {
     id           String   @id @default(uuid())
     userId       String?
+    ownerId      String?
     typeId       String?
     startDate    DateTime
     endDate      DateTime

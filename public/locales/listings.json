@@ -6,7 +6,8 @@
       "resetFilters": "Reset filters"
     },
     "ListingCard": {
-      "perDay": "per day"
+      "perDay": "per day",
+      "onWeekend": "on weekend"
     },
     "AddionalRegistrationModal": {
       "businessAccount": "Business account",
@@ -24,7 +25,8 @@
       "resetFilters": "Poništi filtere"
     },
     "ListingCard": {
-      "perDay": "po danu"
+      "perDay": "po danu",
+      "onWeekend": "vikendom"
     },
     "AddionalRegistrationModal": {
       "businessAccount": "Biznis nalog",

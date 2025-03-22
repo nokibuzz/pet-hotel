@@ -17,7 +17,8 @@
     "ListingCard": {
       "cancelReservation": "Cancel reservation",
       "cancelReservationNotPossbile": "Cancelation not possible",
-      "perDay": "per day"
+      "perDay": "per day",
+      "onWeekend": "on weekend"
     }
   },
   "sr": {
@@ -37,6 +38,7 @@
     },
     "ListingCard": {
       "perDay": "po danu",
+      "onWeekend": "vikendom",
       "cancelReservation": "Otkaži rezervaciju",
       "cancelReservationNotPossbile": "Otkazivanje nije moguće"
     }

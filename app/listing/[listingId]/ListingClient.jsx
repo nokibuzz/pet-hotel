@@ -5,13 +5,7 @@ import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ListingReservation from "@/app/components/listings/ListingReservation";
 import { options } from "@/app/components/navbar/BasicFilters";
-import useLoginModal from "@/app/hooks/useLoginModal";
-import axios from "axios";
-import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
-import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import toast from "react-hot-toast";
-import { useSearchParams } from "next/navigation";
+import React, { useMemo, useState } from "react";
 import Reviews from "@/app/components/reviews/Reviews";
 import Avatar from "@/app/components/Avatar";
 import CustomContainer from "@/app/components/CustomContainer";
@@ -23,56 +17,7 @@ const ListingClient = ({
   currentUser,
   translation,
 }) => {
-  const loginModal = useLoginModal();
-  const router = useRouter();
-
-  const searchParams = useSearchParams();
-  const initialDateRange = {
-    startDate: searchParams?.get("startDate")
-      ? searchParams.get("startDate")
-      : new Date(),
-    endDate: searchParams?.get("endDate")
-      ? searchParams.get("endDate")
-      : new Date(),
-    key: "selection",
-  };
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [totalPrice, setTotalPrice] = useState(listing.price);
-  const [dateRange, setDateRange] = useState(initialDateRange);
-
-  const onCreateReservation = useCallback(() => {
-    if (!currentUser) {
-      return loginModal.onOpen();
-    }
-
-    setIsLoading(true);
-
-    axios
-      .post("/api/reservations", {
-        totalPrice,
-        startDate: dateRange.startDate,
-        endDate: dateRange.endDate,
-        listingId: listing?.id,
-      })
-      .then(() => {
-        toast.success(
-          translation.ListingClient.reservationSuccessfull ||
-            "Successfully reserved pet stay!"
-        );
-        setDateRange(initialDateRange);
-        router.push("/reservations");
-      })
-      .catch(() => {
-        toast.error(
-          translation.ListingClient.reservationError ||
-            "Something went wrong on reservation!"
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [totalPrice, dateRange, listing?.id, router, currentUser, loginModal]);
+  const [totalPrice, setTotalPrice] = useState(null);
 
   const category = useMemo(() => {
     return options.find((item) => item.label === listing.category);
@@ -113,9 +58,8 @@ const ListingClient = ({
               <hr className="my-6" />
               <ListingReservation
                 listing={listing}
-                price={listing.price}
                 totalPrice={totalPrice}
-                disabled={isLoading}
+                currentUser={currentUser}
                 translation={translation.ListingClient}
               />
               <ListingAddionalInformation

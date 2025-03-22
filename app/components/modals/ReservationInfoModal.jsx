@@ -23,7 +23,7 @@ export const RESERVATION_INFO_STEPS = Object.freeze({
   CONFIRMATION: 2,
 });
 
-const ReservationInfoModal = () => {
+const ReservationInfoModal = ({ currentUser }) => {
   const router = useRouter();
   const reservationInfoModal = useReservationInfoModal();
 
@@ -170,32 +170,36 @@ const ReservationInfoModal = () => {
           totalPrice={reservationInfoModal?.reservation?.totalPrice}
         />
 
-        {reservationInfoModal.reservation?.status === "pending" && (
-          <>
-            <hr />
-            <div className="flex flex-row self-center items-center justify-between min-w-[200px] p-2 w-[80%] mt-4 sm:mt-0 pt-4 sm:pt-0">
-              <ActionButton
-                onClick={onConfirm}
-                disabled={isLoading}
-                icon={AiOutlineCheck}
-                tooltip="Approve"
-                variant="approve"
-                className="w-full sm:w-auto"
-                title="Approve"
-              />
-              <ActionButton
-                onClick={onReject}
-                disabled={isLoading}
-                icon={AiOutlineClose}
-                tooltip="Dismiss"
-                variant="reject"
-                className="w-full sm:w-auto"
-                title="Reject"
-              />
-            </div>
-          </>
-        )}
-        {reservationInfoModal.reservation?.status !== "pending" && (
+        {reservationInfoModal.reservation?.type?.listing?.userId ===
+          currentUser?.id &&
+          reservationInfoModal.reservation?.status === "pending" && (
+            <>
+              <hr />
+              <div className="flex flex-row self-center items-center justify-between min-w-[200px] p-2 w-[80%] mt-4 sm:mt-0 pt-4 sm:pt-0">
+                <ActionButton
+                  onClick={onConfirm}
+                  disabled={isLoading}
+                  icon={AiOutlineCheck}
+                  tooltip="Approve"
+                  variant="approve"
+                  className="w-full sm:w-auto"
+                  title="Approve"
+                />
+                <ActionButton
+                  onClick={onReject}
+                  disabled={isLoading}
+                  icon={AiOutlineClose}
+                  tooltip="Dismiss"
+                  variant="reject"
+                  className="w-full sm:w-auto"
+                  title="Reject"
+                />
+              </div>
+            </>
+          )}
+        {(reservationInfoModal.reservation?.status !== "pending" ||
+          reservationInfoModal.reservation?.type?.listing?.userId !==
+            currentUser?.id) && (
           <div>
             <ReservationStatusField
               status={reservationInfoModal.reservation?.status}
