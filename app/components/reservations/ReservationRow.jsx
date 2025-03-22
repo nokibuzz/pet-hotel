@@ -86,31 +86,36 @@ const ReservationRow = ({ data, disabled, currentUser, translation }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-row sm:flex-col gap-2 items-center justify-center min-w-[120px] p-2 w-full sm:w-auto border-t sm:border-none mt-4 sm:mt-0 pt-4 sm:pt-0">
-        {data.status === "pending" && (
-          <>
-            <ActionButton
-              onClick={() => reservationInfoModal.onOpen(data, 2)}
-              disabled={disabled}
-              icon={AiOutlineCheck}
-              tooltip="Approve"
-              variant="approve"
-              className="w-full sm:w-auto"
-            />
-            <ActionButton
-              onClick={() => reservationInfoModal.onOpen(data, 1)}
-              disabled={disabled}
-              icon={AiOutlineClose}
-              tooltip="Dismiss"
-              variant="reject"
-              className="w-full sm:w-auto"
-            />
-          </>
-        )}
-        {data.status !== "pending" && (
-          <ReservationStatusField status={data.status} />
-        )}
-      </div>
+      {type.listing.userId === currentUser?.id && (
+        <div className="flex flex-row sm:flex-col gap-2 items-center justify-center min-w-[120px] p-2 w-full sm:w-auto border-t sm:border-none mt-4 sm:mt-0 pt-4 sm:pt-0">
+          {data.status === "pending" && (
+            <>
+              <ActionButton
+                onClick={() => reservationInfoModal.onOpen(data, 2)}
+                disabled={disabled}
+                icon={AiOutlineCheck}
+                tooltip="Approve"
+                variant="approve"
+                className="w-full sm:w-auto"
+              />
+              <ActionButton
+                onClick={() => reservationInfoModal.onOpen(data, 1)}
+                disabled={disabled}
+                icon={AiOutlineClose}
+                tooltip="Dismiss"
+                variant="reject"
+                className="w-full sm:w-auto"
+              />
+            </>
+          )}
+          {data.status !== "pending" && (
+            <ReservationStatusField status={data.status} />
+          )}
+        </div>
+      )}
+      {type.listing.userId !== currentUser?.id && (
+        <ReservationStatusField status={data.status} />
+      )}
     </div>
   );
 };

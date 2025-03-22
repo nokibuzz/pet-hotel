@@ -41,7 +41,7 @@ const LoginModal = () => {
 
       if (callback?.ok) {
         toast.success(
-          loginModal.translation.LoginModal?.successfullyLoggedIn ||
+          loginModal.translation?.LoginModal?.successfullyLoggedIn ||
             "Successfully logged in"
         );
         router.refresh();
@@ -58,17 +58,17 @@ const LoginModal = () => {
     <div className="flex flex-col gap-4">
       <Heading
         title={
-          loginModal.translation.LoginModal?.title ||
+          loginModal.translation?.LoginModal?.title ||
           "Welcome back to Hotels for dogs"
         }
         subtitle={
-          loginModal.translation.LoginModal?.subtitle ||
+          loginModal.translation?.LoginModal?.subtitle ||
           "Login to your account!"
         }
       />
       <Input
         id="email"
-        label={loginModal.translation.LoginModal?.email || "Email"}
+        label={loginModal.translation?.LoginModal?.email || "Email"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -77,7 +77,7 @@ const LoginModal = () => {
       <Input
         id="password"
         type="password"
-        label={loginModal.translation.LoginModal?.password || "Password"}
+        label={loginModal.translation?.LoginModal?.password || "Password"}
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -92,7 +92,7 @@ const LoginModal = () => {
       <Button
         outline
         label={
-          loginModal.translation.LoginModal?.continueWithGoogle ||
+          loginModal.translation?.LoginModal?.continueWithGoogle ||
           "Continue with Google"
         }
         icon={FcGoogle}
@@ -103,7 +103,7 @@ const LoginModal = () => {
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="justify-center flex flex-row items-center gap-2">
           <div>
-            {loginModal.translation.LoginModal?.dontHaveAccount ||
+            {loginModal.translation?.LoginModal?.dontHaveAccount ||
               "Don't have an account?"}
           </div>
           <div
@@ -113,7 +113,7 @@ const LoginModal = () => {
             }}
             className="text-neutral-500 cursor-pointer hover:underline"
           >
-            {loginModal.translation.LoginModal?.createOne || "Create one"}
+            {loginModal.translation?.LoginModal?.createOne || "Create one"}
           </div>
         </div>
       </div>
