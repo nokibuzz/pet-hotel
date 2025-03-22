@@ -10,7 +10,6 @@ import Conversation from "@/app/components/conversation/Conversation";
 import CustomContainer from "@/app/components/CustomContainer";
 
 const ReservationClient = ({ reservation, currentUser, translation }) => {
-  console.log("reserv", JSON.stringify(reservation));
   const user = reservation.type.user;
 
   const listing = reservation.type.listing;
