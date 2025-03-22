@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import SendButton from "./SendButton";
 
-const MessageInput = ({ value, onSend, translation }) => {
+const MessageInput = ({ value, onSend, disabled, translation }) => {
   const [text, setText] = useState(value);
 
   const handleInputChange = (e) => {
@@ -26,6 +26,10 @@ const MessageInput = ({ value, onSend, translation }) => {
     }
   }, [text]);
 
+  const isTextEmpty = (value) => {
+    return value == null || String(value).trim() === "";
+  };
+
   return (
     <div className="flex items-center gap-x-2 border-neutral-200">
       <textarea
@@ -43,7 +47,7 @@ const MessageInput = ({ value, onSend, translation }) => {
           scrollbarWidth: "none",
         }}
       />
-      <SendButton onClick={onClick} />
+      <SendButton onClick={onClick} disabled={disabled || isTextEmpty(text)} />
     </div>
   );
 };

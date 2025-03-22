@@ -242,15 +242,6 @@ model ReviewReaction {
     @@unique([reviewId, userId])
 }
 
-model Message {
-    id         String   @id @default(uuid())
-    senderId   String
-    receiverId String
-    content    String
-    timestamp  DateTime @default(now())
-    chatId     String
-}
-
 //create index on listings { "location": "2dsphere" }
 // create migration: npx prisma migrate dev --name init
 // run migration: npx prisma db push

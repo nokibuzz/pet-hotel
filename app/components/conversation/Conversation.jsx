@@ -94,11 +94,12 @@ const Conversation = ({
           <div ref={messagesEndRef} />
         </div>
         <div className="sticky bottom-0 px-2 py-1">
-            <MessageInput
-              onSend={(message) => onSendMessageHandler(message)}
-              translation={translation}
-            />
-          </div>
+          <MessageInput
+            onSend={(message) => onSendMessageHandler(message)}
+            translation={translation}
+            disabled={otherUser === undefined}
+          />
+        </div>
       </div>
     </div>
   );

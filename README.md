@@ -25,26 +25,40 @@ Dummy
 
 https://authjs.dev/getting-started/adapters/prisma
 
+### Generate prisma clients for postgres and mongo
+
+```bash
+npx prisma generate --schema=prisma/schema.prisma
+npx prisma generate --schema=prisma/mongo.schema.prisma
+```
+
+!!!Always add schema to npx prisma commands!!!
+
+```bash
+--schema=prisma/schema.prisma
+--schema=prisma/mongo.schema.prisma
+```
+
 ### Crating and migrating to prod
 
 On .env file change schema to prod (instead of dev) and run next commands:
 
 ```bash
-npx prisma migrate dev --name <name_of_migration>
+npx prisma migrate dev --name <name_of_migration> --schema=prisma/schema.prisma
 ```
 
 ```bash
-npx prisma migrate deploy
+npx prisma migrate deploy --schema=prisma/schema.prisma
 ```
 
 ### Creating db migration file for dev
 
 ```bash
-npx prisma migrate dev --name <name_of_migration>
+npx prisma migrate dev --name <name_of_migration> --schema=prisma/schema.prisma
 ```
 
 ```bash
-npx prisma db push # will push initial schema to the db
+npx prisma db push --schema=prisma/schema.prisma
 ```
 
 Create index on listing for the location.

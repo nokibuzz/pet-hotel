@@ -1,40 +1,39 @@
 import { NextResponse } from "next/server";
 import { pusherServer } from "@/app/libs/pusher";
-import { prisma } from "@/app/libs/prismadb";
+import { mongoprisma } from "@/app/libs/mongoprismadb";
 
 export async function GET(request) {
-  const url = new URL(request.url); 
-  const chatId = url.searchParams.get('chatId'); 
+  const url = new URL(request.url);
+  const chatId = url.searchParams.get("chatId");
 
   try {
-    const messages = await prisma.message.findMany({
+    const messages = await mongoprisma.message.findMany({
       where: {
         chatId: chatId,
       },
       orderBy: {
-        timestamp: 'asc',
+        timestamp: "asc",
       },
     });
 
     return new Response(JSON.stringify(messages), { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Failed to fetch messages!" }), {
-      status: 500,
-    });
+    return new Response(
+      JSON.stringify({ error: "Failed to fetch messages!" }),
+      {
+        status: 500,
+      }
+    );
   }
 }
 
 export async function POST(request) {
   const body = await request.json();
-  const {
-    chatId,
-    message,
-  } = body;
+  const { chatId, message } = body;
 
   let result = {};
   try {
-
-    const newMessage = await prisma.message.create({
+    const newMessage = await mongoprisma.message.create({
       data: {
         senderId: message.senderId,
         receiverId: message.receiverId,
