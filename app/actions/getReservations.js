@@ -15,7 +15,11 @@ export default async function getReservations(params) {
     }
 
     if (authorId) {
-      query.ownerId = authorId;
+      query.type = {
+        listing: {
+          userId: authorId,
+        },
+      };
     }
 
     if (reservationId) {
