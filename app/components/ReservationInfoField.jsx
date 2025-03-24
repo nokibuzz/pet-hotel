@@ -2,6 +2,7 @@
 
 import { format, eachDayOfInterval, isWeekend } from "date-fns";
 import { useState, useEffect } from "react";
+import { ALL_PET_CATEGORIES } from "../utils/PetConstants";
 
 const ReservationInfoField = ({
   dateFrom,
@@ -39,7 +40,8 @@ const ReservationInfoField = ({
   // Function to find pricing based on typeId, fallback to typeId: TOTAL
   const findPricingByTypeId = (types, typeId) => {
     let pricing =
-      types.find((p) => p.id === typeId) || types.find((p) => p.id === "TOTAL");
+      types.find((p) => p.id === typeId) ||
+      types.find((p) => p.id === ALL_PET_CATEGORIES);
 
     return pricing
       ? {

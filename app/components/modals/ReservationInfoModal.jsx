@@ -2,7 +2,7 @@
 
 import useReservationInfoModal from "@/app/hooks/useReservationInfoModal";
 import Modal from "./Modal";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Heading from "../Heading";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -16,6 +16,7 @@ import ConfirmationTimer from "../ConfirmationTimer";
 import TextArea from "../inputs/TextArea";
 import { eachDayOfInterval, isWeekend } from "date-fns";
 import ReservationStatusField from "../reservations/ReservationStatusField";
+import TypeBreedView from "../TypeBreedView";
 
 export const RESERVATION_INFO_STEPS = Object.freeze({
   OVERVIEW: 0,
@@ -100,7 +101,6 @@ const ReservationInfoModal = ({ currentUser }) => {
       const data = {
         reservationId: reservationInfoModal.reservation.id,
         listingId: reservationInfoModal.reservation.listingId,
-        userId: reservationInfoModal.reservation.userId,
       };
 
       axios
@@ -125,7 +125,6 @@ const ReservationInfoModal = ({ currentUser }) => {
     const data = {
       reservationId: reservationInfoModal.reservation.id,
       listingId: reservationInfoModal.reservation.listingId,
-      userId: reservationInfoModal.reservation.userId,
       typeId: reservationInfoModal.reservation.typeId,
       startDate: reservationInfoModal.reservation.startDate,
       endDate: reservationInfoModal.reservation.endDate,
@@ -162,6 +161,11 @@ const ReservationInfoModal = ({ currentUser }) => {
           subtitle={"Details about your reservation"}
         />
         <UserInfoView user={reservationInfoModal?.reservation?.user} />
+        <TypeBreedView
+          typeName={reservationInfoModal?.reservation?.type?.name}
+          breed={reservationInfoModal?.reservation?.breed}
+          breedDescription={reservationInfoModal?.reservation?.breedDescription}
+        />
         <ReservationInfoFieldView
           dateFrom={reservationInfoModal?.reservation?.startDate}
           dateTo={reservationInfoModal?.reservation?.endDate}

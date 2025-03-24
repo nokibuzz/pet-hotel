@@ -2,10 +2,14 @@
 
 import useRentModal from "@/app/hooks/useRentModal";
 import Modal from "./Modal";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import Heading from "../Heading";
 import { options } from "../navbar/BasicFilters";
-import { petTypes } from "../PetTypes";
+import {
+  ALL_PET_CATEGORIES,
+  DOG_BREEDS,
+  PET_TYPES,
+} from "@/app/utils/PetConstants";
 import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
 import InputWithSeparateLabel from "../inputs/InputWithSeparateLabel";
@@ -20,17 +24,19 @@ import Toggle from "../inputs/Toggle";
 import MapSelect from "../MapSelect";
 import CustomInput from "../inputs/CustomInput";
 import { faOtter } from "@fortawesome/free-solid-svg-icons";
+import ExplanationInfo from "../ExplanationInfo";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
   LOCATION: 1,
   PET_TYPES: 2,
-  INFO: 3,
-  PRICE: 4,
-  IMAGES: 5,
-  DESCRIPTION: 6,
-  HOUSE_RULES: 7,
-  ADDIONAL_OPTIONS: 8,
+  BLOCKED_BREEDS: 3,
+  INFO: 4,
+  PRICE: 5,
+  IMAGES: 6,
+  DESCRIPTION: 7,
+  HOUSE_RULES: 8,
+  ADDIONAL_OPTIONS: 9,
 });
 
 const MAX_IMAGES_FOR_RENT = 10;
@@ -77,6 +83,7 @@ const RentModal = ({ currentUser }) => {
       addressLabel: "",
       capacityType: "",
       types: [],
+      blockedBreeds: [],
     },
   });
 
@@ -134,7 +141,12 @@ const RentModal = ({ currentUser }) => {
     }
     if (step === STEPS.INFO) {
       calculateTotalCapacity(petTypesSupported);
-      if (petTypesSupported.reduce((total, item) => total + (item.capacity || 0), 0) === 0) {
+      if (
+        petTypesSupported.reduce(
+          (total, item) => total + (item.capacity || 0),
+          0
+        ) === 0
+      ) {
         toast.error(
           rentModal.translation?.errorCapacityNotSelected ||
             "Capacity should be entered!"
@@ -220,8 +232,9 @@ const RentModal = ({ currentUser }) => {
     if (step === STEPS.PET_TYPES) {
       setCustomValue(
         "capacityType",
-        petTypesSupported.length === 1 && petTypesSupported[0]?.name === "TOTAL"
-          ? "TOTAL"
+        petTypesSupported.length === 1 &&
+          petTypesSupported[0]?.name === ALL_PET_CATEGORIES
+          ? ALL_PET_CATEGORIES
           : "ADVANCED"
       );
 
@@ -447,7 +460,9 @@ const RentModal = ({ currentUser }) => {
   const updatePetTypes = (typeName) => {
     setPetTypesSupported((prevSelected) => {
       // Remove "TOTAL" record first
-      const filteredList = prevSelected.filter((item) => item.name !== "TOTAL");
+      const filteredList = prevSelected.filter(
+        (item) => item.name !== ALL_PET_CATEGORIES
+      );
 
       return filteredList.some((item) => item.name === typeName)
         ? filteredList.filter((item) => item.name !== typeName) // Remove item by name
@@ -463,18 +478,20 @@ const RentModal = ({ currentUser }) => {
           <div className="col-span-1">
             <CategoryInput
               onClick={() => {
-                setPetTypesSupported([{ name: "TOTAL", capacity: 1 }]);
+                setPetTypesSupported([
+                  { name: ALL_PET_CATEGORIES, capacity: 1 },
+                ]);
               }}
               selected={
                 petTypesSupported.length === 1 &&
-                petTypesSupported[0]?.name === "TOTAL"
+                petTypesSupported[0]?.name === ALL_PET_CATEGORIES
               }
               label="All Pets"
-              value="TOTAL"
+              value={ALL_PET_CATEGORIES}
               icon={faOtter}
             />
           </div>
-          {petTypes.map((item) => (
+          {PET_TYPES.map((item) => (
             <div key={item.label} className="col-span-1">
               <CategoryInput
                 onClick={(type) => {
@@ -494,6 +511,69 @@ const RentModal = ({ currentUser }) => {
     );
   }
 
+  const [haveBlockedBreeds, setHaveBlockedBreeds] = useState(false);
+
+  const formattedBreedOptions = petTypesSupported.some(
+    (petType) => petType.name === ALL_PET_CATEGORIES
+  )
+    ? Object.entries(DOG_BREEDS).flatMap(([header, data]) => [
+        { label: header, isHeader: true, value: header }, // Non-clickable header
+        ...data.breeds.map((breed) => ({ value: breed, label: breed })), // Clickable breeds
+      ])
+    : petTypesSupported.flatMap((petType) =>
+        DOG_BREEDS[petType.name] // Normalize keys
+          ? [
+              { label: petType.name, isHeader: true, value: petType.name },
+              ...DOG_BREEDS[petType.name].breeds.map((breed) => ({
+                value: breed,
+                label: breed,
+              })),
+            ]
+          : []
+      );
+
+  if (step === STEPS.BLOCKED_BREEDS) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title={rentModal.translation?.blockedBreedsTitle || "Blocked breeds"}
+          subtitle={
+            rentModal.translation?.blockedBreedsSubtitle ||
+            "Are there any breeds you don't want to pet?"
+          }
+        />
+        <div className="flex flex-row gap-4">
+          <Toggle
+            label={
+              rentModal.translation?.blockBreedsToggle || "Block some breeds"
+            }
+            value={haveBlockedBreeds}
+            onChange={(value) => setHaveBlockedBreeds(value)}
+          />
+          <ExplanationInfo text="Blocked pets is specific breeds in the previously selected categorise you don't want to take care of in your hotel!" />
+        </div>
+        {haveBlockedBreeds && (
+          <>
+            <hr />
+            <div className="flex flex-row gap-4 w-full">
+              <Dropdown
+                id="blockedBreeds"
+                label="Select breeds"
+                multiSelectedLabel="Selected breeds"
+                placeholder="Choose breeds..."
+                options={formattedBreedOptions}
+                onChange={(value) => setCustomValue("blockedBreeds", value)}
+                isMulti={true}
+                register={register}
+                errors={errors}
+              />
+            </div>
+          </>
+        )}
+      </div>
+    );
+  }
+
   if (step === STEPS.INFO) {
     bodyContent = (
       <div className="flex flex-col gap-8">
@@ -506,25 +586,6 @@ const RentModal = ({ currentUser }) => {
             "How many pets can you take care of"
           }
         />
-
-        {/* {petTypesSupported.length === 1 &&
-          petTypesSupported[0]?.name === "TOTAL" && (
-            <InputWithSeparateLabel
-              title={rentModal.translation?.petsCounterTitle || "Pets"}
-              subtitle={
-                rentModal.translation?.petCounterSubtitle ||
-                "How many pets you can take in your object?"
-              }
-              value={totalPlaces}
-              onChange={(e) => {
-                let value = e.target.value;
-                if (value !== null && value !== undefined && value !== "") {
-                  value = parseInt(value);
-                }
-                setCustomValue("totalPlaces", value);
-              }}
-            />
-          )} */}
 
         {petTypesSupported.length > 0 && (
           <div className="flex flex-col gap-4">
@@ -796,7 +857,7 @@ const RentModal = ({ currentUser }) => {
           }
         />
         {/* If NOT using Advanced Options, show basic Week/Weekend Price */}
-        {capacityType === "TOTAL" ? (
+        {capacityType === ALL_PET_CATEGORIES ? (
           <>
             <CustomInput
               id="weekPrice"

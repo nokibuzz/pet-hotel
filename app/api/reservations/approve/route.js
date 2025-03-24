@@ -14,9 +14,9 @@ export async function PUT(request) {
 
   const body = await request.json();
 
-  const { reservationId, userId, listingId } = body;
+  const { reservationId, listingId } = body;
 
-  if (!reservationId || !userId || !listingId) {
+  if (!reservationId || !listingId) {
     return NextResponse.error();
   }
 
@@ -30,7 +30,7 @@ export async function PUT(request) {
   });
 
   console.log("Owner of the listing: ", JSON.stringify(listingOwner));
-  if (userId !== listingOwner.userId) {
+  if (currentUser.id !== listingOwner.userId) {
     return NextResponse.error();
   }
 

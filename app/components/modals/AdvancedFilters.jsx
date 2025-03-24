@@ -17,7 +17,7 @@ import {
 import Toggle from "../inputs/Toggle";
 import Calendar from "../inputs/Calendar";
 import { formatISO } from "date-fns";
-import { petTypes } from "../PetTypes";
+import { PET_TYPES } from "@/app/utils/PetConstants";
 
 export const facilityOptions = [
   {
@@ -252,7 +252,7 @@ const AdvancedFilters = () => {
       <div className="border-b pb-4">
         <h3 className="font-semibold text-lg mb-2">Pet Type</h3>
         <div className="flex flex-row gap-3 flex-grow justify-around">
-          {petTypes.map((item) => (
+          {PET_TYPES.map((item) => (
             <AdvancedFiltersOption
               key={item.label}
               label={item.label}

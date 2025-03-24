@@ -3,8 +3,8 @@
 const ReservationStatusField = ({ status }) => {
   const bgColor =
     {
-      approved: "bg-red-500",
-      rejected: "bg-green-500",
+      approved: "bg-green-500",
+      rejected: "bg-red-500",
       pending: "bg-gray-500",
     }[status] || "bg-blue-500";
 

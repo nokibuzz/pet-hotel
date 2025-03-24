@@ -14,16 +14,17 @@ export async function POST(request) {
 
   const body = await request.json();
 
-  const { startDate, endDate, typeId, typeName, totalPrice, ownerId } = body;
+  const {
+    startDate,
+    endDate,
+    typeId,
+    typeName,
+    totalPrice,
+    breed,
+    breedDescription,
+  } = body;
 
-  if (
-    !typeId ||
-    !startDate ||
-    !endDate ||
-    !totalPrice ||
-    !typeName ||
-    !ownerId
-  ) {
+  if (!typeId || !startDate || !endDate || !totalPrice || !typeName) {
     return NextResponse.error();
   }
 
@@ -55,8 +56,9 @@ export async function POST(request) {
         startDate,
         endDate,
         totalPrice,
+        breed,
+        breedDescription,
         status: "pending",
-        ownerId,
       };
 
       console.log("reservationData", JSON.stringify(reservationData));
