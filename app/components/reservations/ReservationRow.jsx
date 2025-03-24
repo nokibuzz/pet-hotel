@@ -70,23 +70,26 @@ const ReservationRow = ({ data, disabled, currentUser, translation }) => {
         {/* Right - User Info */}
         <div className="hidden sm:flex flex-col items-center text-center">
           <Image
-            src={currentUser?.image ?? "/images/placeholder.png"}
-            alt={currentUser.name}
+            src={data?.user?.image ?? "/images/placeholder.png"}
+            alt={data?.user?.name}
             width={40}
             height={40}
             className="rounded-full"
           />
           <span className="text-gray-700 truncate max-w-[100px] sm:max-w-none">
-            {currentUser.name}
+            {data?.user?.name}
           </span>
           <span className="text-sm text-gray-500 truncate max-w-[150px] sm:max-w-none">
             {type.name}
+          </span>
+          <span className="text-sm text-amber-700 truncate max-w-[150px] sm:max-w-none">
+            {data.breed}
           </span>
         </div>
       </div>
 
       {/* Action Buttons */}
-      {type.listing.userId === currentUser?.id && (
+      {listing.userId === currentUser?.id && (
         <div className="flex flex-row sm:flex-col gap-2 items-center justify-center min-w-[120px] p-2 w-full sm:w-auto border-t sm:border-none mt-4 sm:mt-0 pt-4 sm:pt-0">
           {data.status === "pending" && (
             <>
@@ -113,7 +116,7 @@ const ReservationRow = ({ data, disabled, currentUser, translation }) => {
           )}
         </div>
       )}
-      {type.listing.userId !== currentUser?.id && (
+      {listing.userId !== currentUser?.id && (
         <ReservationStatusField status={data.status} />
       )}
     </div>

@@ -4,7 +4,12 @@ import useReservationModal from "@/app/hooks/useReservationModal";
 import Modal from "./Modal";
 import { useMemo, useState, useEffect } from "react";
 import Heading from "../Heading";
-import { petTypes } from "../PetTypes";
+import {
+  ALL_PET_CATEGORIES,
+  DOG_BREEDS,
+  DOG_DESCRIPTIONS,
+  PET_TYPES,
+} from "@/app/utils/PetConstants";
 import CategoryInput from "../inputs/CategoryInput";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -13,11 +18,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Calendar from "../inputs/Calendar";
 import ReservationInfoField from "../ReservationInfoField";
 import ReservationInfoFieldView from "../ReservationInfoFieldView";
+import Dropdown from "../inputs/Dropdown";
+import ExplanationInfo from "../ExplanationInfo";
+import Input from "../inputs/Input";
+import { faOtter } from "@fortawesome/free-solid-svg-icons";
 
 const STEPS = Object.freeze({
   TYPE: 0,
-  DATE: 1,
-  OVERVIEW: 2,
+  BREED: 1,
+  DATE: 2,
+  OVERVIEW: 3,
 });
 
 const ReservationModal = () => {
@@ -38,6 +48,10 @@ const ReservationModal = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [defaultPrice, setDefaultPrice] = useState(0);
   const [weekendPrice, setWeekendPrice] = useState(0);
+  const [filteredPetTypes, setFilteredPetTypes] = useState([]);
+  const [breedOptions, setBreedOptions] = useState([]);
+  const [breedDescriptionPlaceholder, setBreedDescriptionPlaceholder] =
+    useState("");
 
   const initialDateRange = {
     startDate: searchParams?.get("startDate")
@@ -64,15 +78,30 @@ const ReservationModal = () => {
     handleSubmit,
     setValue,
     watch,
+    register,
     formState: { errors },
     reset,
   } = useForm({
     defaultValues: {
       typeId: "",
+      breed: "",
+      breedDescription: "",
     },
   });
 
   const typeId = watch("typeId");
+  const breed = watch("breed");
+  const breedDescription = watch("breedDescription");
+
+  useEffect(() => {
+    const petTypesFiltered = PET_TYPES.filter((petType) =>
+      reservationModal?.listing?.types?.some(
+        (type) => type.name === petType.label
+      )
+    );
+
+    setFilteredPetTypes(petTypesFiltered);
+  }, [reservationModal?.listing?.types]);
 
   useEffect(() => {
     if (typeId) {
@@ -169,6 +198,17 @@ const ReservationModal = () => {
     );
     setType(type);
     setCustomValue("typeId", type?.id);
+    const breedOptionsForType = DOG_BREEDS[typeName]?.breeds || [];
+    setBreedOptions(breedOptionsForType);
+  };
+
+  const setAllPetTypes = () => {
+    setCustomTypeId(ALL_PET_CATEGORIES);
+    const breedOptionsAll = Object.values(DOG_BREEDS).flatMap(
+      (data) => data.breeds || []
+    );
+
+    setBreedOptions(breedOptionsAll);
   };
 
   const onBack = () => {
@@ -198,7 +238,8 @@ const ReservationModal = () => {
         totalPrice,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
-        ownerId: type?.userId,
+        breed,
+        breedDescription: breedDescription === "" ? null : breedDescription,
       })
       .then(() => {
         toast.success("Successfully reserved pet stay!");
@@ -238,13 +279,17 @@ const ReservationModal = () => {
     <div className="flex flex-col gap-8">
       <Heading title={"Choose type of your pet?"} subtitle={"Pick one"} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-        {petTypes
-          .filter((petType) =>
-            reservationModal?.listing?.types?.some(
-              (type) => type.name === petType.label
-            )
-          )
-          .map((item) => (
+        {filteredPetTypes.length === 0 && (
+          <CategoryInput
+            onClick={() => setAllPetTypes()}
+            selected={type?.name === ALL_PET_CATEGORIES}
+            label="All Pets"
+            value={ALL_PET_CATEGORIES}
+            icon={faOtter}
+          />
+        )}
+        {filteredPetTypes.length > 0 &&
+          filteredPetTypes.map((item) => (
             <div key={item.label} className="col-span-1">
               <CategoryInput
                 onClick={(type) => {
@@ -260,6 +305,44 @@ const ReservationModal = () => {
       </div>
     </div>
   );
+
+  const changeBreed = (value) => {
+    setCustomValue("breed", value);
+    const breedDescriptionPh = DOG_DESCRIPTIONS[value] || "Breed Description";
+    setBreedDescriptionPlaceholder(breedDescriptionPh);
+  };
+
+  if (step === STEPS.BREED) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Pet breed"
+          subtitle="Let the object owner breed of your pet"
+        />
+        <div className="flex flex-row gap-4 items-center">
+          <Dropdown
+            id="breed"
+            label="Pet breed"
+            placeholder="Choose breed"
+            register={register}
+            errors={errors}
+            required
+            options={breedOptions}
+            onChange={(value) => changeBreed(value)}
+          />
+          <ExplanationInfo text="If the breed of your pet is not on the list, input it manually." />
+        </div>
+        {breed !== "" && (
+          <Input
+            id="breedDescription"
+            label="Breed Description"
+            placeholder={breedDescriptionPlaceholder}
+            register={register}
+          />
+        )}
+      </div>
+    );
+  }
 
   const customDayRenderer = (date) => {
     const isWeekend = date.getDay() === 6 || date.getDay() === 0;
