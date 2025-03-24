@@ -32,6 +32,7 @@ export async function POST(request) {
     addressLabel,
     capacityType, // TOTAL or ADVANCED
     types, // Array of { typeName, capacity } (if ADVANCED)
+    blockedBreeds,
   } = body;
 
   const location = {
@@ -63,6 +64,7 @@ export async function POST(request) {
       location,
       addressLabel,
       capacityType, // Store CapacityType (TOTAL or ADVANCED)
+      blockedBreeds,
     },
   });
 

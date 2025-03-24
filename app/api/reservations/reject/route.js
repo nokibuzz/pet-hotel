@@ -16,7 +16,6 @@ export async function PUT(request) {
 
   const {
     reservationId,
-    userId,
     listingId,
     typeId,
     totalSlots,
@@ -27,7 +26,6 @@ export async function PUT(request) {
 
   if (
     !reservationId ||
-    !userId ||
     !typeId ||
     !totalSlots ||
     !listingId ||
@@ -48,7 +46,7 @@ export async function PUT(request) {
   });
 
   console.log("Owner of the listing: ", JSON.stringify(listingOwner));
-  if (userId !== listingOwner.userId) {
+  if (currentUser.id !== listingOwner.userId) {
     return NextResponse.error();
   }
 
@@ -61,7 +59,7 @@ export async function PUT(request) {
         },
         data: {
           status: "rejected",
-          // rejectReason,
+          rejectReason,
         },
       });
 
