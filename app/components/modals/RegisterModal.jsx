@@ -13,6 +13,7 @@ import Button from "../Button";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import Toggle from "../inputs/Toggle";
 import { signIn } from "next-auth/react";
+import sendEmail from "@/app/utils/sendEmail";
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
@@ -35,6 +36,7 @@ const RegisterModal = () => {
     },
   });
 
+  const email = watch("email");
   const hotelOwner = watch("hotelOwner");
 
   const setCustomValue = (id, value) => {
@@ -56,6 +58,7 @@ const RegisterModal = () => {
             "Successfully registered!"
         );
         registerModal.onClose();
+        sendEmail.sendRegistrationVerificationMail(email);
         loginModal.onOpen();
       })
       .catch(() =>
