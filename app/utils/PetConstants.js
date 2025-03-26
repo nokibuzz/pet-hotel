@@ -6,6 +6,9 @@ import {
   faBone,
   faShieldDog,
   faCat,
+  faCreditCard,
+  faWallet,
+  faReceipt,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const ALL_PET_CATEGORIES = "TOTAL";
@@ -60,6 +63,27 @@ export const BERNARD_MOUNTAIN_DOG = "Bernese Mountain Dog";
 export const TIBETAN_MASTIFF = "Tibetan Mastiff";
 export const ALASKAN_MALAMUTE = "Alaskan Malamute";
 export const KUVASZ = "Kuvasz";
+// cats
+export const SPHYNX = "Sphynx";
+export const PERSIAN = "Persian";
+export const MAINE_COON = "Maine Coon";
+export const RAGDOLL = "Ragdoll";
+export const BENGAL = "Bengal";
+export const SIAMESE = "Siamese";
+export const BRITISH_SHORTHAIR = "British Shorthair";
+export const SCOTTISH_FOLD = "Scottish Fold";
+export const RUSSIAN_BLUE = "Russian Blue";
+export const AMERICAN_SHORTHAIR = "American Shorthair";
+export const ABYSSINIAN = "Abyssinian";
+export const BURMESE = "Burmese";
+export const NORWEGIAN_FOREST_CAT = "Norwegian Forest Cat";
+export const TURKISH_ANGORA = "Turkish Angora";
+export const MANX = "Manx";
+export const SINGAPURA = "Singapura";
+export const OCICAT = "Ocicat";
+export const SAVANNAH = "Savannah";
+export const CHARTREUX = "Chartreux";
+export const KORAT = "Korat";
 
 export const PET_TYPES = [
   {
@@ -89,15 +113,15 @@ export const PET_TYPES = [
   {
     label: CATS,
     icon: faCat,
-    description: "Cats",
+    description: "Cats. Small, cozy and friendly partners.",
   },
 ];
 
-export const DOG_BREEDS = {
+export const PET_BREEDS = {
   [SMALL_DOGS]: {
     icon: "🐶",
     description:
-      "Small dogs (up to 10 kgs) are compact, lively, and great for apartments or small homes. They often have big personalities in tiny bodies.",
+      "Small dogs (up to 10 kgs). Compact, lively, and great for apartments or small homes.",
     breeds: [
       CHIHUAHUA,
       POMERANIAN,
@@ -114,7 +138,7 @@ export const DOG_BREEDS = {
   [MEDIUM_DOGS]: {
     icon: "🐕",
     description:
-      "Medium dogs (10-25 kgs) are a balanced mix of energy and adaptability, making them great companions for both families and active owners.",
+      "Medium dogs (10-25 kgs). Balanced mix of energy and adaptability, great companions for both families and active owners.",
     breeds: [
       COCKER_SPANIEL,
       BULLDOG,
@@ -132,7 +156,7 @@ export const DOG_BREEDS = {
   [LARGE_DOGS]: {
     icon: "🐕‍🦺",
     description:
-      "Large dogs (25-50 kgs) are strong and athletic, requiring ample exercise and space. They excel in companionship, work, and protection.",
+      "Large dogs (25-50 kgs). Strong and athletic, requiring exercise and space. Excel in companionship, work and protection.",
     breeds: [
       LABRADOR_RETRIEVER,
       GOLDEN_RETRIEVER,
@@ -149,7 +173,7 @@ export const DOG_BREEDS = {
   [GIANT_DOGS]: {
     icon: "🐾",
     description:
-      "Giant dogs (100+ lbs) are massive yet gentle, often serving as protectors or rescue dogs. They need space, care, and a loving home.",
+      "Giant dogs (50+ kgs). Massive yet gentle, often serving as protectors or rescue dogs. They need space and care.",
     breeds: [
       GREAT_DANE,
       MASTIFF,
@@ -165,11 +189,33 @@ export const DOG_BREEDS = {
   },
   [CATS]: {
     icon: "🐈",
-    description: "Cats",
+    description: "Cats. Small, cozy and friendly partners.",
+    breeds: [
+      SINGAPURA,
+      KORAT,
+      BURMESE,
+      ABYSSINIAN,
+      SIAMESE,
+      SCOTTISH_FOLD,
+      AMERICAN_SHORTHAIR,
+      CHARTREUX,
+      RUSSIAN_BLUE,
+      TURKISH_ANGORA,
+      PERSIAN,
+      RAGDOLL,
+      BRITISH_SHORTHAIR,
+      OCICAT,
+      MANX,
+      SPHYNX,
+      MAINE_COON,
+      NORWEGIAN_FOREST_CAT,
+      BENGAL,
+      SAVANNAH,
+    ],
   },
 };
 
-export const DOG_DESCRIPTIONS = {
+export const PET_DESCRIPTIONS = {
   [CHIHUAHUA]: "A tiny yet confident dog with a big personality.",
   [POMERANIAN]: "A fluffy and energetic companion with a bold spirit.",
   [DACHSHUND]: "A long-bodied, brave, and playful little dog.",
@@ -214,4 +260,62 @@ export const DOG_DESCRIPTIONS = {
   [TIBETAN_MASTIFF]: "A powerful and independent guardian breed.",
   [ALASKAN_MALAMUTE]: "A strong and resilient sled dog with a thick coat.",
   [KUVASZ]: "A large and loyal livestock guardian breed.",
+  [SPHYNX]:
+    "A hairless cat known for its wrinkled skin and affectionate nature.",
+  [PERSIAN]:
+    "Fluffy and elegant, the Persian cat is calm and enjoys a relaxed lifestyle.",
+  [MAINE_COON]:
+    "One of the largest domestic cats, known for its intelligence and friendly personality.",
+  [RAGDOLL]:
+    "A docile and affectionate breed that loves to be held and carried around.",
+  [BENGAL]:
+    "A wild-looking cat with a leopard-like coat and an energetic personality.",
+  [SIAMESE]:
+    "Vocal and social, the Siamese cat thrives on attention and interaction.",
+  [BRITISH_SHORTHAIR]:
+    "A plush, round-faced breed known for its calm and affectionate nature.",
+  [SCOTTISH_FOLD]:
+    "Recognizable by its folded ears, this cat has a sweet and loving temperament.",
+  [RUSSIAN_BLUE]:
+    "A sleek, silver-blue cat with a reserved yet loving personality.",
+  [AMERICAN_SHORTHAIR]:
+    "A classic breed known for its robust health and easygoing nature.",
+  [ABYSSINIAN]:
+    "An athletic and playful cat with a love for climbing and exploring.",
+  [BURMESE]:
+    "A social and affectionate cat that thrives on human companionship.",
+  [NORWEGIAN_FOREST_CAT]:
+    "A strong and fluffy cat that enjoys outdoor adventures.",
+  [TURKISH_ANGORA]:
+    "Elegant and graceful, this cat is known for its silky coat and playful personality.",
+  [MANX]: "A tailless cat with a playful and intelligent disposition.",
+  [SINGAPURA]:
+    "One of the smallest cat breeds, known for its lively and affectionate nature.",
+  [OCICAT]: "A spotted domestic cat with an exotic look and playful demeanor.",
+  [SAVANNAH]:
+    "A hybrid cat with wild ancestry, known for its tall, sleek body and energetic nature.",
+  [CHARTREUX]: "A quiet and affectionate cat with a plush blue-gray coat.",
+  [KORAT]:
+    "A rare breed from Thailand with a striking silver-blue coat and big green eyes.",
 };
+
+export const PAYMENT_OPTIONS = [
+  {
+    key: "paymentMethodsCash",
+    label: "Cash",
+    icon: faWallet,
+    description: "Pay with cash on site.",
+  },
+  {
+    key: "paymentMethodsCards",
+    label: "Credit Card",
+    icon: faCreditCard,
+    description: "Pay with payment card on site.",
+  },
+  {
+    key: "paymentMethodsAccount",
+    label: "Account Payment",
+    icon: faReceipt,
+    description: "Pay on the account that will be passed by object owner.",
+  },
+];

@@ -17,6 +17,7 @@ import TextArea from "../inputs/TextArea";
 import { eachDayOfInterval, isWeekend } from "date-fns";
 import ReservationStatusField from "../reservations/ReservationStatusField";
 import TypeBreedView from "../TypeBreedView";
+import ReservationInfoPaymentView from "../reservations/ReservationInfoPaymentView";
 
 export const RESERVATION_INFO_STEPS = Object.freeze({
   OVERVIEW: 0,
@@ -56,7 +57,10 @@ const ReservationInfoModal = ({ currentUser }) => {
     ) {
       setStep(reservationInfoModal.reservation.step);
       if (
-        reservationInfoModal.reservation.step === RESERVATION_INFO_STEPS.REJECT
+        reservationInfoModal.reservation.step ===
+          RESERVATION_INFO_STEPS.REJECT ||
+        reservationInfoModal.reservation.step ===
+          RESERVATION_INFO_STEPS.CONFIRMATION
       ) {
         setShowFooter(true);
       }
@@ -87,6 +91,7 @@ const ReservationInfoModal = ({ currentUser }) => {
 
   const onConfirm = () => {
     setStep(RESERVATION_INFO_STEPS.CONFIRMATION);
+    setShowFooter(true);
   };
 
   const onReject = () => {
@@ -166,6 +171,9 @@ const ReservationInfoModal = ({ currentUser }) => {
           breed={reservationInfoModal?.reservation?.breed}
           breedDescription={reservationInfoModal?.reservation?.breedDescription}
         />
+        <ReservationInfoPaymentView
+          paymentMethod={reservationInfoModal.reservation?.paymentMethod}
+        />
         <ReservationInfoFieldView
           dateFrom={reservationInfoModal?.reservation?.startDate}
           dateTo={reservationInfoModal?.reservation?.endDate}
@@ -218,7 +226,7 @@ const ReservationInfoModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-4">
         <Heading title={"Processing..."} />
-        <ConfirmationTimer
+        {/* <ConfirmationTimer
           onConfirm={() => onConfirmReservation()}
           onCancel={() => {
             setShowFooter(false);
@@ -226,7 +234,7 @@ const ReservationInfoModal = ({ currentUser }) => {
             reset();
             reservationInfoModal.onClose();
           }}
-        />
+        /> */}
       </div>
     );
   }

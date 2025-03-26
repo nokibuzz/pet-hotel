@@ -22,9 +22,19 @@ export async function POST(request) {
     totalPrice,
     breed,
     breedDescription,
+    paymentMethod,
   } = body;
 
-  if (!typeId || !startDate || !endDate || !totalPrice || !typeName) {
+  if (
+    !typeId ||
+    !startDate ||
+    !endDate ||
+    !totalPrice ||
+    !typeName ||
+    !breed ||
+    !breedDescription ||
+    !paymentMethod
+  ) {
     return NextResponse.error();
   }
 
@@ -58,6 +68,7 @@ export async function POST(request) {
         totalPrice,
         breed,
         breedDescription,
+        paymentMethod,
         status: "pending",
       };
 

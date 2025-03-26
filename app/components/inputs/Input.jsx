@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { BiDollar } from "react-icons/bi";
 
 const Input = ({
   id,
@@ -17,12 +16,12 @@ const Input = ({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className="w-full relative">
+    <label htmlFor={id} className="w-full relative block cursor-text">
+      {/* RSD Symbol */}
       {formatPrice && (
-        <BiDollar
-          size={24}
-          className="text-neutral-700 absolute top-5 left-2"
-        />
+        <span className="absolute top-5 left-2 text-neutral-700 font-semibold">
+          RSD
+        </span>
       )}
       <input
         id={id}
@@ -33,14 +32,17 @@ const Input = ({
         onFocus={() => setIsFocused(true)}
         onBlur={(e) => setIsFocused(e.target.value.length > 0)}
         className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed ${
-          formatPrice ? "pl-9" : "pl-4"
+          formatPrice ? "pl-12" : "pl-4"
         } ${errors?.[id] ? "border-red-700" : "border-neutral-300"} ${
           errors?.[id] ? "focus:border-red-700" : "focus:border-black"
         }`}
+        style={{
+          appearance: type === "number" ? "textfield" : undefined, // Remove arrows
+        }}
       />
-      <label
+      <span
         className={`absolute text-md duration-150 transform -translate-y-5 top-5 z-10 origin-[0] ${
-          formatPrice ? "left-9" : "left-4"
+          formatPrice ? "left-12" : "left-4"
         } ${errors?.[id] ? "text-red-700" : "text-zinc-400"} ${
           isFocused || placeholder
             ? "scale-75 -translate-y-4"
@@ -48,8 +50,19 @@ const Input = ({
         }`}
       >
         {label}
-      </label>
-    </div>
+      </span>
+      {/* Remove Arrows for Number Inputs */}
+      <style jsx>{`
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+      `}</style>
+    </label>
   );
 };
 

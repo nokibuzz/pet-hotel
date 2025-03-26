@@ -1,10 +1,10 @@
 "use client";
 
-import { DOG_BREEDS, DOG_DESCRIPTIONS } from "../utils/PetConstants";
+import { PET_BREEDS, PET_DESCRIPTIONS } from "../utils/PetConstants";
 
 const TypeBreedView = ({ typeName, breed, breedDescription }) => {
-  const icon = DOG_BREEDS[typeName]?.icon || "";
-  const description = breedDescription || DOG_DESCRIPTIONS[breed] || "-";
+  const icon = PET_BREEDS[typeName]?.icon || "";
+  const description = breedDescription || PET_DESCRIPTIONS[breed] || "-";
 
   return (
     <div className="flex flex-col items-center gap-2 p-3 border rounded-lg shadow-sm bg-white">
