@@ -59,7 +59,8 @@ const RegisterModal = () => {
         );
         registerModal.onClose();
         sendEmail.sendRegistrationVerificationMail(email);
-        loginModal.onOpen();
+        // loginModal.onOpen();
+        // TODO: redirect to go to your email address
       })
       .catch(() =>
         toast.error(

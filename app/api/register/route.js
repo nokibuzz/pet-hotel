@@ -16,7 +16,8 @@ export async function POST(request) {
       hashedPassword,
       businessName,
       hotelOwner,
-      isNewUser: false
+      isNewUser: false,
+      verified: false,
     },
   });
 
@@ -71,7 +72,7 @@ export async function PATCH(request) {
     data: {
       hotelOwner,
       businessName,
-      isNewUser: false
+      isNewUser: false,
     },
   });
 

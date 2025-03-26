@@ -1,17 +1,10 @@
 import { NextResponse } from "next/server";
 
 import nodemailer from "nodemailer";
-import getCurrentUser from "@/app/actions/getCurrentUser";
 
 export async function POST(request) {
-  const currentUser = await getCurrentUser();
-
-  if (!currentUser) {
-    return NextResponse.error();
-  }
-
   const body = await request.json();
-  const { sender, to, subject, text } = body;
+  const { sender, to, subject, text, html } = body;
 
   const transporter = nodemailer.createTransport({
     host: "smtp.ionos.com",
@@ -29,14 +22,15 @@ export async function POST(request) {
       to,
       subject,
       text,
+      html,
     });
 
     console.log("Email sent: ", info.messageId);
-    return NextResponse.status(200).json({
+    return NextResponse.json({
       message: "Email sent successfully!",
     });
   } catch (error) {
     console.error("Email error: ", error);
-    return NextResponse.status(500).json({ error: "Email sending failed!" });
+    return NextResponse.json({ status: 500, error: "Email sending failed!" });
   }
 }

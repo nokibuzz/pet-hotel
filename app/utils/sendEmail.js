@@ -1,4 +1,5 @@
 import axios from "axios";
+import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
 const sendEmail = {
@@ -9,19 +10,19 @@ const sendEmail = {
    */
   async sendRegistrationVerificationMail(userEmail) {
     try {
-      token = uuidv4();
-      const verificationLink = `${process.env.NEXTAUTH_URL}/api/verify-email?token=${token}`;
+      const token = uuidv4();
+      const verificationLink = `${process.env.NEXT_PUBLIC_URL}/api/verify-email?token=${token}`;
 
       console.log("Starting transaction: Updating user & sending email...");
 
       // Transaction logic
       const responses = await Promise.all([
-        await axios.put(`/api/${userEmail}/${token}`),
+        await axios.put(`/api/user/email/${userEmail}/${token}`),
         await axios.post("/api/send-email", {
           sender: `"FurLand - User Verification " <no-reply@furlandapp.com>`,
           to: userEmail,
           subject: "Verify Your FurLand Account",
-          text: `Click the following link to verify your account: ${verificationLink}`,
+          text: `Click the link below to verify your account`,
           html: `
           <div style="font-family: Arial, sans-serif; text-align: center; max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
             <h2 style="color: #333;">Verify Your Account</h2>
@@ -49,6 +50,8 @@ const sendEmail = {
       );
     } catch (error) {
       console.error("Error sending verification email:", error);
+      // todo: delete user
+      await axios.delete(`/api/user/email/${userEmail}`);
       throw new Error("Failed to send verification email");
     }
   },

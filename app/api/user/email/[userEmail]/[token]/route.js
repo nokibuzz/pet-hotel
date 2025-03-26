@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/app/libs/prismadb";
 
 export async function PUT(request, { params }) {
-  const { email, token } = await params;
+  const { userEmail, token } = await params;
 
   if (!token) {
     return NextResponse.json({ status: "400", error: "Token is required" });
@@ -10,7 +10,7 @@ export async function PUT(request, { params }) {
 
   try {
     const updatedUser = await prisma.user.update({
-      where: { email },
+      where: { email: userEmail },
       data: { token },
     });
 
