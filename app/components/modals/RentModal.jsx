@@ -7,10 +7,10 @@ import Heading from "../Heading";
 import { options } from "../navbar/BasicFilters";
 import {
   ALL_PET_CATEGORIES,
-  DOG_BREEDS,
+  PET_BREEDS,
   PET_TYPES,
 } from "@/app/utils/PetConstants";
-import CategoryInput from "../inputs/CategoryInput";
+import ClickInput from "../inputs/ClickInput";
 import { useForm } from "react-hook-form";
 import InputWithSeparateLabel from "../inputs/InputWithSeparateLabel";
 import ImageUpload from "../inputs/ImageUpload";
@@ -28,15 +28,15 @@ import ExplanationInfo from "../ExplanationInfo";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
-  LOCATION: 1,
-  PET_TYPES: 2,
-  BLOCKED_BREEDS: 3,
-  INFO: 4,
-  PRICE: 5,
-  IMAGES: 6,
-  DESCRIPTION: 7,
-  HOUSE_RULES: 8,
-  ADDIONAL_OPTIONS: 9,
+  DESCRIPTION: 1,
+  IMAGES: 2,
+  LOCATION: 3,
+  PET_TYPES: 4,
+  BLOCKED_BREEDS: 5,
+  INFO: 6,
+  PRICE: 7,
+  ADDIONAL_OPTIONS: 8,
+  HOUSE_RULES: 9,
 });
 
 const MAX_IMAGES_FOR_RENT = 10;
@@ -74,6 +74,7 @@ const RentModal = ({ currentUser }) => {
       allowBooking: true,
       paymentMethodsCards: true,
       paymentMethodsCash: true,
+      paymentMethodsAccount: true,
       hasFood: false,
       hasGrooming: false,
       hasVet: false,
@@ -98,6 +99,7 @@ const RentModal = ({ currentUser }) => {
   const allowBooking = watch("allowBooking");
   const paymentMethodsCards = watch("paymentMethodsCards");
   const paymentMethodsCash = watch("paymentMethodsCash");
+  const paymentMethodsAccount = watch("paymentMethodsAccount");
   const hasFood = watch("hasFood");
   const hasGrooming = watch("hasGrooming");
   const hasVet = watch("hasVet");
@@ -243,7 +245,7 @@ const RentModal = ({ currentUser }) => {
       }
     }
 
-    if (step !== STEPS.ADDIONAL_OPTIONS) {
+    if (step !== STEPS.HOUSE_RULES) {
       return onNext();
     }
 
@@ -292,7 +294,7 @@ const RentModal = ({ currentUser }) => {
   };
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.ADDIONAL_OPTIONS) {
+    if (step === STEPS.HOUSE_RULES) {
       return rentModal.isEdit
         ? rentModal.translation?.submitUpdate || "Update"
         : rentModal.translation?.submitCreate || "Create";
@@ -392,7 +394,7 @@ const RentModal = ({ currentUser }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
         {options.map((item) => (
           <div key={item.label} className="col-span-1">
-            <CategoryInput
+            <ClickInput
               onClick={(category) => {
                 setCustomValue("category", category);
               }}
@@ -476,7 +478,7 @@ const RentModal = ({ currentUser }) => {
         <Heading title={"Choose type of your pet?"} subtitle={"Pick one"} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
           <div className="col-span-1">
-            <CategoryInput
+            <ClickInput
               onClick={() => {
                 setPetTypesSupported([
                   { name: ALL_PET_CATEGORIES, capacity: 1 },
@@ -493,7 +495,7 @@ const RentModal = ({ currentUser }) => {
           </div>
           {PET_TYPES.map((item) => (
             <div key={item.label} className="col-span-1">
-              <CategoryInput
+              <ClickInput
                 onClick={(type) => {
                   updatePetTypes(type);
                 }}
@@ -503,6 +505,7 @@ const RentModal = ({ currentUser }) => {
                 label={item.label}
                 value={item.label}
                 icon={item.icon}
+                tooltip={item.description}
               />
             </div>
           ))}
@@ -516,15 +519,15 @@ const RentModal = ({ currentUser }) => {
   const formattedBreedOptions = petTypesSupported.some(
     (petType) => petType.name === ALL_PET_CATEGORIES
   )
-    ? Object.entries(DOG_BREEDS).flatMap(([header, data]) => [
+    ? Object.entries(PET_BREEDS).flatMap(([header, data]) => [
         { label: header, isHeader: true, value: header }, // Non-clickable header
         ...data.breeds.map((breed) => ({ value: breed, label: breed })), // Clickable breeds
       ])
     : petTypesSupported.flatMap((petType) =>
-        DOG_BREEDS[petType.name] // Normalize keys
+        PET_BREEDS[petType.name] // Normalize keys
           ? [
               { label: petType.name, isHeader: true, value: petType.name },
-              ...DOG_BREEDS[petType.name].breeds.map((breed) => ({
+              ...PET_BREEDS[petType.name].breeds.map((breed) => ({
                 value: breed,
                 label: breed,
               })),
@@ -668,16 +671,18 @@ const RentModal = ({ currentUser }) => {
 
   if (step === STEPS.HOUSE_RULES) {
     bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title={rentModal.translation?.houseRulesTitle || "House rules"}
-          subtitle={
-            rentModal.translation?.houseRulesSubtitle ||
-            "House rules are a set of guidelines or regulations that outline expected behaviors, responsibilities, and standards within a specific property or environment to ensure a respectful, safe, and harmonious experience for all occupants or visitors."
-          }
-        />
+      <div className="flex flex-col gap-4">
+        <div className="mb-2">
+          <Heading
+            title={rentModal.translation?.houseRulesTitle || "House rules"}
+            subtitle={
+              rentModal.translation?.houseRulesSubtitle ||
+              "House rules are a set of guidelines or regulations that outline expected behaviors, responsibilities, and standards within a specific property or environment to ensure a respectful, safe, and harmonious experience for all occupants or visitors."
+            }
+          />
+        </div>
 
-        <div className="flex flex-row gap-4">
+        {/* <div className="flex flex-row gap-4">
           <Dropdown
             id="checkInTime"
             label={
@@ -717,10 +722,10 @@ const RentModal = ({ currentUser }) => {
             defaultValue={"12:00"}
           />
         </div>
-        <hr />
+        <hr /> */}
         {category !== "Petgarten" && (
           <>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-2">
               <Toggle
                 id="hasCancelation"
                 label={
@@ -730,7 +735,13 @@ const RentModal = ({ currentUser }) => {
                 value={hasCancelation}
                 onChange={(value) => setCustomValue("hasCancelation", value)}
                 errors={errors}
+                explanation={
+                  rentModal.translation
+                    ?.houseRulesCancelationPolicyExplanation ||
+                  "Your object give option to user to cancel reservation."
+                }
               />
+              <div className="h-10 w-px bg-gray-300" />
               <Toggle
                 id="allowBooking"
                 label={
@@ -740,12 +751,17 @@ const RentModal = ({ currentUser }) => {
                 value={allowBooking}
                 onChange={(value) => setCustomValue("allowBooking", value)}
                 errors={errors}
+                explanation={
+                  rentModal.translation?.houseRulesAllowBookingExplanation ||
+                  "Your object is ready to receive reservations."
+                }
               />
             </div>
             <hr />
           </>
         )}
-        <div className="flex flex-row gap-4">
+
+        <div className="flex flex-col items-center gap-4 w-full">
           <Toggle
             id="paymentMethodsCards"
             label={
@@ -754,13 +770,37 @@ const RentModal = ({ currentUser }) => {
             value={paymentMethodsCards}
             onChange={(value) => setCustomValue("paymentMethodsCards", value)}
             errors={errors}
+            explanation={
+              rentModal.translation?.houseRulesAcceptCardsExplanation ||
+              "You give user an option of paying you via VISA/Master/American Express or other type of cards."
+            }
           />
+          <div className="w-full h-px bg-gray-100" />
           <Toggle
             id="paymentMethodsCash"
             label={rentModal.translation?.houseRulesAcceptCash || "Accept cash"}
             value={paymentMethodsCash}
             onChange={(value) => setCustomValue("paymentMethodsCash", value)}
             errors={errors}
+            explanation={
+              rentModal.translation?.houseRulesAcceptCashExplanation ||
+              "You give user an option of paying by cash on site."
+            }
+          />
+          <div className="w-full h-px bg-gray-100" />
+          <Toggle
+            id="paymentMethodsAccount"
+            label={
+              rentModal.translation?.houseRulesAccountPayment ||
+              "Account Payment"
+            }
+            value={paymentMethodsAccount}
+            onChange={(value) => setCustomValue("paymentMethodsAccount", value)}
+            errors={errors}
+            explanation={
+              rentModal.translation?.houseRulesAccountPaymentExplanation ||
+              "You give user an option of paying to the your account."
+            }
           />
         </div>
       </div>
@@ -769,7 +809,7 @@ const RentModal = ({ currentUser }) => {
 
   if (step === STEPS.ADDIONAL_OPTIONS) {
     bodyContent = (
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-4">
         <Heading
           title={
             rentModal.translation?.additionalOptionsTitle || "Addional options"
@@ -789,6 +829,7 @@ const RentModal = ({ currentUser }) => {
           onChange={(value) => setCustomValue("hasFood", value)}
           errors={errors}
         />
+        <hr />
         <Toggle
           id="hasGrooming"
           label={
@@ -799,6 +840,7 @@ const RentModal = ({ currentUser }) => {
           onChange={(value) => setCustomValue("hasGrooming", value)}
           errors={errors}
         />
+        <hr />
         <Toggle
           id="hasVet"
           label={
@@ -839,11 +881,13 @@ const RentModal = ({ currentUser }) => {
 
   const getPriceByName = (name, priceType) => {
     const item = petTypesSupported?.find((entry) => entry.name === name);
-    return item && item.hasOwnProperty(priceType)
-      ? item[priceType] > 0
-        ? item[priceType]
-        : null
-      : null;
+    const i =
+      item && item.hasOwnProperty(priceType)
+        ? item[priceType] > 0
+          ? item[priceType]
+          : ""
+        : "";
+    return i;
   };
 
   if (step === STEPS.PRICE) {

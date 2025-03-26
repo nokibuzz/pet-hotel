@@ -13,7 +13,21 @@ const InputWithSeparateLabel = ({ title, subtitle, value, onChange }) => {
           value={value}
           onChange={onChange}
           className="peer p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed border-neutral-300 focus:border-black"
+          style={{
+            appearance: "textfield", // Remove arrows in Firefox
+          }}
         />
+        {/* Remove Arrows for Number Inputs */}
+        <style jsx>{`
+          input[type="number"]::-webkit-outer-spin-button,
+          input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+          input[type="number"] {
+            -moz-appearance: textfield;
+          }
+        `}</style>
       </div>
     </div>
   );
