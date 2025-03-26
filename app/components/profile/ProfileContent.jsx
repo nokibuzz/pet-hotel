@@ -40,8 +40,8 @@ const ProfileContent = ({
                 title="Reservations"
                 items={reservations.map((reservation) => ({
                   id: reservation.id,
-                  imageSrc: reservation.listing.imageSrc?.[0],
-                  title: reservation.listing.title,
+                  imageSrc: reservation.type.listing?.imageSrc?.[0],
+                  title: reservation.type.listing?.title,
                   startDate: reservation.startDate,
                   endDate: reservation.endDate,
                 }))}

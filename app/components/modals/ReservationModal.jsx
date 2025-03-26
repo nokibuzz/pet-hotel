@@ -6,11 +6,12 @@ import { useMemo, useState, useEffect } from "react";
 import Heading from "../Heading";
 import {
   ALL_PET_CATEGORIES,
-  DOG_BREEDS,
-  DOG_DESCRIPTIONS,
+  PET_BREEDS,
+  PET_DESCRIPTIONS,
   PET_TYPES,
+  PAYMENT_OPTIONS,
 } from "@/app/utils/PetConstants";
-import CategoryInput from "../inputs/CategoryInput";
+import ClickInput from "../inputs/ClickInput";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -22,12 +23,15 @@ import Dropdown from "../inputs/Dropdown";
 import ExplanationInfo from "../ExplanationInfo";
 import Input from "../inputs/Input";
 import { faOtter } from "@fortawesome/free-solid-svg-icons";
+import ReservationInfoPaymentView from "../reservations/ReservationInfoPaymentView";
+import TypeBreedView from "../TypeBreedView";
 
 const STEPS = Object.freeze({
   TYPE: 0,
   BREED: 1,
   DATE: 2,
-  OVERVIEW: 3,
+  PAYMENT: 3,
+  OVERVIEW: 4,
 });
 
 const ReservationModal = () => {
@@ -86,12 +90,14 @@ const ReservationModal = () => {
       typeId: "",
       breed: "",
       breedDescription: "",
+      paymentMethod: "",
     },
   });
 
   const typeId = watch("typeId");
   const breed = watch("breed");
   const breedDescription = watch("breedDescription");
+  const paymentMethod = watch("paymentMethod");
 
   useEffect(() => {
     const petTypesFiltered = PET_TYPES.filter((petType) =>
@@ -198,13 +204,15 @@ const ReservationModal = () => {
     );
     setType(type);
     setCustomValue("typeId", type?.id);
-    const breedOptionsForType = DOG_BREEDS[typeName]?.breeds || [];
+    const breedOptionsForType = (PET_BREEDS[typeName]?.breeds || []).filter(
+      (breed) => !reservationModal.listing?.blockedBreeds?.includes(breed)
+    );
     setBreedOptions(breedOptionsForType);
   };
 
   const setAllPetTypes = () => {
     setCustomTypeId(ALL_PET_CATEGORIES);
-    const breedOptionsAll = Object.values(DOG_BREEDS).flatMap(
+    const breedOptionsAll = Object.values(PET_BREEDS).flatMap(
       (data) => data.breeds || []
     );
 
@@ -240,6 +248,7 @@ const ReservationModal = () => {
         endDate: dateRange.endDate,
         breed,
         breedDescription: breedDescription === "" ? null : breedDescription,
+        paymentMethod,
       })
       .then(() => {
         toast.success("Successfully reserved pet stay!");
@@ -280,7 +289,7 @@ const ReservationModal = () => {
       <Heading title={"Choose type of your pet?"} subtitle={"Pick one"} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
         {filteredPetTypes.length === 0 && (
-          <CategoryInput
+          <ClickInput
             onClick={() => setAllPetTypes()}
             selected={type?.name === ALL_PET_CATEGORIES}
             label="All Pets"
@@ -291,7 +300,7 @@ const ReservationModal = () => {
         {filteredPetTypes.length > 0 &&
           filteredPetTypes.map((item) => (
             <div key={item.label} className="col-span-1">
-              <CategoryInput
+              <ClickInput
                 onClick={(type) => {
                   setCustomTypeId(type);
                 }}
@@ -299,6 +308,7 @@ const ReservationModal = () => {
                 label={item.label}
                 value={item.label}
                 icon={item.icon}
+                tooltip={PET_BREEDS[item.label].description}
               />
             </div>
           ))}
@@ -308,7 +318,7 @@ const ReservationModal = () => {
 
   const changeBreed = (value) => {
     setCustomValue("breed", value);
-    const breedDescriptionPh = DOG_DESCRIPTIONS[value] || "Breed Description";
+    const breedDescriptionPh = PET_DESCRIPTIONS[value] || "Breed Description";
     setBreedDescriptionPlaceholder(breedDescriptionPh);
   };
 
@@ -340,6 +350,39 @@ const ReservationModal = () => {
             register={register}
           />
         )}
+      </div>
+    );
+  }
+
+  const paymentOptions = () => {
+    return PAYMENT_OPTIONS.filter(
+      (option) => reservationModal.listing[option.key]
+    );
+  };
+
+  if (step === STEPS.PAYMENT) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title={"Payment type"}
+          subtitle={"Choose wanted payment type"}
+        />
+        <div className="grid grid-cols-1 w-1/2 self-center gap-3 max-h-[50vh] overflow-y-auto">
+          {paymentOptions().map((item) => (
+            <div key={item.label} className="col-span-1">
+              <ClickInput
+                onClick={(paymentMethod) => {
+                  setCustomValue("paymentMethod", paymentMethod);
+                }}
+                selected={paymentMethod === item.label}
+                label={item.label}
+                value={item.label}
+                icon={item.icon}
+                tooltip={item.description}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -434,6 +477,12 @@ const ReservationModal = () => {
           title={"Reservation overview"}
           subtitle={"Details about your reservation"}
         />
+        <TypeBreedView
+          breed={breed}
+          breedDescription={breedDescription}
+          typeName={type.name}
+        />
+        <ReservationInfoPaymentView paymentMethod={paymentMethod} />
         <ReservationInfoFieldView
           dateFrom={dateRange?.startDate}
           dateTo={dateRange?.endDate}
@@ -461,7 +510,7 @@ const ReservationModal = () => {
       secondaryActionLabel={secondartActionLabel}
       secondaryAction={step === STEPS.TYPE ? undefined : onBack}
       body={bodyContent}
-      disabled={isLoading}
+      disabled={isLoading && step !== STEPS.TYPE}
       canCloseDisabled
     />
   );
