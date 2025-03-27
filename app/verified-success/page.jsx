@@ -6,6 +6,7 @@ import getCurrentUser from "../actions/getCurrentUser";
 import { getTranslations } from "../utils/getTranslations";
 import Button from "../components/Button";
 import { NextResponse } from "next/server";
+import Link from "next/link";
 
 const VerifiedSuccess = async () => {
   // const currentUser = await getCurrentUser();
@@ -17,9 +18,9 @@ const VerifiedSuccess = async () => {
         <h1>✅ Email Verified Successfully!</h1>
         <p>Thank you for verifying your email. You can now use all features.</p>
         <div className="w-48 mt-4">
-          <a href="/" style={{ color: "blue", textDecoration: "underline" }}>
+          <Link href="/" style={{ color: "blue", textDecoration: "underline" }}>
             Go to Home
-          </a>
+          </Link>
         </div>
       </div>
     </ClientOnly>
