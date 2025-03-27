@@ -12,7 +12,7 @@ export async function POST(request) {
     secure: true, // Use `false` for TLS (port 587)
     auth: {
       user: "info@furlandapp.com",
-      pass: process.env.IONOS_EMAIL_PASSWORD, // Store this in .env file
+      pass: process.env.IONOS_EMAIL_PASSWORD,
     },
   });
 
