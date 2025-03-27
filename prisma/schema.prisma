@@ -37,6 +37,10 @@ model User {
     negativeFeedback Int              @default(0)
     reactions        ReviewReaction[]
 
+    verified Boolean? @default(true)
+    // TODO: replace this token in cache
+    token    String?
+
     accounts     Account[]
     listings     Listing[]
     reservations Reservation[]
