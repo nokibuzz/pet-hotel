@@ -47,9 +47,8 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {     
-
-      if (account.provider !== 'google') {
+    async signIn({ user, account, profile }) {
+      if (account.provider !== "google") {
         return true;
       }
 
@@ -64,19 +63,24 @@ export const authOptions = {
         });
 
         if (existingUser) {
-          const googleAccount = existingUser.accounts.find(account => account.provider === 'google');
-          if (googleAccount && googleAccount.providerAccountId == account.providerAccountId) {
+          const googleAccount = existingUser.accounts.find(
+            (account) => account.provider === "google"
+          );
+          if (
+            googleAccount &&
+            googleAccount.providerAccountId == account.providerAccountId
+          ) {
             return true;
           }
           return false;
-        }
-        else {
+        } else {
           const newUser = await prisma.user.create({
             data: {
               email: user.email,
               name: user.name,
               image: user.image || null,
               isNewUser: true,
+              verified: true,
               accounts: {
                 create: {
                   type: account.type,
@@ -87,20 +91,20 @@ export const authOptions = {
                   token_type: account.token_type,
                   scope: account.scope,
                   id_token: account.id_token,
-                }
-              }
+                },
+              },
             },
           });
 
           return true;
         }
       } catch (error) {
-        return false; 
+        return false;
       }
     },
   },
   pages: {
-    signIn: '/',
+    signIn: "/",
   },
   debug: process.env.NODE_ENV === "development",
   session: {
