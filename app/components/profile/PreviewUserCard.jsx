@@ -7,6 +7,7 @@ const PreviewUserCard = ({
   onItemClick,
   renderTextContent,
   renderOwnerAddProperty,
+  renderOwnerNonWorkingDays
 }) => {
   return (
     <div className="bg-white shadow-md rounded-lg p-6 text-center hover:bg-gray-50">
@@ -17,7 +18,11 @@ const PreviewUserCard = ({
         >
           {title}
         </div>
-        {renderOwnerAddProperty && renderOwnerAddProperty}
+        <div className="flex flex-row justify-between">
+          {renderOwnerNonWorkingDays && renderOwnerNonWorkingDays}
+          {renderOwnerAddProperty && renderOwnerAddProperty}
+        </div>
+        
       </div>
 
       <ScrollableItemsSection
