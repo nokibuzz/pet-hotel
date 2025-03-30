@@ -13,7 +13,7 @@ export async function POST(request) {
   }
 
   const body = await request.json();
-
+ 
   const {
     startDate,
     endDate,
@@ -32,7 +32,6 @@ export async function POST(request) {
     !totalPrice ||
     !typeName ||
     !breed ||
-    !breedDescription ||
     !paymentMethod
   ) {
     return NextResponse.error();

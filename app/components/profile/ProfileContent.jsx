@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import PreviewUserCard from "./PreviewUserCard";
 import useRentModal from "@/app/hooks/useRentModal";
+import useSetNonWorkingDaysModal from "@/app/hooks/useSetNonWorkingDaysModal";
 
 const ProfileContent = ({
   currentUser,
@@ -16,6 +17,7 @@ const ProfileContent = ({
 }) => {
   const router = useRouter();
   const rentModal = useRentModal();
+  const setNonWorkingDaysModal = useSetNonWorkingDaysModal();
 
   const reservationDate = (reservation) => {
     const start = new Date(reservation.startDate);
@@ -27,6 +29,10 @@ const ProfileContent = ({
   const onRent = useCallback(() => {
     rentModal.onOpen(translation.RentModal);
   }, [currentUser, rentModal, translation]);
+
+  const onSetNonWorkingDays = useCallback(() => {
+    setNonWorkingDaysModal.onOpen(properties, translation.SetNonWorkingDaysModal);
+  }, [currentUser, setNonWorkingDaysModal, translation]);
 
   return (
     <div className="p-4">
@@ -100,12 +106,20 @@ const ProfileContent = ({
                     </div>
                   </>
                 )}
+                renderOwnerNonWorkingDays={
+                  <div
+                    onClick={onSetNonWorkingDays}
+                    className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
+                  >
+                    {translation.ProfileContent.nonWorkingDays}
+                  </div>
+                }
                 renderOwnerAddProperty={
                   <div
                     onClick={onRent}
                     className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
                   >
-                    Add property
+                    {translation.ProfileContent.addProperty}
                   </div>
                 }
               />
