@@ -4,6 +4,10 @@
       "title": "Unauthorized",
       "subtitle": "Login to proceed!"
     },
+    "ProfileContent": {
+      "addProperty": "Add property",
+      "nonWorkingDays": "Set non-working days"
+    },
     "ProfileCard": {
       "title": "User Profile",
       "updateAvatar": "Update avatar",
@@ -21,6 +25,31 @@
       "forgotPassword": "Forgot your password?",
       "modalTitle": "Change Password",
       "submit": "Change Password"
+    },
+    "SetNonWorkingDaysModal": {
+      "nonWorkingDays": "Set non-working days",
+      "confirm": "Confirm",
+      "next": "Next",
+      "back": "Back",
+      "pickObject": "Choose property",
+      "pickObjectSubtitle": "Choose property from the list",
+      "pickType": "Choose type of your pet",
+      "pickTypeSubtitle": "Choose type from the list",
+      "errorCanNotFetchData": "Data can not be fetched",
+      "pickDate": "Configure non-working dates",
+      "pickDateSubtitle": "Configure non-wroking dates",
+      "deleteAction": "Delete",
+      "startDate": "Start Date",
+      "endDate": "End date",
+      "maximumNumberOfBlockDates": "Maximum number of non-working days reached",
+      "calendarPlaceHolder": "Enter non-working dates...",
+      "addedDates": "New non-working days",
+      "removedDates": "Removed non-working days",
+      "updatedDates": "Updated non-working days",
+      "errorWhenDisabledDateIsSelected": "One or more selected days can not be set as non-working days",
+      "requestNotValid": "Unexpected error occured",
+      "success": "Non-working days updated",
+      "error": "Non-working days can not be updated"
     },
     "RentModal": {
       "categoryTitle": "Which of these best describe you pet care?",
@@ -96,6 +125,10 @@
       "title": "Niste prijavljeni!",
       "subtitle": "Prijavite se da biste nastavili korišćenje aplikacije!"
     },
+    "ProfileContent": {
+      "addProperty": "Dodaj Objekat",
+      "nonWorkingDays": "Postavite neradne dane"
+    },
     "ProfileCard": {
       "title": "Profil Korisnika",
       "updateAvatar": "Promeni sliku",
@@ -113,6 +146,30 @@
       "forgotPassword": "Zaboravljena lozinka?",
       "modalTitle": "Izmeni lozinku",
       "submit": "Izmeni lozinku"
+    },
+    "SetNonWorkingDaysModal":{
+      "nonWorkingDays": "Postavite neradne dane",
+      "confirm": "Potvrdite",
+      "next": "Sledeće",
+      "back": "Nazad",
+      "pickObject": "Odaberite objekat",
+      "pickObjectSubtitle": "Odaberite objekat iz liste",
+      "pickType": "Odaberite tip Vašeg ljubimca",
+      "pickTypeSubtitle": "Odaberite tip iz liste",
+      "errorCanNotFetchData": "Podaci ne mogu biti učitani",
+      "pickDate": "Neradni dani",
+      "pickDateSubtitle": "Uredite neradne dane u tabeli",
+      "deleteAction": "Obriši",
+      "startDate": "Početni datum",
+      "endDate": "Krajnji datum",
+      "calendarPlaceHolder": "Unesite neradne dane...",
+      "addedDates": "Novi neradni dani",
+      "removedDates": "Obrisani neradni dani",
+      "updatedDates": "Izmenjeni neradni dani",
+      "errorWhenDisabledDateIsSelected": "Jedan ili više selektovanih dana se ne može izabrati kao neradni dan",
+      "requestNotValid": "Desila se neočekivana greška",
+      "success": "Neradni dani su uspešno izmenjeni",
+      "error": "Neradni dani nisu mogli biti izmenjeni"
     },
     "RentModal": {
       "categoryTitle": "Koja od ovih kategorija najboje opisuje Vaš objekat?",

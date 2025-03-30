@@ -16,6 +16,7 @@ import UploadImageModal from "./components/modals/UploadImageModal";
 import { getTranslations } from "./utils/getTranslations";
 import ReservationModal from "./components/modals/ReservationModal";
 import ReservationInfoModal from "./components/modals/ReservationInfoModal";
+import SetNonWorkingDaysModal from "./components/modals/SetNonWorkingDaysModal";
 
 const font = Nunito({
   subsets: ["latin", "cyrillic"],
@@ -41,6 +42,7 @@ export default async function RootLayout({ children }) {
           <ReservationModal />
           <ReservationInfoModal currentUser={currentUser} />
           <RentModal currentUser={currentUser} />
+          <SetNonWorkingDaysModal currentUser={currentUser} />
           <SearchModal currentUser={currentUser} />
           <AdvancedFilters />
           <PetModal />
