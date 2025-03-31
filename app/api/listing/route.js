@@ -41,48 +41,58 @@ export async function POST(request) {
     coordinates: [locationLongitude, locationLatitude],
   };
 
-  const listing = await prisma.listing.create({
-    data: {
-      title,
-      description,
-      imageSrc,
-      category,
-      totalPlaces: parseInt(totalPlaces),
-      price: 10, // for now, delete in the future and see how to calculate
-      totalPlaces: parseInt(totalPlaces),
-      price: 10, // for now, delete in the future and see how to calculate
-      userId: currentUser.id,
-      checkInTime,
-      checkOutTime,
-      hasCancelation,
-      allowBooking,
-      paymentMethodsCards,
-      paymentMethodsCash,
-      paymentMethodsAccount,
-      hasFood,
-      hasGrooming,
-      hasVet,
-      addionalInformation,
-      location,
-      addressLabel,
-      capacityType, // Store CapacityType (TOTAL or ADVANCED)
-      blockedBreeds,
+  return await prisma.$transaction(
+    async (prisma) => {
+      const listing = await prisma.listing.create({
+        data: {
+          title,
+          description,
+          imageSrc,
+          category,
+          totalPlaces: parseInt(totalPlaces),
+          price: 10, // for now, delete in the future and see how to calculate
+          totalPlaces: parseInt(totalPlaces),
+          price: 10, // for now, delete in the future and see how to calculate
+          userId: currentUser.id,
+          checkInTime,
+          checkOutTime,
+          hasCancelation,
+          allowBooking,
+          paymentMethodsCards,
+          paymentMethodsCash,
+          paymentMethodsAccount,
+          hasFood,
+          hasGrooming,
+          hasVet,
+          addionalInformation,
+          location,
+          addressLabel,
+          capacityType, // Store CapacityType (TOTAL or ADVANCED)
+          blockedBreeds,
+        },
+      });
+
+      console.log("Created listing " + title);
+
+      for (const type of types) {
+        console.log("Creating type: " + JSON.stringify(type));
+        await prisma.type.create({
+          data: {
+            listingId: listing.id,
+            name: type.name,
+            capacity: type.capacity,
+            defaultPrice: type.defaultPrice,
+            weekendPrice: type.weekendPrice,
+          },
+        });
+      }
+
+      return NextResponse.json(listing);
     },
-  });
-
-  for (const type of types) {
-    await prisma.type.create({
-      data: {
-        listingId: listing.id,
-        name: type.name,
-        capacity: type.capacity,
-        defaultPrice: type.defaultPrice,
-        weekendPrice: type.weekendPrice,
-      },
-    });
-  }
-
-  return NextResponse.json(listing);
+    {
+      timeout: 10000, // 10 seconds timeout (default is 5s)
+    }
+  );
 }
 
 export async function PUT(request) {

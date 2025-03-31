@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 const CategoryInput = ({
   label,
   icon: Icon,
+  image = null,
   onClick,
   selected,
   value,
@@ -30,7 +32,7 @@ const CategoryInput = ({
   return (
     <div
       onClick={() => onClick(value)}
-      className={`rounded-xl border-2 p-4 flex flex-col gap-3 hover:border-black transition cursor-pointer ${
+      className={`rounded-xl border-2 p-4 flex flex-col gap-3 items-center hover:border-black transition cursor-pointer ${
         selected ? "border-gray-900 text-gray-900" : "border-neutral-200"
       }`}
       onMouseEnter={() => setIsHovered(true)}
@@ -38,6 +40,15 @@ const CategoryInput = ({
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
+      {image && (
+        <Image
+          src={image}
+          alt={label}
+          width={100}
+          height={100}
+          className="rounded-full"
+        />
+      )}
       {Icon && (
         <FontAwesomeIcon
           icon={Icon}

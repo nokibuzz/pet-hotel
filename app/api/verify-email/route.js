@@ -25,7 +25,7 @@ export async function GET(req) {
     // Mark user as verified and remove the token
     await prisma.user.update({
       where: { id: user.id },
-      data: { verified: true, token: null },
+      data: { verified: true, token: null, emailVerified: new Date() },
     });
 
     return NextResponse.redirect(

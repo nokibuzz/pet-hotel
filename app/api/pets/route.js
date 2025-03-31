@@ -46,3 +46,20 @@ export async function POST(request) {
 
   return NextResponse.json(pet);
 }
+
+export async function GET(request) {
+  try {
+    const url = new URL(request.url);
+    const userId = url.searchParams.get("userId");
+
+    const pets = await prisma.pet.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return NextResponse.json(pets);
+  } catch (error) {
+    throw new Error(error);
+  }
+}
