@@ -90,25 +90,25 @@ export const PET_TYPES = [
     label: SMALL_DOGS,
     icon: faDog,
     description:
-      "Small dogs (up to 10 kgs) are compact, lively, and great for apartments or small homes. They often have big personalities in tiny bodies.",
+      "Dogs (up to 10 kgs). Compact, lively, and great for apartments or small homes.",
   },
   {
     label: MEDIUM_DOGS,
     icon: faPaw,
     description:
-      "Medium dogs (10-25 kgs) are a balanced mix of energy and adaptability, making them great companions for both families and active owners.",
+      "Dogs (10-25 kgs). Balanced mix of energy and adaptability, great companions for both families and active owners.",
   },
   {
     label: LARGE_DOGS,
     icon: faBone,
     description:
-      "Large dogs (25-50 kgs) are strong and athletic, requiring ample exercise and space. They excel in companionship, work, and protection.",
+      "Dogs (25-50 kgs). Strong and athletic, requiring exercise and space. Excel in companionship, work and protection.",
   },
   {
     label: GIANT_DOGS,
     icon: faShieldDog,
     description:
-      "Giant dogs (50+ kgs) are massive yet gentle, often serving as protectors or rescue dogs. They need space, care, and a loving home.",
+      "Dogs (50+ kgs). Massive yet gentle, often serving as protectors or rescue dogs. They need space and care.",
   },
   {
     label: CATS,
@@ -121,7 +121,7 @@ export const PET_BREEDS = {
   [SMALL_DOGS]: {
     icon: "🐶",
     description:
-      "Small dogs (up to 10 kgs). Compact, lively, and great for apartments or small homes.",
+      "Dogs (up to 10 kgs). Compact, lively, and great for apartments or small homes.",
     breeds: [
       CHIHUAHUA,
       POMERANIAN,
@@ -138,7 +138,7 @@ export const PET_BREEDS = {
   [MEDIUM_DOGS]: {
     icon: "🐕",
     description:
-      "Medium dogs (10-25 kgs). Balanced mix of energy and adaptability, great companions for both families and active owners.",
+      "Dogs (10-25 kgs). Balanced mix of energy and adaptability, great companions for both families and active owners.",
     breeds: [
       COCKER_SPANIEL,
       BULLDOG,
@@ -156,7 +156,7 @@ export const PET_BREEDS = {
   [LARGE_DOGS]: {
     icon: "🐕‍🦺",
     description:
-      "Large dogs (25-50 kgs). Strong and athletic, requiring exercise and space. Excel in companionship, work and protection.",
+      "Dogs (25-50 kgs). Strong and athletic, requiring exercise and space. Excel in companionship, work and protection.",
     breeds: [
       LABRADOR_RETRIEVER,
       GOLDEN_RETRIEVER,
@@ -173,7 +173,7 @@ export const PET_BREEDS = {
   [GIANT_DOGS]: {
     icon: "🐾",
     description:
-      "Giant dogs (50+ kgs). Massive yet gentle, often serving as protectors or rescue dogs. They need space and care.",
+      "Dogs (50+ kgs). Massive yet gentle, often serving as protectors or rescue dogs. They need space and care.",
     breeds: [
       GREAT_DANE,
       MASTIFF,
