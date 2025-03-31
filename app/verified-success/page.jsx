@@ -4,8 +4,6 @@ import ClientOnly from "../components/ClientOnly";
 
 import getCurrentUser from "../actions/getCurrentUser";
 import { getTranslations } from "../utils/getTranslations";
-import Button from "../components/Button";
-import { NextResponse } from "next/server";
 import Link from "next/link";
 
 const VerifiedSuccess = async () => {

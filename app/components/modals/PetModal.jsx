@@ -4,24 +4,32 @@ import Modal from "./Modal";
 import { useMemo, useState } from "react";
 import Heading from "../Heading";
 import { useForm } from "react-hook-form";
-import Counter from "../inputs/Counter";
 import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
+import ClickInput from "../inputs/ClickInput";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import usePetModal from "@/app/hooks/usePetModal";
 import Radio from "../inputs/Radio";
+import {
+  PET_BREEDS,
+  PET_DESCRIPTIONS,
+  PET_TYPES,
+} from "@/app/utils/PetConstants";
+import Dropdown from "../inputs/Dropdown";
+import ExplanationInfo from "../ExplanationInfo";
 
 const STEPS = Object.freeze({
   BASIC: 0,
-  HEALTH: 1,
-  FRIENDLY: 2,
-  IMAGES: 3,
-  DESCRIPTION: 4,
+  BREED: 1,
+  HEALTH: 2,
+  FRIENDLY: 3,
+  IMAGES: 4,
+  DESCRIPTION: 5,
 });
 
-const MAX_IMAGES_FOR_PET = 7;
+const MAX_IMAGES_FOR_PET = 3;
 
 const PetModal = () => {
   const router = useRouter();
@@ -30,6 +38,9 @@ const PetModal = () => {
   const [step, setStep] = useState(STEPS.BASIC);
   const [isLoading, setIsLoading] = useState(false);
   const [localImageSrc, setLocalImageSrc] = useState([]);
+  const [breedOptions, setBreedOptions] = useState([]);
+  const [breedDescriptionPlaceholder, setBreedDescriptionPlaceholder] =
+    useState("");
 
   const {
     register,
@@ -41,12 +52,13 @@ const PetModal = () => {
   } = useForm({
     defaultValues: {
       name: "",
+      typeName: "",
       breed: "",
-      age: 0,
-      friendly: true,
+      description: "",
+      friendly: 0,
       vaccinated: true,
       imageSrc: [],
-      description: "",
+      additionalInfo: "",
     },
   });
 
@@ -54,6 +66,8 @@ const PetModal = () => {
   const friendly = watch("friendly");
   const vaccinated = watch("vaccinated");
   const imageSrc = watch("imageSrc");
+  const typeName = watch("typeName");
+  const breed = watch("breed");
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -68,6 +82,13 @@ const PetModal = () => {
   };
 
   const onNext = () => {
+    if (step === STEPS.BASIC && typeName === "") {
+      toast.error(
+        petModal.translation.errorTypeNotSelected ||
+          "Pet type must be selected!"
+      );
+      return;
+    }
     setStep((value) => value + 1);
   };
 
@@ -191,33 +212,97 @@ const PetModal = () => {
       />
       <Input
         id="name"
-        label={petModal.translation.name || "Name"}
+        label={petModal.translation.name || "Pet name"}
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
-      <hr />
+      <span className="font-semibold text-neutral-500">
+        {petModal.translation.labelType || "Pet type"}
+      </span>
+      {PET_TYPES.map((item) => (
+        <div key={item.label} className="col-span-1">
+          <ClickInput
+            onClick={(type) => {
+              setCustomValue("typeName", type);
+              setBreedOptions(PET_BREEDS[type]?.breeds || []);
+            }}
+            selected={typeName === item.label}
+            label={item.label}
+            value={item.label}
+            icon={item.icon}
+            tooltip={item.description}
+          />
+        </div>
+      ))}
       <Input
-        id="breed"
-        label={petModal.translation.breed || "Breed"}
+        id="birth"
+        label={petModal.translation.petBirth || "Pet birth"}
         disabled={isLoading}
         register={register}
         errors={errors}
+        type="month"
         required
-      />
-      <hr />
-      <Counter
-        title={petModal.translation.ageTitle || "Age"}
-        subtitle={
-          petModal.translation.ageSubtitle ||
-          "Tell us how many years your pet is celebrating?"
-        }
-        value={age}
-        onChange={(value) => setCustomValue("age", value)}
       />
     </div>
   );
+
+  const changeBreed = (value) => {
+    setCustomValue("breed", value);
+    const breedDescriptionPh = PET_DESCRIPTIONS[value] || "Breed Description";
+    setBreedDescriptionPlaceholder(breedDescriptionPh);
+  };
+
+  if (step === STEPS.BREED) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title={petModal.translation.breedTitle || "Pet breed"}
+          subtitle={
+            petModal.translation.breedSubtitle ||
+            "Let the object owner breed of your pet"
+          }
+        />
+        <div className="flex flex-row gap-4 items-center">
+          <Dropdown
+            id="breed"
+            label={petModal.translation.breed || "Breed"}
+            placeholder={
+              petModal.translation.breedPlaceholder || "Choose breed"
+            }
+            register={register}
+            errors={errors}
+            required
+            options={breedOptions}
+            onChange={(value) => changeBreed(value)}
+          />
+          <ExplanationInfo
+            text={
+              petModal.translation.breedExplanation ||
+              "If the breed of your pet is not on the list, input it manually."
+            }
+          />
+        </div>
+        {breed !== "" && (
+          <div className="flex flex-row gap-4 items-center">
+            <Input
+              id="description"
+              label={petModal.translation.breedDescription || "Pet description"}
+              placeholder={breedDescriptionPlaceholder}
+              register={register}
+            />
+            <ExplanationInfo
+              text={
+                petModal.translation.breedDescriptionExplanation ||
+                "Optional (one or two sentence) description of your pet. What it likes, how it behaves with strangers etc."
+              }
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
 
   if (step === STEPS.HEALTH) {
     bodyContent = (
@@ -255,8 +340,24 @@ const PetModal = () => {
         />
         <Radio
           options={[
-            { label: petModal.translation.yes || "Yes", value: true },
-            { label: petModal.translation.no || "No", value: false },
+            {
+              label: petModal.translation.friendlyOption || "Friendly",
+              value: 0,
+            },
+            {
+              label:
+                petModal.translation.notSoFriendlyOption || "Not so friendly",
+              value: 1,
+            },
+            {
+              label: petModal.translation.scaredOption || "Scared",
+              value: 2,
+            },
+            {
+              label:
+                petModal.translation.canBiteOption || "Can bite in some cases",
+              value: 3,
+            },
           ]}
           value={friendly}
           onChange={(value) => setCustomValue("friendly", value)}
@@ -300,7 +401,7 @@ const PetModal = () => {
           }
         />
         <Input
-          id="description"
+          id="additionalInfo"
           label={petModal.translation.descriptionInput || "Description"}
           disabled={isLoading}
           register={register}

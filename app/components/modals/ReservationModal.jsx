@@ -308,7 +308,7 @@ const ReservationModal = () => {
                 label={item.label}
                 value={item.label}
                 icon={item.icon}
-                tooltip={PET_BREEDS[item.label].description}
+                tooltip={item.description}
               />
             </div>
           ))}
@@ -327,7 +327,7 @@ const ReservationModal = () => {
       <div className="flex flex-col gap-8">
         <Heading
           title="Pet breed"
-          subtitle="Let the object owner breed of your pet"
+          subtitle="Let the object owner know the breed of your pet"
         />
         <div className="flex flex-row gap-4 items-center">
           <Dropdown

@@ -12,18 +12,30 @@ export async function POST(request) {
 
   const body = await request.json();
 
-  const { name, breed, age, friendly, vaccinated, imageSrc, description } =
-    body;
+  const {
+    name,
+    typeName,
+    breed,
+    birth,
+    friendly,
+    vaccinated,
+    imageSrc,
+    description,
+    additionalInfo,
+  } = body;
 
   const pet = await prisma.pet.create({
     data: {
       name,
+      typeName,
       breed,
-      age,
+      description,
+      birth,
       friendly,
       vaccinated,
       imageSrc,
       description,
+      additionalInfo,
       owner: {
         connect: {
           id: currentUser.id,

@@ -200,15 +200,17 @@ model Notification {
 }
 
 model Pet {
-    id          String   @id @default(uuid())
-    name        String
-    breed       String
-    age         Int
-    friendly    Boolean
-    vaccinated  Boolean
-    imageSrc    String[]
-    description String?
-    userId      String
+    id             String   @id @default(uuid())
+    name           String
+    typeName       String
+    breed          String
+    birth          String
+    friendly       Int
+    vaccinated     Boolean
+    imageSrc       String[]
+    description    String?
+    userId         String
+    additionalInfo String?
 
     owner User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
