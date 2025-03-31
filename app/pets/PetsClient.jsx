@@ -23,7 +23,7 @@ const PetsClient = ({ pets, translation }) => {
           <div className="flex justify-end items-end mb-4">
             <div
               onClick={() => petModal.onOpen(translation.PetModal)}
-              className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full bg-amber-600 text-white hover:bg-neutral-100 hover:text-black transition cursor-pointer"
+              className="md:block text-sm font-semibold py-3 px-4 rounded-full bg-amber-600 text-white hover:bg-neutral-100 hover:text-black transition cursor-pointer"
             >
               {translation.PetsClient.addPetButton || "Add Pet"}
             </div>

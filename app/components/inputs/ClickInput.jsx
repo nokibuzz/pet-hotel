@@ -47,7 +47,7 @@ const CategoryInput = ({
       )}
       <div className="font-semibold">{label}</div>
 
-      {(isHovered || isLongPress) && tooltip && (
+      {(isHovered || isLongPress || selected) && tooltip && (
         <div className="text-xs text-gray-600">{tooltip}</div>
       )}
     </div>
