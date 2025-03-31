@@ -3,6 +3,8 @@
 import useSearchModal from "@/app/hooks/useSearchModal";
 import Button from "../Button";
 import useReservationModal from "@/app/hooks/useReservationModal";
+import usePets from "@/app/hooks/usePets";
+import { useEffect } from "react";
 
 const ListingReservation = ({
   listing,
@@ -12,6 +14,13 @@ const ListingReservation = ({
 }) => {
   const reservationModal = useReservationModal();
   const searchModal = useSearchModal();
+  const { pets, setPets, fetchPetsForUser } = usePets();
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchPetsForUser(currentUser.id);
+    }
+  }, [currentUser]);
 
   return (
     <div className="bg-white rounded-xl border-[1px] border-neutral-200 overflow-hidden">
@@ -44,7 +53,7 @@ const ListingReservation = ({
           <div className="p-4">
             <Button
               label={translation.reserve || "Reserve"}
-              onClick={() => reservationModal.onOpen(listing)}
+              onClick={() => reservationModal.onOpen(listing, pets)}
             />
           </div>
           {totalPrice && (

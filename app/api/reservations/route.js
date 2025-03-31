@@ -13,11 +13,12 @@ export async function POST(request) {
   }
 
   const body = await request.json();
- 
+
   const {
     startDate,
     endDate,
     typeId,
+    petId,
     typeName,
     totalPrice,
     breed,
@@ -62,6 +63,7 @@ export async function POST(request) {
       const reservationData = {
         userId: currentUser.id,
         typeId,
+        petId,
         startDate,
         endDate,
         totalPrice,

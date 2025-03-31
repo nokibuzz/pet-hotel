@@ -156,6 +156,7 @@ model Reservation {
     id               String   @id @default(uuid())
     userId           String?
     typeId           String?
+    petId            String?
     breed            String?
     breedDescription String?
     startDate        DateTime
@@ -171,6 +172,7 @@ model Reservation {
     type            Type?   @relation(fields: [typeId], references: [id], onDelete: Cascade)
 
     user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+    pet  Pet?  @relation(fields: [petId], references: [id], onDelete: Cascade)
 
     @@index([typeId, startDate, endDate])
 }
@@ -212,7 +214,8 @@ model Pet {
     userId         String
     additionalInfo String?
 
-    owner User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    owner       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Reservation Reservation[]
 }
 
 model Review {

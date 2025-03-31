@@ -15,9 +15,9 @@ const PetCard = ({ name, imageSrc, breed, years, translation }) => {
       <div className="p-4">
         <div className="mt-2 text-xl font-bold">{name}</div>
         <div className="text-gray-600">{breed}</div>
-        <div className="text-gray-400">
+        {/* <div className="text-gray-400">
           {years} {translation.yearsOld || "years young"}
-        </div>
+        </div> */}
       </div>
     </div>
   );
