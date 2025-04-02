@@ -3,8 +3,8 @@
 import useSearchModal from "@/app/hooks/useSearchModal";
 import Button from "../Button";
 import useReservationModal from "@/app/hooks/useReservationModal";
-import usePets from "@/app/hooks/usePets";
 import { useEffect } from "react";
+import { useGlobal } from "@/app/hooks/GlobalContext";
 
 const ListingReservation = ({
   listing,
@@ -14,7 +14,7 @@ const ListingReservation = ({
 }) => {
   const reservationModal = useReservationModal();
   const searchModal = useSearchModal();
-  const { pets, setPets, fetchPetsForUser } = usePets();
+  const { pets, fetchPetsForUser } = useGlobal();
 
   useEffect(() => {
     if (currentUser) {

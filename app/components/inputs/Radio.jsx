@@ -8,8 +8,8 @@ const Radio = ({ options, value, onChange }) => {
           key={option.value}
           className={`cursor-pointer px-4 py-2 rounded-full border-2 transition-colors duration-300 ${
             value === option.value
-              ? "bg-blue-500 text-white border-blue-500"
-              : "bg-white text-gray-600 border-gray-300 hover:border-blue-500 hover:text-blue-500"
+              ? "bg-amber-500 text-white border-amber-500"
+              : "bg-white text-gray-600 border-gray-300 hover:border-amber-500 hover:text-amber-500"
           }`}
         >
           <input
