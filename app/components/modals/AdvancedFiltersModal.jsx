@@ -18,6 +18,8 @@ import Toggle from "../inputs/Toggle";
 import Calendar from "../inputs/Calendar";
 import { formatISO } from "date-fns";
 import { PET_TYPES } from "@/app/utils/PetConstants";
+import { useGlobal } from "@/app/hooks/GlobalContext";
+import Button from "../Button";
 
 export const facilityOptions = [
   {
@@ -34,7 +36,7 @@ export const facilityOptions = [
   },
 ];
 
-const AdvancedFilters = () => {
+const AdvancedFiltersModal = ({ currentUser }) => {
   const router = useRouter();
   const params = useSearchParams();
   const advancedFiltersModal = useAdvancedFiltersModal();
@@ -44,7 +46,7 @@ const AdvancedFilters = () => {
     endDate: new Date(),
     key: "selection",
   });
-  const [priceRange, setPriceRange] = useState([1, 1000000]);
+  const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [category, setCategory] = useState("");
   const [petType, setPetType] = useState("");
   const [nearMe, setNearMe] = useState("");
@@ -53,6 +55,33 @@ const AdvancedFilters = () => {
   const [paymentMethodsCards, setPaymentMethodsCards] = useState(false);
   const [paymentMethodsCash, setPaymentMethodsCash] = useState(false);
   const [review, setReview] = useState("");
+  const [includeDateRange, setIncludeDateRange] = useState(false);
+
+  const { selectedPet, setSelectedPet, pets, fetchPetsForUser } = useGlobal();
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchPetsForUser(currentUser.id);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (selectedPet) {
+      setPetType(selectedPet.typeName);
+      const currentQuery = buildQueryParams();
+      currentQuery.petType = selectedPet.typeName;
+
+      const url = qs.stringifyUrl(
+        {
+          url: "/",
+          query: currentQuery,
+        },
+        { skipNull: true }
+      );
+
+      router.push(url);
+    }
+  }, [selectedPet]);
 
   useEffect(() => {
     if (advancedFiltersModal.isOpen) {
@@ -66,7 +95,6 @@ const AdvancedFilters = () => {
         parseInt(params?.get("maxPrice") || 1000000),
       ]);
       setCategory(params?.get("category") || "");
-      setPetType(params?.get("petType") || "");
       setNearMe(params?.get("nearMe") || "");
       setFacility(params?.get("facility") || "");
       setHasCancelation(JSON.parse(params?.get("hasCancelation")) || false);
@@ -101,6 +129,16 @@ const AdvancedFilters = () => {
     }
   };
 
+  const changePet = (value, isSelected) => {
+    if (isSelected) {
+      setSelectedPet(value);
+      setPetType(value.typeName);
+    } else {
+      setSelectedPet(null);
+      setPetType("");
+    }
+  };
+
   const changePetType = (value, isSelected) => {
     if (isSelected) {
       setPetType(value);
@@ -130,7 +168,7 @@ const AdvancedFilters = () => {
     }
   };
 
-  const onSubmit = useCallback(async () => {
+  const buildQueryParams = () => {
     let currentQuery = {};
 
     if (params) {
@@ -138,12 +176,17 @@ const AdvancedFilters = () => {
       delete currentQuery.advancedFilters;
     }
 
-    if (dateRange.startDate) {
-      currentQuery.startDate = formatISO(dateRange.startDate);
-    }
+    if (includeDateRange) {
+      if (dateRange.startDate) {
+        currentQuery.startDate = formatISO(dateRange.startDate);
+      }
 
-    if (dateRange.endDate) {
-      currentQuery.endDate = formatISO(dateRange.endDate);
+      if (dateRange.endDate) {
+        currentQuery.endDate = formatISO(dateRange.endDate);
+      }
+    } else {
+      delete currentQuery.startDate;
+      delete currentQuery.endDate;
     }
 
     if (parseInt(params?.get("minPrice") || 0) != priceRange[0]) {
@@ -200,9 +243,15 @@ const AdvancedFilters = () => {
       }
     }
 
-    if (Object.keys(currentQuery).length !== 0) {
+    if (Object.keys(currentQuery).length !== 0 && advancedFiltersModal.isOpen) {
       currentQuery.advancedFilters = true;
     }
+
+    return currentQuery;
+  };
+
+  const onSubmit = useCallback(async () => {
+    const currentQuery = buildQueryParams();
 
     const url = qs.stringifyUrl(
       {
@@ -244,14 +293,50 @@ const AdvancedFilters = () => {
         </h3>
         <Calendar
           value={dateRange}
-          onChange={(value) => setDateRange(value.selection)}
+          onChange={(value) => {
+            setDateRange(value.selection);
+            setIncludeDateRange(true);
+          }}
           locale={advancedFiltersModal.translation.Advanced?.locale || "sr"}
         />
+        {includeDateRange && (
+          <Button
+            outline
+            label={
+              advancedFiltersModal.translation.Advanced?.disableDates ||
+              "Clear date range"
+            }
+            onClick={() => {
+              setDateRange({
+                startDate: new Date(),
+                endDate: new Date(),
+                key: "selection",
+              });
+              setIncludeDateRange(false);
+            }}
+          />
+        )}
+      </div>
+
+      <div className="border-b pb-4">
+        <h3 className="font-semibold text-lg mb-2">Your pets</h3>
+        <div className="flex flex-row overflow-x-auto gap-3 justify-around hide-scrollbar">
+          {pets.map((item) => (
+            <AdvancedFiltersOption
+              key={item.id}
+              label={item.name}
+              value={item}
+              selected={selectedPet === item}
+              image={item.imageSrc?.[0]}
+              onClick={(value, isSelected) => changePet(value, isSelected)}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="border-b pb-4">
         <h3 className="font-semibold text-lg mb-2">Pet Type</h3>
-        <div className="flex flex-row gap-3 flex-grow justify-around">
+        <div className="flex flex-row overflow-x-auto gap-3 justify-around hide-scrollbar">
           {PET_TYPES.map((item) => (
             <AdvancedFiltersOption
               key={item.label}
@@ -421,4 +506,4 @@ const AdvancedFilters = () => {
   );
 };
 
-export default AdvancedFilters;
+export default AdvancedFiltersModal;

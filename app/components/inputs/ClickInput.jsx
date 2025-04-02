@@ -29,10 +29,11 @@ const CategoryInput = ({
     clearTimeout(pressTimer);
     setIsLongPress(false);
   };
+
   return (
     <div
       onClick={() => onClick(value)}
-      className={`rounded-xl border-2 p-4 flex flex-col gap-3 items-center hover:border-black transition cursor-pointer ${
+      className={`w-full rounded-xl border-2 p-4 flex flex-col gap-3 items-center hover:border-black transition cursor-pointer ${
         selected ? "border-gray-900 text-gray-900" : "border-neutral-200"
       }`}
       onMouseEnter={() => setIsHovered(true)}
@@ -41,13 +42,15 @@ const CategoryInput = ({
       onTouchEnd={handleTouchEnd}
     >
       {image && (
-        <Image
-          src={image}
-          alt={label}
-          width={100}
-          height={100}
-          className="rounded-full"
-        />
+        <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+          <Image
+            src={image}
+            alt={label}
+            width={64}
+            height={64}
+            className="object-cover w-full h-full"
+          />
+        </div>
       )}
       {Icon && (
         <FontAwesomeIcon

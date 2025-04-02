@@ -9,7 +9,7 @@ import getCurrentUser from "./actions/getCurrentUser";
 import RentModal from "./components/modals/RentModal";
 import PetModal from "./components/modals/PetModal";
 import SearchModal from "./components/modals/SearchModal";
-import AdvancedFilters from "./components/modals/AdvancedFilters";
+import AdvancedFiltersModal from "./components/modals/AdvancedFiltersModal";
 import ReviewModal from "./components/modals/ReviewModal";
 import ChangePasswordModal from "./components/modals/ChangePasswordModal";
 import UploadImageModal from "./components/modals/UploadImageModal";
@@ -17,6 +17,7 @@ import { getTranslations } from "./utils/getTranslations";
 import ReservationModal from "./components/modals/ReservationModal";
 import ReservationInfoModal from "./components/modals/ReservationInfoModal";
 import SetNonWorkingDaysModal from "./components/modals/SetNonWorkingDaysModal";
+import { GlobalProvider } from "./hooks/GlobalContext";
 
 const font = Nunito({
   subsets: ["latin", "cyrillic"],
@@ -35,23 +36,25 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={font.className}>
-        <ClientOnly>
-          <ToasterProvider />
-          <LoginModal />
-          <RegisterModal />
-          <ReservationModal />
-          <ReservationInfoModal currentUser={currentUser} />
-          <RentModal currentUser={currentUser} />
-          <SetNonWorkingDaysModal currentUser={currentUser} />
-          <SearchModal currentUser={currentUser} />
-          <AdvancedFilters />
-          <PetModal />
-          <ReviewModal currentUser={currentUser} />
-          <ChangePasswordModal />
-          <UploadImageModal />
-          <Navbar currentUser={currentUser} translation={translation} />
-        </ClientOnly>
-        <div className="pb-20 pt-28">{children}</div>
+        <GlobalProvider>
+          <ClientOnly>
+            <ToasterProvider />
+            <LoginModal />
+            <RegisterModal />
+            <ReservationModal />
+            <ReservationInfoModal currentUser={currentUser} />
+            <RentModal currentUser={currentUser} />
+            <SetNonWorkingDaysModal currentUser={currentUser} />
+            <SearchModal currentUser={currentUser} />
+            <AdvancedFiltersModal currentUser={currentUser} />
+            <PetModal />
+            <ReviewModal currentUser={currentUser} />
+            <ChangePasswordModal />
+            <UploadImageModal />
+            <Navbar currentUser={currentUser} translation={translation} />
+          </ClientOnly>
+          <div className="pb-20 pt-28">{children}</div>
+        </GlobalProvider>
       </body>
     </html>
   );

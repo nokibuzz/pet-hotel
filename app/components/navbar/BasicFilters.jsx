@@ -201,14 +201,14 @@ const BasicFilters = ({ translation }) => {
           </div>
         ) : (
           <div className="flex flex-row gap-1 sm:gap-3 justify-evenly items-center w-full pt-2">
-            {options.map((item) => (
+            {/* {options.map((item) => (
               <BasicFilterOption
                 key={item.label}
                 label={translation?.[item.label] || item.label}
                 selected={category === item.label}
                 icon={item.icon}
               />
-            ))}
+            ))} */}
           </div>
         )}
 
@@ -216,7 +216,6 @@ const BasicFilters = ({ translation }) => {
           <div className="flex items-center">
             <SortFiltersOption translation={translation} />
           </div>
-
           <div className="flex items-center">
             <AdvancedFiltersButton
               selected={category === "Filters"}
