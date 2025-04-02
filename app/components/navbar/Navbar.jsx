@@ -15,7 +15,7 @@ const Navbar = ({ currentUser, translation }) => {
         <Container>
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0 h-full">
             <div className="flex-1">
-              <Logo />
+              <Logo currentUser={currentUser} />
             </div>
             <div
               className="flex-grow flex justify-center items-center"

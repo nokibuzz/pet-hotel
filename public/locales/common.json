@@ -152,7 +152,8 @@
         "Food": "Food",
         "Grooming": "Grooming",
         "Veterinarian": "Veterinarian",
-        "locale": "en"
+        "locale": "en",
+        "disableDates": "Clear date range"
       }
     }
   },
@@ -308,7 +309,8 @@
         "Food": "Hrana",
         "Grooming": "Timarenje",
         "Veterinarian": "Veterinar",
-        "locale": "sr"
+        "locale": "sr",
+        "disableDates": "Očisti izabrani period"
       }
     }
   }

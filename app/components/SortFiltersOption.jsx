@@ -59,19 +59,19 @@ const SortFiltersOption = ({ translation }) => {
     return { top: 0, left: 0 };
   };
 
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (!event.target.closest(".sort-options")) {
-          setIsOpen(false);
-        }
-      };
-  
-      document.addEventListener("mousedown", handleClickOutside);
-  
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".sort-options")) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const { top, left } = getDropdownPosition();
 
@@ -83,12 +83,14 @@ const SortFiltersOption = ({ translation }) => {
         className={`flex flex-col items-center gap-2 p-3 border-b-2 hover:text-neutral-800 transition cursor-pointer border rounded-lg border-gray-300 text-neutral-500`}
       >
         <FontAwesomeIcon icon={faSort} size="lg" className="text-neutral-500" />
-        <div className="font-normal text-xs hidden sm:block">{translation.sort || "Sort"}</div>
+        <div className="font-normal text-xs hidden sm:block">
+          {translation.sort || "Sort"}
+        </div>
       </div>
 
       {isOpen && (
         <div
-          className="fixed w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 sort-options"
+          className="absolute top-full left-1 transform -translate-x-1/2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 sort-options"
           style={{ top: `${top}px`, left: `${left}px` }}
         >
           <div className="py-1">

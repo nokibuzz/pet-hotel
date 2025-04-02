@@ -151,11 +151,14 @@ const PetModal = () => {
         return;
       }
 
+      setIsLoading(true);
+
       uploadImages()
         .then((response) => {
           console.log("Uploaded successfully");
         })
-        .catch((e) => console.error("Woof, woof, images not uploaded!", e));
+        .catch((e) => console.error("Woof, woof, images not uploaded!", e))
+        .finally(() => setIsLoading(false));
     }
 
     if (step !== STEPS.DESCRIPTION) {
@@ -403,7 +406,6 @@ const PetModal = () => {
         <Input
           id="additionalInfo"
           label={petModal.translation.descriptionInput || "Description"}
-          disabled={isLoading}
           register={register}
           errors={errors}
           required
@@ -416,6 +418,7 @@ const PetModal = () => {
     <Modal
       isOpen={petModal.isOpen}
       onClose={petModal.onClose}
+      disabled={isLoading}
       onSubmit={handleSubmit(onSubmit)}
       title={petModal.translation.title || "Add my pet"}
       actionLabel={actionLabel}

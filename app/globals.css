@@ -75,3 +75,9 @@ body,
   opacity: 0.8;
   transition: transform 0.3s ease;
 }
+
+.separator {
+  width: 1px;
+  background-color: #ccc;
+  height: 100%;
+}
