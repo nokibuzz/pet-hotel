@@ -71,7 +71,6 @@ const SetNonWorkingDaysModal = ({ currentUser }) => {
         return;
       }
 
-      console.log("Usapo");
       sendRequest();
     } else {
       setStep((value) => value + 1);

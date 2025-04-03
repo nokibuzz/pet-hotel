@@ -7,6 +7,7 @@ const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
   const [pets, setPets] = useState([]);
+  const [petChanged, setPetChanged] = useState(false);
   const [selectedPet, setSelectedPet] = useState(() => {
     if (typeof window !== "undefined") {
       return JSON.parse(localStorage.getItem("selectedPet")) || null;
@@ -26,8 +27,10 @@ export const GlobalProvider = ({ children }) => {
         const response = await axios.get(`/api/pets?userId=${userId}`);
         if (response.data) {
           setPets(response.data);
-          if (selectedPet === null && response.data.length > 0) {
+          if (response.data.length > 0) {
             setSelectedPet(response.data[0]); // Default to first pet
+          } else {
+            setSelectedPet(null);
           }
         }
       } catch (error) {
@@ -43,6 +46,8 @@ export const GlobalProvider = ({ children }) => {
         setPets,
         selectedPet,
         setSelectedPet,
+        petChanged,
+        setPetChanged,
         fetchPetsForUser,
       }}
     >

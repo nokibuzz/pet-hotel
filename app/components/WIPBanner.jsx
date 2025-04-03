@@ -31,9 +31,8 @@ const WIPBanner = () => {
         ref={textRef}
         className="whitespace-nowrap text-black font-light text-sm"
       >
-        Još u fazi razvoja, testiranje u toku, biće spremno za komercijalno
-        korišćenje od oktobra 2025. &nbsp;|&nbsp; All rights reserved to FurLand
-        team.
+        Projekat je još u fazi razvoja. Komercijalno korišćenje počinje od
+        oktobra 2025. &nbsp;|&nbsp; Sva prava pripadaju FurLand timu.
       </div>
     </div>
   );
