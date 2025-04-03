@@ -13,7 +13,8 @@ const Logo = ({ currentUser }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
-  const { selectedPet, setSelectedPet, pets, fetchPetsForUser } = useGlobal();
+  const { selectedPet, setSelectedPet, pets, setPetChanged, fetchPetsForUser } =
+    useGlobal();
 
   useEffect(() => {
     if (currentUser) {
@@ -33,20 +34,28 @@ const Logo = ({ currentUser }) => {
   const handlePetSelect = (petSelected) => {
     setSelectedPet(petSelected);
     setIsDropdownOpen(false);
+    setPetChanged(true);
   };
 
-  const url = qs.stringifyUrl(
-    {
-      url: `/`,
-      query: {},
-    },
-    { skipNull: true }
-  );
+  const returnToHome = () => {
+    const currentQuery = {};
+    currentQuery.petType = selectedPet.typeName;
+
+    const url = qs.stringifyUrl(
+      {
+        url: `/`,
+        query: currentQuery,
+      },
+      { skipNull: true }
+    );
+
+    router.push(url);
+  };
 
   return (
     <div className="relative flex items-center w-full justify-between px-4">
       <Image
-        onClick={() => router.push(url)}
+        onClick={() => returnToHome()}
         alt="Logo"
         className="md:block cursor-pointer flex-shrink-0"
         height="48"
@@ -54,7 +63,7 @@ const Logo = ({ currentUser }) => {
         src="/images/logo.png"
       />
 
-      {selectedPet && (
+      {selectedPet && currentUser && (
         <div className="flex items-center flex-shrink-0">
           <div className="separator hidden md:block"></div>
 

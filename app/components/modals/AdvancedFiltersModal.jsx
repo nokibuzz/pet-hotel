@@ -57,7 +57,14 @@ const AdvancedFiltersModal = ({ currentUser }) => {
   const [review, setReview] = useState("");
   const [includeDateRange, setIncludeDateRange] = useState(false);
 
-  const { selectedPet, setSelectedPet, pets, fetchPetsForUser } = useGlobal();
+  const {
+    selectedPet,
+    setSelectedPet,
+    pets,
+    petChanged,
+    setPetChanged,
+    fetchPetsForUser,
+  } = useGlobal();
 
   useEffect(() => {
     if (currentUser) {
@@ -66,8 +73,9 @@ const AdvancedFiltersModal = ({ currentUser }) => {
   }, [currentUser]);
 
   useEffect(() => {
-    if (selectedPet) {
+    if (selectedPet && petChanged) {
       setPetType(selectedPet.typeName);
+      setPetChanged(false);
       const currentQuery = buildQueryParams();
       currentQuery.petType = selectedPet.typeName;
 
@@ -81,7 +89,7 @@ const AdvancedFiltersModal = ({ currentUser }) => {
 
       router.push(url);
     }
-  }, [selectedPet]);
+  }, [selectedPet, petChanged]);
 
   useEffect(() => {
     if (advancedFiltersModal.isOpen) {
@@ -318,21 +326,23 @@ const AdvancedFiltersModal = ({ currentUser }) => {
         )}
       </div>
 
-      <div className="border-b pb-4">
-        <h3 className="font-semibold text-lg mb-2">Your pets</h3>
-        <div className="flex flex-row overflow-x-auto gap-3 justify-around hide-scrollbar">
-          {pets.map((item) => (
-            <AdvancedFiltersOption
-              key={item.id}
-              label={item.name}
-              value={item}
-              selected={selectedPet === item}
-              image={item.imageSrc?.[0]}
-              onClick={(value, isSelected) => changePet(value, isSelected)}
-            />
-          ))}
+      {pets?.length > 0 && (
+        <div className="border-b pb-4">
+          <h3 className="font-semibold text-lg mb-2">Your pets</h3>
+          <div className="flex flex-row overflow-x-auto gap-3 justify-around hide-scrollbar">
+            {pets.map((item) => (
+              <AdvancedFiltersOption
+                key={item.id}
+                label={item.name}
+                value={item}
+                selected={selectedPet === item}
+                image={item.imageSrc?.[0]}
+                onClick={(value, isSelected) => changePet(value, isSelected)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="border-b pb-4">
         <h3 className="font-semibold text-lg mb-2">Pet Type</h3>
