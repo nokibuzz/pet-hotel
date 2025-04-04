@@ -54,7 +54,9 @@ const Logo = ({ currentUser }) => {
 
   const returnToHome = () => {
     const currentQuery = {};
-    currentQuery.petType = selectedPet.typeName;
+    if (selectedPet) {
+      currentQuery.petType = selectedPet.typeName;
+    }
 
     const url = qs.stringifyUrl(
       {
