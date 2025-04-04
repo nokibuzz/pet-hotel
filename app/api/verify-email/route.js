@@ -28,9 +28,7 @@ export async function GET(req) {
       data: { verified: true, token: null, emailVerified: new Date() },
     });
 
-    return NextResponse.redirect(
-      `${process.env.NEXTAUTH_URL}/verified-success`
-    );
+    return NextResponse.json("Verified email");
   } catch (error) {
     console.error("Verification error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

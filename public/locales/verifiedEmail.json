@@ -2,11 +2,13 @@
   "en": {
     "emailVerified": "Email Verified Successfully!",
     "emailVerifiedMessage": "Thank you for verifying your email. You can now access all features.",
-    "goToHome": "Go to home"
+    "goToHome": "Go to home",
+    "verifying": "Verifying..."
   },
   "sr": {
     "emailVerified": "Email Uspešno verifikovan!",
     "emailVerifiedMessage": "Hvala Vam na verifikovanju mejla. Sada možete koristiti sve funkcionalnosti aplikacije.",
-    "goToHome": "Idi na početnu stranu"
+    "goToHome": "Idi na početnu stranu",
+    "verifying": "Verifikujem..."
   }
 }
