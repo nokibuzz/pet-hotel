@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-const UserInfoView = ({ user }) => {
+const UserInfoView = ({ user, translate = {} }) => {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-2 p-3 border rounded-lg shadow-sm bg-white">
       {/* Avatar & Name */}
@@ -23,10 +23,12 @@ const UserInfoView = ({ user }) => {
       {/* Feedback */}
       <div className="text-center sm:text-right">
         <p className="text-sm text-green-600">
-          Positive feedbacks: {user?.positiveFeedbacks ?? 0}
+          {translate.positiveFeedback || "Positive feedbacks: "}
+          {user?.positiveFeedbacks ?? 0}
         </p>
         <p className="text-sm text-red-600">
-          Negative feedbacks: {user?.negativeFeedbacks ?? 0}
+          {translate.negativeFeedback || "Negative feedbacks: "}
+          {user?.negativeFeedbacks ?? 0}
         </p>
       </div>
     </div>

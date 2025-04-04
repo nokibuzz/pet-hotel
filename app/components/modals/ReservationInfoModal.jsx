@@ -17,6 +17,12 @@ import { eachDayOfInterval, isWeekend } from "date-fns";
 import ReservationStatusField from "../reservations/ReservationStatusField";
 import TypeBreedView from "../TypeBreedView";
 import ReservationInfoPaymentView from "../reservations/ReservationInfoPaymentView";
+import { PAYMENT_OPTION_ACCOUNT_PAYMENT } from "@/app/utils/PetConstants";
+import ConfirmationTimer from "../ConfirmationTimer";
+import Input from "../inputs/Input";
+import Button from "../Button";
+import ExplanationInfo from "../ExplanationInfo";
+import sendEmail from "@/app/utils/sendEmail";
 
 export const RESERVATION_INFO_STEPS = Object.freeze({
   OVERVIEW: 0,
@@ -24,7 +30,7 @@ export const RESERVATION_INFO_STEPS = Object.freeze({
   CONFIRMATION: 2,
 });
 
-const ReservationInfoModal = ({ currentUser }) => {
+const ReservationInfoModal = ({ currentUser, translation }) => {
   const router = useRouter();
   const reservationInfoModal = useReservationInfoModal();
 
@@ -35,10 +41,10 @@ const ReservationInfoModal = ({ currentUser }) => {
   const [showFooter, setShowFooter] = useState(false);
   const [totalWorkDays, setTotalWorkDays] = useState(0);
   const [totalWeekendDays, setTotalWeekendDays] = useState(0);
+  const [banConfirmed, setBanConfirmed] = useState(false);
 
   const {
     handleSubmit,
-    setValue,
     register,
     watch,
     formState: { errors },
@@ -46,8 +52,11 @@ const ReservationInfoModal = ({ currentUser }) => {
   } = useForm({
     defaultValues: {
       rejectReason: "",
+      ban: null,
     },
   });
+
+  const ban = watch("ban");
 
   useEffect(() => {
     if (
@@ -107,24 +116,46 @@ const ReservationInfoModal = ({ currentUser }) => {
         listingId: reservationInfoModal.reservation.listingId,
       };
 
+      const banToSend = ban;
+
       axios
         .put("/api/reservations/approve", data)
         .then(() => {
-          toast.success("Successfully approved reservation!");
+          toast.success(
+            translation.success.approved || "Successfully approved reservation!"
+          );
           router.refresh();
           reset();
           setStep(RESERVATION_INFO_STEPS.OVERVIEW);
           reservationInfoModal.onClose();
+          sendEmail.sendApprovedReservation(
+            reservationInfoModal?.reservation?.user?.email,
+            reservationInfoModal?.reservation?.type?.listing?.title,
+            reservationInfoModal?.reservation?.totalPrice,
+            reservationInfoModal?.reservation?.type?.listing?.imageSrc?.[0],
+            new Date(
+              reservationInfoModal?.reservation?.startDate
+            ).toLocaleDateString("sr-RS"),
+            new Date(
+              reservationInfoModal?.reservation?.endDate
+            ).toLocaleDateString("sr-RS"),
+            banToSend
+          );
           setConfirmReservationExecuted(false);
         })
         .catch(() => {
-          toast.error("Something went wrong on approving reservation!");
+          toast.error(
+            translation.error.approve ||
+              "Something went wrong on approving reservation!"
+          );
         });
     }
   };
 
   const onSubmit = (d) => {
     setIsLoading(true);
+
+    const reasonOfRejection = d.rejectReason;
 
     const data = {
       reservationId: reservationInfoModal.reservation.id,
@@ -133,26 +164,52 @@ const ReservationInfoModal = ({ currentUser }) => {
       startDate: reservationInfoModal.reservation.startDate,
       endDate: reservationInfoModal.reservation.endDate,
       totalSlots: reservationInfoModal.reservation.type.capacity,
-      rejectReason: d.rejectReason,
+      rejectReason: reasonOfRejection,
     };
 
     axios
       .put("/api/reservations/reject", data)
       .then(() => {
-        toast.success("Successfully rejected reservation!");
+        toast.successtranslation.success.reject ||
+          "Successfully rejected reservation!";
         router.refresh();
         reset();
         setStep(RESERVATION_INFO_STEPS.OVERVIEW);
         setShowFooter(false);
         reservationInfoModal.onClose();
+        sendEmail.sendRejectedReservation(
+          reservationInfoModal?.reservation?.user?.email,
+          reservationInfoModal?.reservation?.type?.listing?.title,
+          reservationInfoModal?.reservation?.type?.listing?.imageSrc?.[0],
+          new Date(
+            reservationInfoModal?.reservation?.startDate
+          ).toLocaleDateString("sr-RS"),
+          new Date(
+            reservationInfoModal?.reservation?.endDate
+          ).toLocaleDateString("sr-RS"),
+          reasonOfRejection
+        );
         setConfirmReservationExecuted(false);
       })
       .catch(() => {
-        toast.error("Something went wrong on approving reservation!");
+        toast.error(
+          toast.successtranslation.error.reject ||
+            "Something went wrong on rejecting reservation!"
+        );
       })
       .finally(() => {
         setIsLoading(false);
       });
+  };
+
+  const isConfirmation = () => {
+    return (
+      (reservationInfoModal?.reservation?.paymentMethod ===
+        PAYMENT_OPTION_ACCOUNT_PAYMENT &&
+        !banConfirmed) ||
+      reservationInfoModal?.reservation?.paymentMethod !==
+        PAYMENT_OPTION_ACCOUNT_PAYMENT
+    );
   };
 
   let bodyContent;
@@ -161,17 +218,29 @@ const ReservationInfoModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-4">
         <Heading
-          title={"Reservation overview"}
-          subtitle={"Details about your reservation"}
+          title={translation.Overview.title || "Reservation overview"}
+          subtitle={
+            translation.Overview.subtitle || "Details about your reservation"
+          }
         />
-        <UserInfoView user={reservationInfoModal?.reservation?.user} />
+        <UserInfoView
+          user={reservationInfoModal?.reservation?.user}
+          translate={translation?.Overview?.UserInfoView}
+        />
         <TypeBreedView
-          typeName={reservationInfoModal?.reservation?.type?.name}
-          breed={reservationInfoModal?.reservation?.breed}
+          typeName={
+            translation.Type?.[reservationInfoModal?.reservation?.type?.name] ||
+            reservationInfoModal?.reservation?.type?.name
+          }
+          breed={
+            translation.breed?.[reservationInfoModal?.reservation?.breed] ||
+            reservationInfoModal?.reservation?.breed
+          }
           breedDescription={reservationInfoModal?.reservation?.breedDescription}
         />
         <ReservationInfoPaymentView
           paymentMethod={reservationInfoModal.reservation?.paymentMethod}
+          translation={translation?.Overview?.Payment}
         />
         <ReservationInfoFieldView
           dateFrom={reservationInfoModal?.reservation?.startDate}
@@ -179,6 +248,7 @@ const ReservationInfoModal = ({ currentUser }) => {
           workDays={totalWorkDays}
           weekendDays={totalWeekendDays}
           totalPrice={reservationInfoModal?.reservation?.totalPrice}
+          translation={translation?.Overview?.Date}
         />
 
         {reservationInfoModal.reservation?.type?.listing?.userId ===
@@ -191,19 +261,24 @@ const ReservationInfoModal = ({ currentUser }) => {
                   onClick={onConfirm}
                   disabled={isLoading}
                   icon={AiOutlineCheck}
-                  tooltip="Approve"
+                  tooltip={
+                    translation?.Overview?.approveTooltip ||
+                    "Approve Reservation"
+                  }
                   variant="approve"
                   className="w-full sm:w-auto"
-                  title="Approve"
+                  title={translation?.Overview?.approve || "Approve"}
                 />
                 <ActionButton
                   onClick={onReject}
                   disabled={isLoading}
                   icon={AiOutlineClose}
-                  tooltip="Dismiss"
+                  tooltip={
+                    translation?.Overview?.rejectTooltip || "Reject Reservation"
+                  }
                   variant="reject"
                   className="w-full sm:w-auto"
-                  title="Reject"
+                  title={translation?.Overview?.reject || "Reject"}
                 />
               </div>
             </>
@@ -214,6 +289,7 @@ const ReservationInfoModal = ({ currentUser }) => {
           <div>
             <ReservationStatusField
               status={reservationInfoModal.reservation?.status}
+              translate={translation?.Overview}
             />
           </div>
         )}
@@ -224,16 +300,60 @@ const ReservationInfoModal = ({ currentUser }) => {
   if (step === RESERVATION_INFO_STEPS.CONFIRMATION) {
     bodyContent = (
       <div className="flex flex-col gap-4">
-        <Heading title={"Processing..."} />
-        {/* <ConfirmationTimer
+        <Heading
+          title={translation.Confirmation.title || "Confirmation"}
+          subtitle={
+            isConfirmation()
+              ? translation?.Confirmation?.subtitlePaymentAccount ||
+                "Insert and confirm bank account number"
+              : translation?.Confirmation?.subtitleProcessing || "Processing..."
+          }
+        />
+        {reservationInfoModal?.reservation?.paymentMethod ===
+          PAYMENT_OPTION_ACCOUNT_PAYMENT && (
+          <>
+            <div className="flex flex-row gap-4 items-center">
+              <Input
+                id="ban"
+                label={translation?.Confirmation?.ban || "Bank Account Number"}
+                placeholder={
+                  translation?.Confirmation?.banPlaceholder ||
+                  "Insert your bank account number"
+                }
+                type="text"
+                register={register}
+                required={isConfirmation}
+                disabled={banConfirmed}
+              />
+              <ExplanationInfo
+                text={
+                  translation?.Confirmation?.banExplanation ||
+                  "Insert your bank account number to the user, so it will be able to pay you."
+                }
+              />
+            </div>
+
+            {!banConfirmed && (
+              <Button
+                disabled={banConfirmed}
+                label={translation?.Confirmation?.banButton || "Confirm BAN"}
+                onClick={() => setBanConfirmed(true)}
+              />
+            )}
+          </>
+        )}
+
+        <ConfirmationTimer
+          enabled={!isConfirmation()}
           onConfirm={() => onConfirmReservation()}
           onCancel={() => {
             setShowFooter(false);
+            setBanConfirmed(false);
             setStep(RESERVATION_INFO_STEPS.OVERVIEW);
             reset();
             reservationInfoModal.onClose();
           }}
-        /> */}
+        />
       </div>
     );
   }
@@ -242,12 +362,15 @@ const ReservationInfoModal = ({ currentUser }) => {
     bodyContent = (
       <div>
         <Heading
-          title="Reject Reason"
-          subtitle="Let the user know the reason of rejection"
+          title={translation?.Reject?.title || "Reject Reason"}
+          subtitle={
+            translation?.Reject?.subtitle ||
+            "Let the user know the reason of rejection"
+          }
         />
         <TextArea
           id="rejectReason"
-          label="Reject Reason"
+          label={translation?.Reject?.label || "Reject Reason"}
           defaultNumberOfRows={5}
           disabled={isLoading}
           register={register}
@@ -264,6 +387,7 @@ const ReservationInfoModal = ({ currentUser }) => {
       onClose={() => {
         setStep(RESERVATION_INFO_STEPS.OVERVIEW);
         setShowFooter(false);
+        setBanConfirmed(false);
         reset();
         reservationInfoModal.onClose();
       }}
@@ -273,11 +397,12 @@ const ReservationInfoModal = ({ currentUser }) => {
         reservationInfoModal?.reservation?.type?.listing?.category
       }
       onSubmit={handleSubmit(onSubmit)}
-      actionLabel="Confirm"
-      secondaryActionLabel="Cancel"
+      actionLabel={translation?.actionLabel || "Confirm"}
+      secondaryActionLabel={translation?.secondaryActionLabel || "Cancel"}
       secondaryAction={() => {
         setStep(RESERVATION_INFO_STEPS.OVERVIEW);
         setShowFooter(false);
+        setBanConfirmed(false);
         reset();
         reservationInfoModal.onClose();
       }}

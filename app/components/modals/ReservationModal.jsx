@@ -37,7 +37,7 @@ const STEPS = Object.freeze({
   OVERVIEW: 6,
 });
 
-const ReservationModal = () => {
+const ReservationModal = ({ translation }) => {
   const router = useRouter();
   const reservationModal = useReservationModal();
   const searchParams = useSearchParams();
@@ -174,7 +174,11 @@ const ReservationModal = () => {
           }&typeId=${typeId}&startDate=${startBuffer.toISOString()}&endDate=${endBuffer.toISOString()}`
         );
 
-        if (!response.ok) throw new Error("Failed to fetch disabled dates");
+        if (!response.ok)
+          throw new Error(
+            translation.error.failedToFetchDisabledDates ||
+              "Failed to fetch disabled dates"
+          );
 
         const data = await response.json();
         const newDates = new Set(data.disabledDates.map((d) => new Date(d))); // Convert back to Date
@@ -234,7 +238,10 @@ const ReservationModal = () => {
       return;
     }
     if (step === STEPS.TYPE && typeId === "") {
-      toast.error("Pet type should be selected!");
+      toast.error(
+        translation.error?.petTypeShouldBeSelected ||
+          "Pet type should be selected!"
+      );
       return;
     }
 
@@ -261,7 +268,9 @@ const ReservationModal = () => {
         petId: pet?.id,
       })
       .then(() => {
-        toast.success("Successfully reserved pet stay!");
+        toast.success(
+          translation.success?.reserved || "Successfully reserved pet stay!"
+        );
         router.refresh();
         // Resetting form, from react-form-hook library
         setCustomTypeId("");
@@ -271,7 +280,10 @@ const ReservationModal = () => {
         reservationModal.onClose();
       })
       .catch(() => {
-        toast.error("Something went wrong on reservation!");
+        toast.error(
+          translation.error?.reservationError ||
+            "Something went wrong on reservation!"
+        );
       })
       .finally(() => {
         setIsLoading(false);
@@ -280,10 +292,10 @@ const ReservationModal = () => {
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.OVERVIEW) {
-      return "Reserve";
+      return translation.button?.reserve || "Reserve";
     }
 
-    return "Next";
+    return translation.button?.next || "Next";
   }, [step]);
 
   const secondartActionLabel = useMemo(() => {
@@ -294,7 +306,7 @@ const ReservationModal = () => {
       return undefined;
     }
 
-    return "Back";
+    return translation.button?.back || "Back";
   }, [step]);
 
   const setCustomPet = (petValue) => {
@@ -322,8 +334,8 @@ const ReservationModal = () => {
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
-        title={"Select your pet"}
-        subtitle={"...or insert custom values"}
+        title={translation.Pet?.title || "Select your pet"}
+        subtitle={translation.Pet?.subtitle || "...or insert custom values"}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
         {reservationModal.pets?.map((item) => (
@@ -342,7 +354,7 @@ const ReservationModal = () => {
         <ClickInput
           onClick={() => setCustomPet(null)}
           selected={pet === null}
-          label="Insert manually"
+          label={translation.Pet?.insertManually || "Insert manually"}
           value={null}
           image="/images/pet-custom.png"
         />
@@ -354,16 +366,21 @@ const ReservationModal = () => {
     bodyContent = (
       <div className="flex flex-col gap-4">
         <Heading
-          title={"Pet overview"}
+          title={translation.PetOverview?.title || "Pet overview"}
           subtitle={
+            translation.PetOverview?.subtitle ||
             "Check details about your pet. If they are ok, continue with process."
           }
         />
         <PetInfoView pet={pet} />
         <TypeBreedView
-          breed={breed}
-          breedDescription={breedDescription}
-          typeName={type.name}
+          breed={translation.breed?.[breed] || breed}
+          breedDescription={
+            pet.description ||
+            translation.breedDescription?.[breed] ||
+            breedDescription
+          }
+          typeName={translation.Type?.[type.name] || type.name}
         />
       </div>
     );
@@ -391,13 +408,16 @@ const ReservationModal = () => {
   if (step === STEPS.TYPE) {
     bodyContent = (
       <div className="flex flex-col gap-8">
-        <Heading title={"Choose type of your pet?"} subtitle={"Pick one"} />
+        <Heading
+          title={translation.Type?.title || "Choose type of your pet"}
+          subtitle={translation.Type?.subtitle || "Pick one"}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
           {filteredPetTypes.length === 0 && (
             <ClickInput
               onClick={() => setAllPetTypes()}
               selected={type?.name === ALL_PET_CATEGORIES}
-              label="All Pets"
+              label={translation.Type?.allPets || "All Pets"}
               value={ALL_PET_CATEGORIES}
               icon={faOtter}
             />
@@ -410,10 +430,13 @@ const ReservationModal = () => {
                     setCustomTypeId(type);
                   }}
                   selected={type?.name === item.label}
-                  label={item.label}
+                  label={translation.Type?.[item.label] || item.label}
                   value={item.label}
                   icon={item.icon}
-                  tooltip={item.description}
+                  tooltip={
+                    translation.Type?.description?.[item.label] ||
+                    item.description
+                  }
                 />
               </div>
             ))}
@@ -424,7 +447,11 @@ const ReservationModal = () => {
 
   const changeBreed = (value) => {
     setCustomValue("breed", value);
-    const breedDescriptionPh = PET_DESCRIPTIONS[value] || "Breed Description";
+    const breedDescriptionPh =
+      translation.breedDescription?.[value] ||
+      PET_DESCRIPTIONS[value] ||
+      "Breed Description";
+
     setBreedDescriptionPlaceholder(breedDescriptionPh);
   };
 
@@ -432,26 +459,35 @@ const ReservationModal = () => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Pet breed"
-          subtitle="Let the object owner know the breed of your pet"
+          title={translation.Breed.title || "Pet breed"}
+          subtitle={
+            translation.Breed.subtitle ||
+            "Let the object owner know the breed of your pet"
+          }
         />
         <div className="flex flex-row gap-4 items-center">
           <Dropdown
             id="breed"
-            label="Pet breed"
-            placeholder="Choose breed"
+            label={translation.Breed.breedLabel || "Pet breed"}
+            placeholder={translation.Breed.breedPlaceholder || "Choose breed"}
             register={register}
             errors={errors}
             required
             options={breedOptions}
+            translate={translation}
             onChange={(value) => changeBreed(value)}
           />
-          <ExplanationInfo text="If the breed of your pet is not on the list, input it manually." />
+          <ExplanationInfo
+            text={
+              translation.Breed.breedExplanation ||
+              "If the breed of your pet is not on the list, input it manually."
+            }
+          />
         </div>
         {breed !== "" && (
           <Input
             id="breedDescription"
-            label="Breed Description"
+            label={translation.Breed.breedDescription || "Breed Description"}
             placeholder={breedDescriptionPlaceholder}
             register={register}
           />
@@ -470,8 +506,10 @@ const ReservationModal = () => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title={"Payment type"}
-          subtitle={"Choose wanted payment type"}
+          title={translation.Payment.title || "Payment type"}
+          subtitle={
+            translation.Payment.subtitle || "Choose wanted payment type"
+          }
         />
         <div className="grid grid-cols-1 w-1/2 self-center gap-3 max-h-[50vh] overflow-y-auto">
           {paymentOptions().map((item) => (
@@ -481,10 +519,16 @@ const ReservationModal = () => {
                   setCustomValue("paymentMethod", paymentMethod);
                 }}
                 selected={paymentMethod === item.label}
-                label={item.label}
+                label={
+                  translation.Payment?.paymentOptions?.[item.label] ||
+                  item.label
+                }
                 value={item.label}
                 icon={item.icon}
-                tooltip={item.description}
+                tooltip={
+                  translation.paymentDescription?.Payment?.[item.label] ||
+                  item.description
+                }
               />
             </div>
           ))}
@@ -538,8 +582,8 @@ const ReservationModal = () => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title={"Choose a reservation date"}
-          subtitle={"Choose a datefrom and to"}
+          title={translation.Date.title || "Choose a reservation date"}
+          subtitle={translation.Date.subtitle || "Choose a date from and to"}
         />
         <Calendar
           value={dateRange}
@@ -561,7 +605,7 @@ const ReservationModal = () => {
               key: value.selection.key,
             });
           }}
-          locale={"sr"}
+          locale={translation.locale || "sr"}
           customDayRenderer={customDayRenderer}
         />
         <ReservationInfoField
@@ -571,6 +615,7 @@ const ReservationModal = () => {
           typeId={typeId}
           onTotalPriceChange={handleTotalPriceChange}
           onSelectedDateChanged={handeSelectedDatesChange}
+          translation={translation.Date}
         />
       </div>
     );
@@ -580,21 +625,28 @@ const ReservationModal = () => {
     bodyContent = (
       <div className="flex flex-col gap-4">
         <Heading
-          title={"Reservation overview"}
-          subtitle={"Details about your reservation"}
+          title={translation.Overview.title || "Reservation overview"}
+          subtitle={
+            translation.Overview.subtitle || "Details about your reservation"
+          }
         />
+
         <TypeBreedView
-          breed={breed}
+          breed={translation.breed?.[breed] || breed}
           breedDescription={breedDescription}
-          typeName={type.name}
+          typeName={translation.Type?.[type.name] || type.name}
         />
-        <ReservationInfoPaymentView paymentMethod={paymentMethod} />
+        <ReservationInfoPaymentView
+          paymentMethod={paymentMethod}
+          translation={translation}
+        />
         <ReservationInfoFieldView
           dateFrom={dateRange?.startDate}
           dateTo={dateRange?.endDate}
           workDays={totalWorkDays}
           weekendDays={totalWeekendDays}
           totalPrice={totalPrice}
+          translation={translation.Date}
         />
       </div>
     );
@@ -611,7 +663,7 @@ const ReservationModal = () => {
         reservationModal.onClose();
       }}
       onSubmit={handleSubmit(onSubmit)}
-      title={"Reserve stay for pet"}
+      title={translation.title || "Reserve stay for pet"}
       actionLabel={actionLabel}
       secondaryActionLabel={secondartActionLabel}
       secondaryAction={

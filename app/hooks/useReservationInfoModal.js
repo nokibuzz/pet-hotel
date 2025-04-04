@@ -3,7 +3,6 @@ import { create } from "zustand";
 const useReservationInfoModal = create((set) => ({
   isOpen: false,
   reservation: null,
-  translation: {},
   step: 0,
   setStep: (step) => set(() => ({ step })),
   onNextStep: (step) => set({ step }),

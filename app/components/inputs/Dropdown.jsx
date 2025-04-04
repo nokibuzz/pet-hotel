@@ -14,6 +14,7 @@ const Dropdown = ({
   errors,
   required,
   defaultValue,
+  translate = {},
   isMulti = false,
 }) => {
   const [customOptions, setCustomOptions] = useState(options);
@@ -27,15 +28,20 @@ const Dropdown = ({
 
   const formattedOptions = customOptions.map((option) => ({
     value: isMulti ? option.value || option.label : option,
-    label: isMulti ? option.label : option,
+    label:
+      translate?.breed?.[isMulti ? option.label : option] ||
+      (isMulti ? option.label : option),
     isDisabled: option.isHeader || false,
   }));
 
   const getDefaultValue = (option) => {
     if (Array.isArray(option)) {
-      return option.map((opt) => ({ value: opt, label: opt }));
+      return option.map((opt) => ({
+        value: opt,
+        label: translate?.breed?.[opt] || opt,
+      }));
     }
-    return { value: option, label: option };
+    return { value: option, label: translate?.breed?.[option] || option };
   };
 
   const handleChange = (selectedOption) => {
@@ -80,7 +86,9 @@ const Dropdown = ({
         )}
         defaultValue={defaultValue ? getDefaultValue(defaultValue) : null}
         placeholder={placeholder || "Select..."}
-        formatCreateLabel={(inputValue) => `Dodaj opciju: "${inputValue}"`}
+        formatCreateLabel={(inputValue) =>
+          `${translate.addOption || "Dodaj opciju"}: "${inputValue}"`
+        }
         onChange={handleChange}
         onCreateOption={handleCreate}
         classNames={{

@@ -32,6 +32,14 @@ export default async function RootLayout({ children }) {
   const currentUser = await getCurrentUser();
 
   const translation = await getTranslations(currentUser?.locale, "common");
+  const reservationTranslation = await getTranslations(
+    currentUser?.locale,
+    "reservationModal"
+  );
+  const reservationInfoTranslation = await getTranslations(
+    currentUser?.locale,
+    "reservationInfoModal"
+  );
 
   return (
     <html lang="en">
@@ -41,8 +49,11 @@ export default async function RootLayout({ children }) {
             <ToasterProvider />
             <LoginModal />
             <RegisterModal />
-            <ReservationModal />
-            <ReservationInfoModal currentUser={currentUser} />
+            <ReservationModal translation={reservationTranslation} />
+            <ReservationInfoModal
+              currentUser={currentUser}
+              translation={reservationInfoTranslation}
+            />
             <RentModal currentUser={currentUser} />
             <SetNonWorkingDaysModal currentUser={currentUser} />
             <SearchModal currentUser={currentUser} />
