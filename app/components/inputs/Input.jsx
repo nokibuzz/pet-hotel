@@ -6,6 +6,7 @@ const Input = ({
   id,
   label,
   type,
+  defaultValue,
   disabled,
   formatPrice,
   placeholder,
@@ -29,6 +30,7 @@ const Input = ({
         {...register(id, { required })}
         placeholder={placeholder}
         type={type}
+        defaultValue={defaultValue}
         onFocus={() => setIsFocused(true)}
         onBlur={(e) => setIsFocused(e.target.value.length > 0)}
         className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed ${

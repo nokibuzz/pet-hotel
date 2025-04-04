@@ -12,6 +12,7 @@ const Logo = ({ currentUser }) => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const [isBreathing, setIsBreathing] = useState(false);
 
   const { selectedPet, setSelectedPet, pets, setPetChanged, fetchPetsForUser } =
     useGlobal();
@@ -21,6 +22,20 @@ const Logo = ({ currentUser }) => {
       fetchPetsForUser(currentUser.id);
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    // Function to trigger breathing effect every minute
+    const interval = setInterval(() => {
+      setIsBreathing(true);
+
+      // Stop the animation after 15s (5 repetitions of 3s)
+      setTimeout(() => {
+        setIsBreathing(false);
+      }, 15000);
+    }, 60000); // Restart every 60s
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
   const handlePetClick = () => {
     if (pets.length > 1) {
@@ -57,7 +72,9 @@ const Logo = ({ currentUser }) => {
       <Image
         onClick={() => returnToHome()}
         alt="Logo"
-        className="md:block cursor-pointer flex-shrink-0"
+        className={`md:block cursor-pointer flex-shrink-0 ${
+          isBreathing ? "animate-breathing" : ""
+        }`}
         height="48"
         width="48"
         src="/images/logo.png"

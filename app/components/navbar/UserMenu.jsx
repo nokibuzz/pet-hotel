@@ -31,10 +31,12 @@ const UserMenu = ({ currentUser, translation }) => {
 
   const handleLanguageChange = (locale) => {
     const id = currentUser?.id;
-    axios.put(`/api/user/${id}/${locale}`).then(() => {
-      closeMenu();
-      router.refresh();
-    });
+    if (currentUser?.locale !== locale) {
+      axios.put(`/api/user/${id}/${locale}`).then(() => {
+        closeMenu();
+        router.refresh();
+      });
+    }
   };
 
   useEffect(() => {
@@ -73,7 +75,12 @@ const UserMenu = ({ currentUser, translation }) => {
 
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[35vw] bg-white overflow-hidden right-0 top-12 text-sm user-menu-container">
-          {currentUser && <LanguageSelector onChange={handleLanguageChange} />}
+          {currentUser && (
+            <LanguageSelector
+              value={currentUser.locale}
+              onChange={handleLanguageChange}
+            />
+          )}
           <div className="flex flex-col cursor-pointer ">
             {currentUser ? (
               <>

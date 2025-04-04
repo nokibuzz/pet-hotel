@@ -16,7 +16,6 @@ export const SMALL_DOGS = "Small Dogs";
 export const MEDIUM_DOGS = "Medium Dogs";
 export const LARGE_DOGS = "Large Dogs";
 export const GIANT_DOGS = "Giant Dogs";
-export const BIG_DOGS = "Big Dogs";
 export const CATS = "Cats";
 // small dogs
 export const CHIHUAHUA = "Chihuahua";
@@ -298,6 +297,10 @@ export const PET_DESCRIPTIONS = {
   [KORAT]:
     "A rare breed from Thailand with a striking silver-blue coat and big green eyes.",
 };
+
+export const PAYMENT_OPTION_CASH = "Cash";
+export const PAYMENT_OPTION_CREDIT_CARD = "Credit Card";
+export const PAYMENT_OPTION_ACCOUNT_PAYMENT = "Account Payment";
 
 export const PAYMENT_OPTIONS = [
   {
