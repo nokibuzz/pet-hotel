@@ -11,7 +11,7 @@ const sendEmail = {
   async sendRegistrationVerificationMail(userEmail) {
     try {
       const token = uuidv4();
-      const verificationLink = `${process.env.NEXT_PUBLIC_URL}/api/verify-email?token=${token}`;
+      const verificationLink = `${process.env.NEXT_PUBLIC_URL}/verified-success?token=${token}`;
 
       console.log("Starting transaction: Updating user & sending email...");
 
