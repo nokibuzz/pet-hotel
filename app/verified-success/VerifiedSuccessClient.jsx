@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import Container from "../components/Container";
 import Link from "next/link";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const VerifiedSuccessClient = ({ currentUser, token, translation }) => {
+const VerifiedSuccessClient = ({ currentUser, translation }) => {
   const router = useRouter();
+  const params = useSearchParams();
   const [verified, setVerified] = useState(false);
 
   useEffect(() => {
     if (!currentUser?.verified) {
+      const token = params?.get("token");
       axios
         .get(`/api/verify-email?token=${token}`)
         .then(() => {
@@ -23,7 +25,7 @@ const VerifiedSuccessClient = ({ currentUser, token, translation }) => {
       router.push("/");
       setVerified(true);
     }
-  }, [verified, currentUser?.verified, token]);
+  }, [verified, currentUser?.verified]);
 
   if (!verified) {
     return (
