@@ -4,7 +4,7 @@ import { PAYMENT_OPTIONS } from "@/app/utils/PetConstants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
-const ReservationInfoPaymentView = ({ paymentMethod }) => {
+const ReservationInfoPaymentView = ({ paymentMethod, translation }) => {
   const [method, setMethod] = useState(null);
   useEffect(() => {
     const paymentM = PAYMENT_OPTIONS.find(
@@ -25,7 +25,9 @@ const ReservationInfoPaymentView = ({ paymentMethod }) => {
           />
         )}
         <div>
-          <p className="font-semibold text-gray-800">{method?.label}</p>
+          <p className="font-semibold text-gray-800">
+            {translation?.paymentOptions?.[method?.label] || method?.label}
+          </p>
         </div>
       </div>
 
@@ -33,7 +35,10 @@ const ReservationInfoPaymentView = ({ paymentMethod }) => {
 
       {/* Description */}
       <div className="text-center sm:text-right">
-        <p className="text-sm">{method?.description}</p>
+        <p className="text-sm">
+          {translation?.paymentDescription?.[method?.label] ||
+            method?.description}
+        </p>
       </div>
     </div>
   );

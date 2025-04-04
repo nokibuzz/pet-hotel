@@ -13,6 +13,7 @@ const ReservationInfoField = ({
   onSelectedDateChanged,
   showDates = true,
   showPricing = true,
+  translation = {},
 }) => {
   const [totalPrice, setTotalPrice] = useState(0);
 
@@ -75,24 +76,26 @@ const ReservationInfoField = ({
         <>
           {/* Date Range */}
           <div className="text-center sm:text-left">
-            <p className="text-sm text-gray-500">From</p>
+            <p className="text-sm text-gray-500">
+              {translation.from || "From"}
+            </p>
             <p className="font-semibold text-gray-800">{formattedDateFrom}</p>
           </div>
           <div className="text-center sm:text-right">
-            <p className="text-sm text-gray-500">To</p>
+            <p className="text-sm text-gray-500">{translation.to || "To"}</p>
             <p className="font-semibold text-gray-800">{formattedDateTo}</p>
           </div>
 
           {/* Days Count */}
           <div className="text-center sm:text-right mt-2 sm:mt-0">
             <p className="text-sm text-gray-500">
-              Workdays:{" "}
+              {translation.workdays || "Workdays: "}
               <span className="font-semibold text-gray-800">
                 {workDays} × ${defaultPrice}
               </span>
             </p>
             <p className="text-sm text-gray-500">
-              Weekends:{" "}
+              {translation.weekends || "Weekends: "}
               <span className="font-semibold text-gray-800">
                 {weekendDays} × ${weekendPrice}
               </span>
@@ -106,7 +109,7 @@ const ReservationInfoField = ({
           {/* Total Price */}
           <div className="text-center sm:text-right mt-2 sm:mt-0">
             <p className="text-lg font-semibold text-green-600">
-              Total: ${totalPrice}
+              {translation.total || "Total: "} {totalPrice} RSD
             </p>
           </div>
         </>

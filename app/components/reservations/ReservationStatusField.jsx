@@ -1,6 +1,6 @@
 "use client";
 
-const ReservationStatusField = ({ status }) => {
+const ReservationStatusField = ({ status, translate = {} }) => {
   const bgColor =
     {
       approved: "bg-green-500",
@@ -14,7 +14,9 @@ const ReservationStatusField = ({ status }) => {
         ${bgColor}
       `}
     >
-      <span className="text-white">{status.toUpperCase()}</span>
+      <span className="text-white">
+        {translate?.[status] || status.toUpperCase()}
+      </span>
     </div>
   );
 };

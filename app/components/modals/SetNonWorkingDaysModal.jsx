@@ -8,10 +8,10 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import useSetNonWorkingDaysModal from "@/app/hooks/useSetNonWorkingDaysModal";
 import ScrollableItemsSection from "../profile/ScrollableItemsSection";
-import { petTypes } from "../PetTypes";
 import ClickInput from "../inputs/ClickInput";
 import { format, formatISO } from "date-fns";
 import CalendarDataTable from "../inputs/CalendarDataTable";
+import { PET_TYPES } from "@/app/utils/PetConstants";
 
 const STEPS = Object.freeze({
   OBJECTS: 0,
@@ -268,21 +268,19 @@ const SetNonWorkingDaysModal = ({ currentUser }) => {
           subtitle={translations.pickTypeSubtitle}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-          {petTypes
-            .filter((petType) =>
-              types?.some((type) => type.name === petType.label)
-            )
-            .map((item) => (
-              <div key={item.label} className="col-span-1">
-                <ClickInput
-                  onClick={(type) => onTypeSelect(type)}
-                  selected={type === item.label}
-                  label={item.label}
-                  value={item.label}
-                  icon={item.icon}
-                />
-              </div>
-            ))}
+          {PET_TYPES.filter((petType) =>
+            types?.some((type) => type.name === petType.label)
+          ).map((item) => (
+            <div key={item.label} className="col-span-1">
+              <ClickInput
+                onClick={(type) => onTypeSelect(type)}
+                selected={type === item.label}
+                label={item.label}
+                value={item.label}
+                icon={item.icon}
+              />
+            </div>
+          ))}
         </div>
       </div>
     );
