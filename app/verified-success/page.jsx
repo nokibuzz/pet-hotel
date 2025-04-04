@@ -6,8 +6,7 @@ import getCurrentUser from "../actions/getCurrentUser";
 import { getTranslations } from "../utils/getTranslations";
 import VerifiedSuccessClient from "./VerifiedSuccessClient";
 
-const VerifiedSuccess = async ({ params }) => {
-  const { token } = await params;
+const VerifiedSuccess = async () => {
   const currentUser = await getCurrentUser();
   const translation = await getTranslations(
     currentUser?.locale,
@@ -18,7 +17,6 @@ const VerifiedSuccess = async ({ params }) => {
     <ClientOnly>
       <VerifiedSuccessClient
         currentUser={currentUser}
-        token={token}
         translation={translation}
       />
     </ClientOnly>
