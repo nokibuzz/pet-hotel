@@ -59,7 +59,7 @@ const sendEmail = {
     }
   },
   /**
-   * Send a approve registration email to a user.
+   * Send a approve reservation email to a user.
    * @param {string} userEmail - The recipient's email.
    * @param {string} title - The name of the reservated listing.
    * @param {int} totalPrice - The price user needs to pay for booking.
@@ -120,7 +120,7 @@ const sendEmail = {
     }
   },
   /**
-   * Send a approve registration email to a user.
+   * Send a reject reservation email to a user.
    * @param {string} userEmail - The recipient's email.
    * @param {string} title - The name of the reservated listing.
    * @param {string} image - The image url of the booked listing.
@@ -173,6 +173,63 @@ const sendEmail = {
     } catch (error) {
       console.error("Error sending rejected reservation email:", error);
       throw new Error("Failed to send rejected reservation email");
+    }
+  },
+  /**
+   * Send a made reservation email to a hotel owner.
+   * @param {string} userEmail - The recipient's email.
+   * @param {string} title - The name of the reservated listing.
+   * @param {string} reserveeName - The name of the user who reserved stay.
+   * @param {string} reserveeEmail - The email of the user who reserved stay.
+   * @param {string} breed - Breed of the pet.
+   * @param {int} totalPrice - The price user needs to pay for booking.
+   * @param {date} startDate - Start date of the reservation.
+   * @param {date} endDate - End date of the reservation.
+   * @returns {Promise} - Axios POST request to send the email.
+   */
+  async sendReservationMade(
+    userEmail,
+    title,
+    reserveeName,
+    reserveeEmail,
+    breed,
+    totalPrice,
+    startDate,
+    endDate
+  ) {
+    try {
+      await axios.post("/api/send-email", {
+        sender: `"FurLand - Reservation requested at your object " <no-reply@furlandapp.com>`,
+        to: userEmail,
+        subject: `Reservation at ${title} has been requested`,
+        text: ` `,
+        html: `<div style="font-family: Arial, sans-serif; text-align: center; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #333;">Reservation Requested</h2>
+                <h3 style="color: #4e89ff; margin-bottom: 5px;">${reserveeName}</h3>
+                <h3 style="color: #5e99ff; margin-bottom: 5px;">${reserveeEmail}</h3>
+                 <p style="margin: 0; font-size: 16px; color: #444;">
+                  Reservation by ${reserveeName} (${reserveeEmail}) has been requested for the ${breed} for the following period:
+                  <br />
+                  <strong>Check-in:</strong> ${startDate}<br/>
+                  <strong>Check-out:</strong> ${endDate}
+                </p>
+                <div style="margin-top: 20px; font-size: 16px; color: #333;">
+                  ${`💸 Total price: <strong>${totalPrice} RSD</strong>`}
+                </div>
+                <div style="background-color: #f1f1f1; padding: 15px; text-align: center; font-size: 12px; color: #999;">
+                  This is an automated message. Please do not reply.
+                </div>
+              </div>
+            `,
+      });
+
+      return NextResponse.json(
+        { message: "Sent mail for approved reservation successfully!" },
+        { status: 200 }
+      );
+    } catch (error) {
+      console.error("Error sending approved reservation email:", error);
+      throw new Error("Failed to send approved reservation email");
     }
   },
 };

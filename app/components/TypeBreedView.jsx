@@ -2,8 +2,14 @@
 
 import { PET_BREEDS, PET_DESCRIPTIONS } from "../utils/PetConstants";
 
-const TypeBreedView = ({ typeName, breed, breedDescription }) => {
-  const icon = PET_BREEDS[typeName]?.icon || "";
+const TypeBreedView = ({
+  originalTypeName,
+  typeName,
+  breed,
+  breedDescription,
+  additionalInfo = null,
+}) => {
+  const icon = PET_BREEDS[originalTypeName]?.icon || "";
   const description = breedDescription || PET_DESCRIPTIONS[breed] || "-";
 
   return (
@@ -23,6 +29,16 @@ const TypeBreedView = ({ typeName, breed, breedDescription }) => {
       <div className="text-center sm:text-right">
         <p className="text-sm">{description}</p>
       </div>
+
+      {/* Additional Info */}
+      {additionalInfo && (
+        <>
+          <hr className="w-full" />
+          <div className="text-center sm:text-right">
+            <p className="text-sm">{additionalInfo}</p>
+          </div>
+        </>
+      )}
     </div>
   );
 };

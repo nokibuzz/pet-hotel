@@ -26,6 +26,7 @@ import { faOtter } from "@fortawesome/free-solid-svg-icons";
 import ReservationInfoPaymentView from "../reservations/ReservationInfoPaymentView";
 import TypeBreedView from "../TypeBreedView";
 import PetInfoView from "../pets/PetInfoView";
+import sendEmail from "@/app/utils/sendEmail";
 
 const STEPS = Object.freeze({
   PET: 0,
@@ -37,7 +38,7 @@ const STEPS = Object.freeze({
   OVERVIEW: 6,
 });
 
-const ReservationModal = ({ translation }) => {
+const ReservationModal = ({ currentUser, translation }) => {
   const router = useRouter();
   const reservationModal = useReservationModal();
   const searchParams = useSearchParams();
@@ -271,8 +272,17 @@ const ReservationModal = ({ translation }) => {
         toast.success(
           translation.success?.reserved || "Successfully reserved pet stay!"
         );
+        sendEmail.sendReservationMade(
+          reservationModal.listing?.user?.email,
+          reservationModal.listing?.title,
+          currentUser?.name,
+          currentUser?.email,
+          breed,
+          totalPrice,
+          new Date(dateRange.startDate).toLocaleDateString("sr-RS"),
+          new Date(dateRange.endDate).toLocaleDateString("sr-RS")
+        );
         router.refresh();
-        // Resetting form, from react-form-hook library
         setCustomTypeId("");
         setDateRange(initialDateRange);
         reset();
@@ -374,6 +384,7 @@ const ReservationModal = ({ translation }) => {
         />
         <PetInfoView pet={pet} />
         <TypeBreedView
+          originalTypeName={type.name}
           breed={translation.breed?.[breed] || breed}
           breedDescription={
             pet.description ||
@@ -632,6 +643,7 @@ const ReservationModal = ({ translation }) => {
         />
 
         <TypeBreedView
+          originalTypeName={type.name}
           breed={translation.breed?.[breed] || breed}
           breedDescription={breedDescription}
           typeName={translation.Type?.[type.name] || type.name}

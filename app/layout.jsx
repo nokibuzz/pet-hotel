@@ -18,6 +18,7 @@ import ReservationModal from "./components/modals/ReservationModal";
 import ReservationInfoModal from "./components/modals/ReservationInfoModal";
 import SetNonWorkingDaysModal from "./components/modals/SetNonWorkingDaysModal";
 import { GlobalProvider } from "./hooks/GlobalContext";
+import PetViewModal from "./components/modals/PetViewModal";
 
 const font = Nunito({
   subsets: ["latin", "cyrillic"],
@@ -40,6 +41,10 @@ export default async function RootLayout({ children }) {
     currentUser?.locale,
     "reservationInfoModal"
   );
+  const petViewTranslation = await getTranslations(
+    currentUser?.locale,
+    "petViewModal"
+  );
 
   return (
     <html lang="en">
@@ -49,7 +54,10 @@ export default async function RootLayout({ children }) {
             <ToasterProvider />
             <LoginModal />
             <RegisterModal />
-            <ReservationModal translation={reservationTranslation} />
+            <ReservationModal
+              currentUser={currentUser}
+              translation={reservationTranslation}
+            />
             <ReservationInfoModal
               currentUser={currentUser}
               translation={reservationInfoTranslation}
@@ -62,6 +70,7 @@ export default async function RootLayout({ children }) {
             <ReviewModal currentUser={currentUser} />
             <ChangePasswordModal />
             <UploadImageModal />
+            <PetViewModal translation={petViewTranslation} />
             <Navbar currentUser={currentUser} translation={translation} />
           </ClientOnly>
           <div className="pb-20 pt-28">{children}</div>
