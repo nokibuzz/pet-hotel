@@ -228,6 +228,7 @@ const ReservationInfoModal = ({ currentUser, translation }) => {
           translate={translation?.Overview?.UserInfoView}
         />
         <TypeBreedView
+          originalTypeName={reservationInfoModal?.reservation?.type?.name}
           typeName={
             translation.Type?.[reservationInfoModal?.reservation?.type?.name] ||
             reservationInfoModal?.reservation?.type?.name

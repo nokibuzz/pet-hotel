@@ -34,11 +34,8 @@ const PetsClient = ({ pets, translation }) => {
               return (
                 <PetCard
                   key={pet.id}
-                  name={pet.name}
-                  breed={pet.breed}
-                  years={pet.age}
-                  imageSrc={pet.imageSrc?.[0]}
-                  translation={translation.PetsClient.PetCard}
+                  pet={pet}
+                  translation={translation?.breed}
                 />
               );
             })}
