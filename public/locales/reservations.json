@@ -4,7 +4,8 @@
       "title": "Unauthorized",
       "subtitle": "Login to proceed!",
       "reservationTitle": "No reservations found",
-      "reservationSubtitle": "Looks like you didn't reserve any pet care!"
+      "userSubtitle": "Looks like you didn't reserve any pet care!",
+      "ownerSubtitle": "Looks like you don't have any reservations for your accomodations"
     },
     "ReservationsClient": {
       "editListing": "Edit Listing",
@@ -26,7 +27,8 @@
       "title": "Niste prijavljeni!",
       "subtitle": "Prijavite se da biste nastavili korišćenje aplikacije!",
       "reservationTitle": "Nema rezervacija",
-      "reservationSubtitle": "Izgleda da još uvek niste koristili smeštaj za Vašeg ljubimca!"
+      "userSubtitle": "Izgleda da još uvek niste koristili smeštaj za Vašeg ljubimca",
+      "ownerSubtitle": "Izgleda da još uvek nemate rezervacije za Vaš smeštaj"
     },
     "ReservationsClient": {
       "editListing": "Izmeni smeštaj",

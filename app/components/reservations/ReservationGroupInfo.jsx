@@ -2,8 +2,12 @@
 
 import { useState } from "react";
 import ReservationRow from "./ReservationRow";
+import { FaPlus } from "react-icons/fa";
+import useReservationModal from "@/app/hooks/useReservationModal";
 
 const ReservationGroupInfo = ({ reservations, currentUser, translation }) => {
+  const reservationModal = useReservationModal();
+
   const groupedReservations = reservations.reduce((acc, reservation) => {
     const listingId = reservation.type.listing.id;
     if (!acc[listingId]) {
@@ -27,6 +31,10 @@ const ReservationGroupInfo = ({ reservations, currentUser, translation }) => {
     }));
   };
 
+  const openModal = (listing) => {
+    reservationModal.onOpen(listing, [], true);
+  };
+
   return (
     <div className="mt-10  space-y-4">
       {Object.entries(groupedReservations).map(([listingId, ress]) => {
@@ -35,13 +43,21 @@ const ReservationGroupInfo = ({ reservations, currentUser, translation }) => {
             key={listingId}
             className="border border-gray-300 rounded-lg p-2"
           >
-            <button
-              onClick={() => toggleOpen(listingId)}
-              className="w-full flex justify-between items-center font-semibold p-2 bg-gray-100 hover:bg-gray-200 rounded-md"
-            >
-              <span>{ress[0].type.listing.title}</span>
-              <span>Num of reservations: {ress.length}</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => toggleOpen(listingId)}
+                className="flex-1 flex justify-between items-center font-semibold p-2 bg-gray-100 hover:bg-gray-200 rounded-md"
+              >
+                <span>{ress[0].type.listing.title}</span>
+                <span>Num of reservations: {ress.length}</span>
+              </button>
+              
+              <button 
+              className="p-2 rounded-md bg-gray-200 hover:bg-gray-300"
+              onClick={() => openModal(ress[0].type.listing)}>
+                <FaPlus className="text-gray-600" />
+              </button>
+            </div>
             {openStates[listingId] && (
               <div className="mt-2 space-y-2">
                 {ress.map((reservation) => (
