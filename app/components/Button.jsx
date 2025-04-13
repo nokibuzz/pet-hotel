@@ -1,6 +1,6 @@
 "use client";
 
-const Button = ({ label, onClick, disabled, outline, small, icon: Icon }) => {
+const Button = ({ label, onClick, disabled, outline, small, icon: Icon, nowrap }) => {
   return (
     <button
       onClick={onClick}
@@ -19,6 +19,7 @@ const Button = ({ label, onClick, disabled, outline, small, icon: Icon }) => {
           ? "hover:bg-amber-700 hover:border-white hover:text-white"
           : "hover:opacity-80"
       }
+      ${nowrap ? "min-w-max px-3" : ""}
     `}
     >
       {Icon && <Icon size={24} className="absolute left-4 top-3" />}

@@ -3,6 +3,7 @@
     "locale": "en",
     "addOption": "Add option",
     "title": "Reserve stay for pet",
+    "blockingTitle": "Enter external reservation",
     "Pet": {
       "title": "Select your pet",
       "subtitle": "...or insert custom values",
@@ -14,6 +15,7 @@
     },
     "Type": {
       "title": "Choose type of your pet",
+      "blockingTitle": "Choose type of pet",
       "subtitle": "Pick one",
       "allPets": "All Pets",
       "Small Dogs": "Small Dogs",
@@ -207,6 +209,7 @@
     "locale": "sr",
     "addOption": "Dodaj opciju",
     "title": "Rezerviši boravak za svog ljubimca",
+    "blockingTitle": "Unesite eksternu rezervaciju",
     "Pet": {
       "title": "Izaberi svog ljubimca",
       "subtitle": "...ili unesi popuni podatke iz početka",
@@ -218,6 +221,7 @@
     },
     "Type": {
       "title": "Izaberi tip svog ljubimca",
+      "blockingTitle": "Izaberi tip ljubimca",
       "subtitle": "Izaberi jedan",
       "allPets": "Svi ljubimci",
       "Small Dogs": "Mali psi",

@@ -2,7 +2,7 @@ import { prisma } from "@/app/libs/prismadb";
 
 export default async function getReservations(params) {
   try {
-    const { typeId, userId, authorId, reservationId } = await params;
+    const { typeId, userId, authorId, reservationId, includeTypes } = await params;
 
     const query = {};
 
@@ -26,21 +26,66 @@ export default async function getReservations(params) {
       query.id = reservationId;
     }
 
-    const reservations = await prisma.reservation.findMany({
-      include: {
-        type: {
-          include: {
-            listing: true, // Fetch the listing associated with the type,
-            // TODO: finetune, to return only needed values
+    let reservations;
+
+    if (includeTypes) {
+      reservations = await prisma.reservation.findMany({
+        include: {
+          type: true,
+          user: true,
+        },
+        where: query,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const listingIds = [...new Set(reservations.map(res => res.type.listingId))];
+
+      const listings = await prisma.listing.findMany({
+        where: {
+          id: {
+            in: listingIds,
           },
         },
-        user: true,
-      },
-      where: query,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        include: {
+          user: true,
+          types: true,
+        },
+      });
+      
+      const listingMap = new Map();
+
+      listings.forEach(listing => {
+        listingMap.set(listing.id, listing);
+      });
+
+      const enrichedReservations = reservations.map(reservation => ({
+        ...reservation,
+        type: {
+          ...reservation.type,
+          listing: listingMap.get(reservation.type.listingId),
+        },
+      }));
+
+      reservations = enrichedReservations;
+    }
+    else {
+      reservations = await prisma.reservation.findMany({
+        include: {
+          type: {
+            include: {
+              listing: true
+            },
+          },
+          user: true,
+        },
+        where: query,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    }
 
     const safeReservations = reservations.map((reservation) => ({
       ...reservation,
