@@ -24,7 +24,10 @@ export async function POST(request) {
     breed,
     breedDescription,
     paymentMethod,
+    usedForBlocking
   } = body;
+
+  let payment = !usedForBlocking ? paymentMethod : 'Cash';
 
   if (
     !typeId ||
@@ -33,7 +36,7 @@ export async function POST(request) {
     !totalPrice ||
     !typeName ||
     !breed ||
-    !paymentMethod
+    !payment
   ) {
     return NextResponse.error();
   }
@@ -69,8 +72,8 @@ export async function POST(request) {
         totalPrice,
         breed,
         breedDescription,
-        paymentMethod,
-        status: "pending",
+        paymentMethod: payment,
+        status: !usedForBlocking ? "pending" : "approved",
       };
 
       console.log("reservationData", JSON.stringify(reservationData));

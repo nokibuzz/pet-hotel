@@ -43,7 +43,7 @@ const ReservationModal = ({ currentUser, translation }) => {
   const reservationModal = useReservationModal();
   const searchParams = useSearchParams();
 
-  const [step, setStep] = useState(STEPS.PET);
+  const [step, setStep] = useState(!reservationModal.usedForBlocking ? STEPS.PET : STEPS.TYPE);
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -223,30 +223,59 @@ const ReservationModal = ({ currentUser, translation }) => {
   };
 
   const onBack = () => {
-    if (step === STEPS.TYPE) {
-      setStep(STEPS.PET);
+    if (!reservationModal.usedForBlocking) {
+      if (step === STEPS.TYPE) {
+        setStep(STEPS.PET);
+      }
+      setStep((value) => value - 1);
+    } 
+    else {
+      if (step == STEPS.BREED) {
+        setStep(STEPS.PET);
+      }
+      if (step == STEPS.DATE) {
+        setStep(STEPS.BREED);
+      }
+      if (step == STEPS.TYPE) {
+        setStep(STEPS.BREED);
+      }
+      if (step == STEPS.OVERVIEW) {
+        setStep(STEPS.DATE);
+      }
     }
-    setStep((value) => value - 1);
   };
 
   const onNext = () => {
-    if (step === STEPS.PET && typeId === "") {
-      setStep(STEPS.TYPE);
-      return;
-    }
-    if (step === STEPS.PET_OVERVIEW) {
-      setStep(STEPS.DATE);
-      return;
-    }
-    if (step === STEPS.TYPE && typeId === "") {
-      toast.error(
-        translation.error?.petTypeShouldBeSelected ||
-          "Pet type should be selected!"
-      );
-      return;
-    }
+    if (!reservationModal.usedForBlocking) {
+      if (step === STEPS.PET && typeId === "") {
+        setStep(STEPS.TYPE);
+        return;
+      }
+      if (step === STEPS.PET_OVERVIEW) {
+        setStep(STEPS.DATE);
+        return;
+      }
+      if (step === STEPS.TYPE && typeId === "") {
+        toast.error(
+          translation.error?.petTypeShouldBeSelected ||
+            "Pet type should be selected!"
+        );
+        return;
+      }
 
-    setStep((value) => value + 1);
+      setStep((value) => value + 1);
+
+    } else {
+      if (step == STEPS.PET) {
+        setStep(STEPS.BREED);
+      }
+      if (step == STEPS.BREED) {
+        setStep(STEPS.DATE);
+      }
+      if (step == STEPS.DATE) {
+        setStep(STEPS.OVERVIEW);
+      }
+    }
   };
 
   const onSubmit = (data) => {
@@ -267,6 +296,7 @@ const ReservationModal = ({ currentUser, translation }) => {
         breedDescription: breedDescription === "" ? null : breedDescription,
         paymentMethod,
         petId: pet?.id,
+        usedForBlocking: reservationModal.usedForBlocking
       })
       .then(() => {
         toast.success(
@@ -341,36 +371,83 @@ const ReservationModal = ({ currentUser, translation }) => {
     }
   };
 
-  let bodyContent = (
-    <div className="flex flex-col gap-8">
-      <Heading
-        title={translation.Pet?.title || "Select your pet"}
-        subtitle={translation.Pet?.subtitle || "...or insert custom values"}
-      />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-        {reservationModal.pets?.map((item) => (
-          <div key={item.id} className="col-span-1">
-            <ClickInput
-              onClick={(pet) => {
-                setCustomPet(pet);
-              }}
-              selected={pet?.name === item.name}
-              label={item.name}
-              value={item}
-              image={item.imageSrc?.[0]}
-            />
-          </div>
-        ))}
-        <ClickInput
-          onClick={() => setCustomPet(null)}
-          selected={pet === null}
-          label={translation.Pet?.insertManually || "Insert manually"}
-          value={null}
-          image="/images/pet-custom.png"
+  const setTypeContent = () => {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title={!reservationModal.usedForBlocking ? translation.Type.title : translation.Type.blockingTitle}
+          subtitle={translation.Type?.subtitle || "Pick one"}
         />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
+          {filteredPetTypes.length === 0 && (
+            <ClickInput
+              onClick={() => setAllPetTypes()}
+              selected={type?.name === ALL_PET_CATEGORIES}
+              label={translation.Type?.allPets || "All Pets"}
+              value={ALL_PET_CATEGORIES}
+              icon={faOtter}
+            />
+          )}
+          {filteredPetTypes.length > 0 &&
+            filteredPetTypes.map((item) => (
+              <div key={item.label} className="col-span-1">
+                <ClickInput
+                  onClick={(type) => {
+                    setCustomTypeId(type);
+                  }}
+                  selected={type?.name === item.label}
+                  label={translation.Type?.[item.label] || item.label}
+                  value={item.label}
+                  icon={item.icon}
+                  tooltip={
+                    translation.Type?.description?.[item.label] ||
+                    item.description
+                  }
+                />
+              </div>
+            ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  let bodyContent;
+
+  if (!reservationModal.usedForBlocking) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title={translation.Pet?.title || "Select your pet"}
+          subtitle={translation.Pet?.subtitle || "...or insert custom values"}
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
+          {reservationModal.pets?.map((item) => (
+            <div key={item.id} className="col-span-1">
+              <ClickInput
+                onClick={(pet) => {
+                  setCustomPet(pet);
+                }}
+                selected={pet?.name === item.name}
+                label={item.name}
+                value={item}
+                image={item.imageSrc?.[0]}
+              />
+            </div>
+          ))}
+          <ClickInput
+            onClick={() => setCustomPet(null)}
+            selected={pet === null}
+            label={translation.Pet?.insertManually || "Insert manually"}
+            value={null}
+            image="/images/pet-custom.png"
+          />
+        </div>
+      </div>
+    );
+  } 
+  else {
+    setTypeContent();
+  }
 
   if (step === STEPS.PET_OVERVIEW) {
     bodyContent = (
@@ -417,43 +494,7 @@ const ReservationModal = ({ currentUser, translation }) => {
   };
 
   if (step === STEPS.TYPE) {
-    bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title={translation.Type?.title || "Choose type of your pet"}
-          subtitle={translation.Type?.subtitle || "Pick one"}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-          {filteredPetTypes.length === 0 && (
-            <ClickInput
-              onClick={() => setAllPetTypes()}
-              selected={type?.name === ALL_PET_CATEGORIES}
-              label={translation.Type?.allPets || "All Pets"}
-              value={ALL_PET_CATEGORIES}
-              icon={faOtter}
-            />
-          )}
-          {filteredPetTypes.length > 0 &&
-            filteredPetTypes.map((item) => (
-              <div key={item.label} className="col-span-1">
-                <ClickInput
-                  onClick={(type) => {
-                    setCustomTypeId(type);
-                  }}
-                  selected={type?.name === item.label}
-                  label={translation.Type?.[item.label] || item.label}
-                  value={item.label}
-                  icon={item.icon}
-                  tooltip={
-                    translation.Type?.description?.[item.label] ||
-                    item.description
-                  }
-                />
-              </div>
-            ))}
-        </div>
-      </div>
-    );
+    setTypeContent();
   }
 
   const changeBreed = (value) => {
@@ -642,16 +683,20 @@ const ReservationModal = ({ currentUser, translation }) => {
           }
         />
 
-        <TypeBreedView
-          originalTypeName={type.name}
-          breed={translation.breed?.[breed] || breed}
-          breedDescription={breedDescription}
-          typeName={translation.Type?.[type.name] || type.name}
-        />
-        <ReservationInfoPaymentView
-          paymentMethod={paymentMethod}
-          translation={translation}
-        />
+        {!reservationModal?.usedForBlocking && (
+          <>
+            <TypeBreedView
+              originalTypeName={type.name}
+              breed={translation.breed?.[breed] || breed}
+              breedDescription={breedDescription}
+              typeName={translation.Type?.[type.name] || type.name}
+            />
+            <ReservationInfoPaymentView
+              paymentMethod={paymentMethod}
+              translation={translation}
+            />
+          </>
+        )}
         <ReservationInfoFieldView
           dateFrom={dateRange?.startDate}
           dateTo={dateRange?.endDate}
@@ -662,6 +707,10 @@ const ReservationModal = ({ currentUser, translation }) => {
         />
       </div>
     );
+  }
+
+  const getTitle = () => {
+    return !reservationModal.usedForBlocking ? translation.title : translation.blockingTitle
   }
 
   return (
@@ -675,7 +724,7 @@ const ReservationModal = ({ currentUser, translation }) => {
         reservationModal.onClose();
       }}
       onSubmit={handleSubmit(onSubmit)}
-      title={translation.title || "Reserve stay for pet"}
+      title={getTitle()}
       actionLabel={actionLabel}
       secondaryActionLabel={secondartActionLabel}
       secondaryAction={

@@ -32,10 +32,12 @@ const ListReservationsPage = async () => {
   if (currentUser.hotelOwner) {
     reservations = await getReservations({
       authorId: currentUser.id,
+      includeTypes: true
     });
   } else {
     reservations = await getReservations({
       userId: currentUser.id,
+      includeTypes: true
     });
   }
 
@@ -44,7 +46,7 @@ const ListReservationsPage = async () => {
       <ClientOnly>
         <EmptyState
           title={translation.EmptyState.reservationTitle}
-          subtitle={translation.EmptyState.listingSubtitle}
+          subtitle={currentUser.hotelOwner ? translation.EmptyState.ownerSubtitle : translation.EmptyState.userSubtitle}
         />
       </ClientOnly>
     );
