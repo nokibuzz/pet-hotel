@@ -25,9 +25,7 @@ const ListingHead = ({
           <>
             {currentUser?.id === listing?.userId && (
               <div
-                onClick={() =>
-                  rentModal.onOpen(translation?.RentModal, listing, true)
-                }
+                onClick={() => rentModal.onOpen(listing, true)}
                 className="flex w-[70%] ml-auto justify-center text-sm font-semibold py-3 px-4 mx-1 outline outline-1 rounded-full hover:bg-neutral-100 text-amber-600 transition cursor-pointer"
               >
                 {translation.editListing || "Edit Listing"}

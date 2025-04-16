@@ -2,7 +2,7 @@
 
 import useRentModal from "@/app/hooks/useRentModal";
 import Modal from "./Modal";
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Heading from "../Heading";
 import { options } from "../navbar/BasicFilters";
 import {
@@ -41,13 +41,15 @@ const STEPS = Object.freeze({
 
 const MAX_IMAGES_FOR_RENT = 10;
 
-const RentModal = ({ currentUser }) => {
+const RentModal = ({ currentUser, translation }) => {
   const router = useRouter();
   const rentModal = useRentModal();
 
   const [step, setStep] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState(false);
   const [localImageSrc, setLocalImageSrc] = useState([]);
+  const [petTypesSupported, setPetTypesSupported] = useState([]);
+  const [haveBlockedBreeds, setHaveBlockedBreeds] = useState(false);
 
   const hours = Array.from({ length: 24 }, (_, index) =>
     index < 10 ? `0${index}:00` : `${index}:00`
@@ -125,10 +127,32 @@ const RentModal = ({ currentUser }) => {
   const onNext = () => {
     if (step === STEPS.CATEGORY && category === "") {
       toast.error(
-        rentModal.translation?.errorCategoryNotSelected ||
+        translation?.error?.categoryNotSelected ||
           "Category should be selected!"
       );
       return;
+    }
+    if (step === STEPS.PET_TYPES && petTypesSupported.length === 0) {
+      toast.error(
+        translation?.error?.petTypeNotSelected || "Pet type should be selected"
+      );
+      return;
+    }
+    if (step === STEPS.PRICE) {
+      for (let pts of petTypesSupported) {
+        if (
+          pts["defaultPrice"] === undefined ||
+          pts["defaultPrice"] === 0 ||
+          pts["weekendPrice"] === undefined ||
+          pts["weekendPrice"] === 0
+        ) {
+          toast.error(
+            translation?.error?.priceTagNotAdded ||
+              "Need to insert valid price tag"
+          );
+          return;
+        }
+      }
     }
     if (
       step === STEPS.LOCATION &&
@@ -136,7 +160,7 @@ const RentModal = ({ currentUser }) => {
       locationLatitude === ""
     ) {
       toast.error(
-        rentModal.translation?.errorLocationNotSelected ||
+        translation?.error?.locationNotSelected ||
           "Location should be selected!"
       );
       return;
@@ -150,7 +174,7 @@ const RentModal = ({ currentUser }) => {
         ) === 0
       ) {
         toast.error(
-          rentModal.translation?.errorCapacityNotSelected ||
+          translation?.error?.capacityNotSelected ||
             "Capacity should be entered!"
         );
         return;
@@ -166,7 +190,7 @@ const RentModal = ({ currentUser }) => {
       localImageSrc.length === 0
     ) {
       toast.error(
-        rentModal.translation?.errorNoImagesToUpload || "No images to upload!"
+        translation?.error?.noImagesToUpload || "No images to upload!"
       );
       return;
     }
@@ -190,7 +214,9 @@ const RentModal = ({ currentUser }) => {
         );
 
         if (!uploadResponse.ok) {
-          throw new Error("Image upload failed");
+          throw new Error(
+            translation?.error?.imageUploadFailed || "Image upload failed"
+          );
         }
 
         const data = await uploadResponse.json();
@@ -199,14 +225,13 @@ const RentModal = ({ currentUser }) => {
 
       setCustomValue("imageSrc", uploaded);
       toast.success(
-        rentModal.translation?.imagesUploadedSuccessfully ||
+        translation?.imagesUploadedSuccessfully ||
           "All images uploaded successfully!"
       );
     } catch (error) {
       console.error(error);
       toast.error(
-        rentModal.translation?.errorImagesNotUploaded ||
-          "Error uploading images!"
+        translation?.error?.imagesNotUploaded || "Error uploading images!"
       );
     }
   };
@@ -259,8 +284,7 @@ const RentModal = ({ currentUser }) => {
         .put("/api/listing", updatedData)
         .then(() => {
           toast.success(
-            rentModal.translation?.successfullyUpdated ||
-              "Successfully updated!"
+            translation?.successfullyUpdated || "Successfully updated!"
           );
           router.refresh();
           // Resetting form, from react-form-hook library
@@ -269,7 +293,7 @@ const RentModal = ({ currentUser }) => {
           rentModal.onClose();
         })
         .catch(() =>
-          toast.error(rentModal.translation?.error || "Something went wrong!")
+          toast.error(translation?.error?.error || "Something went wrong!")
         )
         .finally(() => setIsLoading(false));
     } else {
@@ -277,8 +301,7 @@ const RentModal = ({ currentUser }) => {
         .post("/api/listing", data)
         .then(() => {
           toast.success(
-            rentModal.translation?.successfullyCreated ||
-              "Successfully created!"
+            translation?.successfullyCreated || "Successfully created!"
           );
           router.refresh();
           // reseting form, from react-form-hook library
@@ -287,7 +310,7 @@ const RentModal = ({ currentUser }) => {
           rentModal.onClose();
         })
         .catch(() =>
-          toast.error(rentModal.translation?.error || "Something went wrong!")
+          toast.error(translation?.error?.error || "Something went wrong!")
         )
         .finally(() => setIsLoading(false));
     }
@@ -296,11 +319,11 @@ const RentModal = ({ currentUser }) => {
   const actionLabel = useMemo(() => {
     if (step === STEPS.HOUSE_RULES) {
       return rentModal.isEdit
-        ? rentModal.translation?.submitUpdate || "Update"
-        : rentModal.translation?.submitCreate || "Create";
+        ? translation?.submitUpdate || "Update"
+        : translation?.submitCreate || "Create";
     }
 
-    return rentModal.translation?.next || "Next";
+    return translation?.next || "Next";
   }, [step]);
 
   const secondartActionLabel = useMemo(() => {
@@ -308,7 +331,7 @@ const RentModal = ({ currentUser }) => {
       return undefined;
     }
 
-    return rentModal.translation?.back || "Back";
+    return translation?.back || "Back";
   }, [step]);
 
   // for edit modal, prepopulate values
@@ -386,10 +409,10 @@ const RentModal = ({ currentUser }) => {
     <div className="flex flex-col gap-8">
       <Heading
         title={
-          rentModal.translation?.categoryTitle ||
+          translation?.categoryTitle ||
           "Which of these best describe you pet care?"
         }
-        subtitle={rentModal.translation?.categorySubtitle || "Pick one"}
+        subtitle={translation?.categorySubtitle || "Pick one"}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
         {options.map((item) => (
@@ -399,7 +422,7 @@ const RentModal = ({ currentUser }) => {
                 setCustomValue("category", category);
               }}
               selected={category === item.label}
-              label={rentModal.translation?.[item.label] || item.label}
+              label={translation?.[item.label] || item.label}
               value={item.label}
               icon={item.icon}
             />
@@ -424,13 +447,8 @@ const RentModal = ({ currentUser }) => {
 
     bodyContent = (
       <MapSelect
-        title={
-          rentModal.translation?.locationTitle ||
-          "Where is your pet house located?"
-        }
-        subtitle={
-          rentModal.translation?.locationSubtitle || "Help dog lovers find you"
-        }
+        title={translation?.locationTitle || "Where is your pet house located?"}
+        subtitle={translation?.locationSubtitle || "Help dog lovers find you"}
         defaultCoordinates={defaultCoordinates}
         onSelect={(location) => onLocationSelect(location)}
       />
@@ -456,8 +474,6 @@ const RentModal = ({ currentUser }) => {
     );
     setCustomValue("totalPlaces", totalPlaces);
   };
-
-  const [petTypesSupported, setPetTypesSupported] = useState([]);
 
   const updatePetTypes = (typeName) => {
     setPetTypesSupported((prevSelected) => {
@@ -514,8 +530,6 @@ const RentModal = ({ currentUser }) => {
     );
   }
 
-  const [haveBlockedBreeds, setHaveBlockedBreeds] = useState(false);
-
   const formattedBreedOptions = petTypesSupported.some(
     (petType) => petType.name === ALL_PET_CATEGORIES
   )
@@ -539,21 +553,24 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title={rentModal.translation?.blockedBreedsTitle || "Blocked breeds"}
+          title={translation?.blockedBreedsTitle || "Blocked breeds"}
           subtitle={
-            rentModal.translation?.blockedBreedsSubtitle ||
+            translation?.blockedBreedsSubtitle ||
             "Are there any breeds you don't want to pet?"
           }
         />
         <div className="flex flex-row gap-4">
           <Toggle
-            label={
-              rentModal.translation?.blockBreedsToggle || "Block some breeds"
-            }
+            label={translation?.blockBreedsToggle || "Block some breeds"}
             value={haveBlockedBreeds}
             onChange={(value) => setHaveBlockedBreeds(value)}
           />
-          <ExplanationInfo text="Blocked pets is specific breeds in the previously selected categorise you don't want to take care of in your hotel!" />
+          <ExplanationInfo
+            text={
+              translation?.blockBreedsExplanation ||
+              "Blocked pets is specific breeds in the previously selected categorise you don't want to take care of in your hotel!"
+            }
+          />
         </div>
         {haveBlockedBreeds && (
           <>
@@ -561,12 +578,17 @@ const RentModal = ({ currentUser }) => {
             <div className="flex flex-row gap-4 w-full">
               <Dropdown
                 id="blockedBreeds"
-                label="Select breeds"
-                multiSelectedLabel="Selected breeds"
-                placeholder="Choose breeds..."
+                label={translation?.breedLabel || "Pet breed"}
+                placeholder={
+                  translation?.breedPlaceholder || "Choose breeds..."
+                }
+                multiSelectedLabel={
+                  translation?.breedSelected || "Selected breeds"
+                }
                 options={formattedBreedOptions}
                 onChange={(value) => setCustomValue("blockedBreeds", value)}
                 isMulti={true}
+                translate={translation}
                 register={register}
                 errors={errors}
               />
@@ -581,11 +603,9 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title={
-            rentModal.translation?.capacityTitle || "What are your capacity"
-          }
+          title={translation?.capacityTitle || "What are your capacity"}
           subtitle={
-            rentModal.translation?.capacitySubtitle ||
+            translation?.capacitySubtitle ||
             "How many pets can you take care of"
           }
         />
@@ -595,8 +615,8 @@ const RentModal = ({ currentUser }) => {
             {petTypesSupported.map((type, index) => (
               <div key={index} className="flex items-center gap-4">
                 <InputWithSeparateLabel
-                  title={type.name}
-                  subtitle="Pets of type"
+                  title={translation?.Type?.[type.name] || type.name}
+                  subtitle={translation?.Type?.subtitle || "Pets of type"}
                   value={type.capacity}
                   onChange={(e) =>
                     handleTypeChange(index, "capacity", e.target.value)
@@ -614,12 +634,9 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-4">
         <Heading
-          title={
-            rentModal.translation?.imagesTitle ||
-            "Add photos of your home/hotel"
-          }
+          title={translation?.imagesTitle || "Add photos of your home/hotel"}
           subtitle={
-            rentModal.translation?.imagesSubtitle ||
+            translation?.imagesSubtitle ||
             "Let owners know how your pet care looks like"
           }
         />
@@ -627,7 +644,7 @@ const RentModal = ({ currentUser }) => {
           value={imageSrc}
           onChange={(value) => setLocalImageSrc(value)}
           maxImages={MAX_IMAGES_FOR_RENT}
-          translation={rentModal.translation?.ImageUpload}
+          translation={translation?.ImageUpload}
         />
       </div>
     );
@@ -637,17 +654,15 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title={
-            rentModal.translation?.descriptionTitle || "Describe your object"
-          }
+          title={translation?.descriptionTitle || "Describe your object"}
           subtitle={
-            rentModal.translation?.descriptionSubtitle ||
+            translation?.descriptionSubtitle ||
             "Simple explanation works the best"
           }
         />
         <Input
           id="title"
-          label={rentModal.translation?.descriptionInputTitle || "Title"}
+          label={translation?.descriptionInputTitle || "Title"}
           disabled={isLoading}
           register={register}
           errors={errors}
@@ -656,9 +671,7 @@ const RentModal = ({ currentUser }) => {
         <hr />
         <TextArea
           id="description"
-          label={
-            rentModal.translation?.descriptionInputDescription || "Description"
-          }
+          label={translation?.descriptionInputDescription || "Description"}
           defaultNumberOfRows={5}
           disabled={isLoading}
           register={register}
@@ -674,9 +687,9 @@ const RentModal = ({ currentUser }) => {
       <div className="flex flex-col gap-4">
         <div className="mb-2">
           <Heading
-            title={rentModal.translation?.houseRulesTitle || "House rules"}
+            title={translation?.houseRulesTitle || "House rules"}
             subtitle={
-              rentModal.translation?.houseRulesSubtitle ||
+              translation?.houseRulesSubtitle ||
               "House rules are a set of guidelines or regulations that outline expected behaviors, responsibilities, and standards within a specific property or environment to ensure a respectful, safe, and harmonious experience for all occupants or visitors."
             }
           />
@@ -729,30 +742,26 @@ const RentModal = ({ currentUser }) => {
               <Toggle
                 id="hasCancelation"
                 label={
-                  rentModal.translation?.houseRulesCancelationPolicy ||
+                  translation?.houseRulesCancelationPolicy ||
                   "Has cancelation policy"
                 }
                 value={hasCancelation}
                 onChange={(value) => setCustomValue("hasCancelation", value)}
                 errors={errors}
                 explanation={
-                  rentModal.translation
-                    ?.houseRulesCancelationPolicyExplanation ||
+                  translation?.houseRulesCancelationPolicyExplanation ||
                   "Your object give option to user to cancel reservation."
                 }
               />
               <div className="h-10 w-px bg-gray-300" />
               <Toggle
                 id="allowBooking"
-                label={
-                  rentModal.translation?.houseRulesAllowBooking ||
-                  "Allow booking"
-                }
+                label={translation?.houseRulesAllowBooking || "Allow booking"}
                 value={allowBooking}
                 onChange={(value) => setCustomValue("allowBooking", value)}
                 errors={errors}
                 explanation={
-                  rentModal.translation?.houseRulesAllowBookingExplanation ||
+                  translation?.houseRulesAllowBookingExplanation ||
                   "Your object is ready to receive reservations."
                 }
               />
@@ -764,41 +773,36 @@ const RentModal = ({ currentUser }) => {
         <div className="flex flex-col items-center gap-4 w-full">
           <Toggle
             id="paymentMethodsCards"
-            label={
-              rentModal.translation?.houseRulesAcceptCards || "Accept cards"
-            }
+            label={translation?.houseRulesAcceptCards || "Accept cards"}
             value={paymentMethodsCards}
             onChange={(value) => setCustomValue("paymentMethodsCards", value)}
             errors={errors}
             explanation={
-              rentModal.translation?.houseRulesAcceptCardsExplanation ||
+              translation?.houseRulesAcceptCardsExplanation ||
               "You give user an option of paying you via VISA/Master/American Express or other type of cards."
             }
           />
           <div className="w-full h-px bg-gray-100" />
           <Toggle
             id="paymentMethodsCash"
-            label={rentModal.translation?.houseRulesAcceptCash || "Accept cash"}
+            label={translation?.houseRulesAcceptCash || "Accept cash"}
             value={paymentMethodsCash}
             onChange={(value) => setCustomValue("paymentMethodsCash", value)}
             errors={errors}
             explanation={
-              rentModal.translation?.houseRulesAcceptCashExplanation ||
+              translation?.houseRulesAcceptCashExplanation ||
               "You give user an option of paying by cash on site."
             }
           />
           <div className="w-full h-px bg-gray-100" />
           <Toggle
             id="paymentMethodsAccount"
-            label={
-              rentModal.translation?.houseRulesAccountPayment ||
-              "Account Payment"
-            }
+            label={translation?.houseRulesAccountPayment || "Account Payment"}
             value={paymentMethodsAccount}
             onChange={(value) => setCustomValue("paymentMethodsAccount", value)}
             errors={errors}
             explanation={
-              rentModal.translation?.houseRulesAccountPaymentExplanation ||
+              translation?.houseRulesAccountPaymentExplanation ||
               "You give user an option of paying to the your account."
             }
           />
@@ -811,18 +815,16 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-4">
         <Heading
-          title={
-            rentModal.translation?.additionalOptionsTitle || "Addional options"
-          }
+          title={translation?.additionalOptionsTitle || "Addional options"}
           subtitle={
-            rentModal.translation?.additionalOptionsSubtitle ||
+            translation?.additionalOptionsSubtitle ||
             "Extra customizable services or amenities for pets, such as grooming, feeding, and extended care, enhancing the overall experience and comfort during stay."
           }
         />
         <Toggle
           id="hasFood"
           label={
-            rentModal.translation?.additionalOptionsHasFood ||
+            translation?.additionalOptionsHasFood ||
             "Has food option (alergies)"
           }
           value={hasFood}
@@ -832,10 +834,7 @@ const RentModal = ({ currentUser }) => {
         <hr />
         <Toggle
           id="hasGrooming"
-          label={
-            rentModal.translation?.additionalOptionsHasGrooming ||
-            "Has grooming"
-          }
+          label={translation?.additionalOptionsHasGrooming || "Has grooming"}
           value={hasGrooming}
           onChange={(value) => setCustomValue("hasGrooming", value)}
           errors={errors}
@@ -844,8 +843,7 @@ const RentModal = ({ currentUser }) => {
         <Toggle
           id="hasVet"
           label={
-            rentModal.translation?.additionalOptionsHasVeterinarian ||
-            "Has veterinarian"
+            translation?.additionalOptionsHasVeterinarian || "Has veterinarian"
           }
           value={hasVet}
           onChange={(value) => setCustomValue("hasVet", value)}
@@ -855,10 +853,7 @@ const RentModal = ({ currentUser }) => {
         <div className="flex flex-row gap-4">
           <TextArea
             id="addionalInformation"
-            label={
-              rentModal.translation?.additionalOptionsInfo ||
-              "Addional information"
-            }
+            label={translation?.additionalOptionsInfo || "Addional information"}
             defaultNumberOfRows={2}
             disabled={isLoading}
             register={register}
@@ -894,10 +889,9 @@ const RentModal = ({ currentUser }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title={rentModal.translation?.priceTitle || "Price"}
+          title={translation?.priceTitle || "Price"}
           subtitle={
-            rentModal.translation?.priceSubtitle ||
-            "How much would it cost per night?"
+            translation?.priceSubtitle || "How much would it cost per night?"
           }
         />
         {/* If NOT using Advanced Options, show basic Week/Weekend Price */}
@@ -905,7 +899,7 @@ const RentModal = ({ currentUser }) => {
           <>
             <CustomInput
               id="weekPrice"
-              label={rentModal.translation?.weekPriceInput || "Week Price"}
+              label={translation?.weekPriceInput || "Week Price"}
               formatPrice
               type="number"
               disabled={isLoading}
@@ -915,9 +909,7 @@ const RentModal = ({ currentUser }) => {
             />
             <CustomInput
               id="weekendPrice"
-              label={
-                rentModal.translation?.weekendPriceInput || "Weekend Price"
-              }
+              label={translation?.weekendPriceInput || "Weekend Price"}
               formatPrice
               type="number"
               disabled={isLoading}
@@ -935,11 +927,17 @@ const RentModal = ({ currentUser }) => {
                 className="flex flex-col gap-4 border p-4 rounded-md"
               >
                 <h3 className="text-lg font-semibold">
-                  {type.name || `Type ${index + 1}`}
+                  {translation?.Type?.[type.name] ||
+                    type.name ||
+                    `Type ${index + 1}`}
                 </h3>
                 <CustomInput
                   id={`price-${type.name || index}-week`}
-                  label={`Week Price (${type.name || `Type ${index + 1}`})`}
+                  label={`${translation?.weekPrice || "Week Price"} (${
+                    translation?.Type?.[type.name] ||
+                    type.name ||
+                    `Type ${index + 1}`
+                  })`}
                   formatPrice
                   type="number"
                   value={getPriceByName(type.name, "defaultPrice")}
@@ -950,7 +948,11 @@ const RentModal = ({ currentUser }) => {
                 />
                 <CustomInput
                   id={`price-${type.name || index}-weekend`}
-                  label={`Weekend Price (${type.name || `Type ${index + 1}`})`}
+                  label={`${translation?.weekendPrice || "Weekend Price"} (${
+                    translation?.Type?.[type.name] ||
+                    type.name ||
+                    `Type ${index + 1}`
+                  })`}
                   formatPrice
                   type="number"
                   value={getPriceByName(type.name, "weekendPrice")}
@@ -978,8 +980,8 @@ const RentModal = ({ currentUser }) => {
       onSubmit={handleSubmit(onSubmit)}
       title={
         rentModal.isEdit
-          ? rentModal.translation?.edit || "Edit property"
-          : rentModal.translation?.submit || "Add property"
+          ? translation?.edit || "Edit property"
+          : translation?.submit || "Add property"
       }
       actionLabel={actionLabel}
       secondaryActionLabel={secondartActionLabel}
