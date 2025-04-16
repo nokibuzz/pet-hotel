@@ -491,7 +491,13 @@ const RentModal = ({ currentUser, translation }) => {
   if (step === STEPS.PET_TYPES) {
     bodyContent = (
       <div className="flex flex-col gap-8">
-        <Heading title={"Choose type of your pet?"} subtitle={"Pick one"} />
+        <Heading
+          title={
+            translation?.petTypesTitle ||
+            "Choose type of pets your object supports"
+          }
+          subtitle={translation?.petTypesSubtitle || "Pick one or more..."}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
           <div className="col-span-1">
             <ClickInput
@@ -504,7 +510,7 @@ const RentModal = ({ currentUser, translation }) => {
                 petTypesSupported.length === 1 &&
                 petTypesSupported[0]?.name === ALL_PET_CATEGORIES
               }
-              label="All Pets"
+              label={translation?.Type?.allPets || "All Pets"}
               value={ALL_PET_CATEGORIES}
               icon={faOtter}
             />
@@ -518,10 +524,13 @@ const RentModal = ({ currentUser, translation }) => {
                 selected={petTypesSupported.some(
                   (selectedItem) => selectedItem.name === item.label
                 )}
-                label={item.label}
+                label={translation?.Type?.[item.label] || item.label}
                 value={item.label}
                 icon={item.icon}
-                tooltip={item.description}
+                tooltip={
+                  translation?.Type?.description?.[item.label] ||
+                  item.description
+                }
               />
             </div>
           ))}
@@ -534,13 +543,21 @@ const RentModal = ({ currentUser, translation }) => {
     (petType) => petType.name === ALL_PET_CATEGORIES
   )
     ? Object.entries(PET_BREEDS).flatMap(([header, data]) => [
-        { label: header, isHeader: true, value: header }, // Non-clickable header
+        {
+          label: translation?.Type?.[header] || header,
+          isHeader: true,
+          value: header,
+        }, // Non-clickable header
         ...data.breeds.map((breed) => ({ value: breed, label: breed })), // Clickable breeds
       ])
     : petTypesSupported.flatMap((petType) =>
         PET_BREEDS[petType.name] // Normalize keys
           ? [
-              { label: petType.name, isHeader: true, value: petType.name },
+              {
+                label: translation?.Type?.[petType.name] || petType.name,
+                isHeader: true,
+                value: petType.name,
+              },
               ...PET_BREEDS[petType.name].breeds.map((breed) => ({
                 value: breed,
                 label: breed,
@@ -616,7 +633,6 @@ const RentModal = ({ currentUser, translation }) => {
               <div key={index} className="flex items-center gap-4">
                 <InputWithSeparateLabel
                   title={translation?.Type?.[type.name] || type.name}
-                  subtitle={translation?.Type?.subtitle || "Pets of type"}
                   value={type.capacity}
                   onChange={(e) =>
                     handleTypeChange(index, "capacity", e.target.value)

@@ -7,8 +7,11 @@
     "Petgarten": "Petgarden",
     "locationTitle": "Where is your pet house located?",
     "locationSubtitle": "Help dog lovers find you",
+    "petTypesTitle": "Choose type of pets your object supports",
+    "petTypesSubtitle": "Pick one or more...",
     "blockedBreedsTitle": "Blocked breeds",
     "blockedBreedsSubtitle": "Are there any breeds you don't want to pet?",
+    "blockBreedsToggle": "Block some breeds",
     "blockBreedsExplanation": "Blocked pets is specific breeds in the previously selected categorise you don't want to take care of in your hotel!",
     "breedLabel": "Pet breed",
     "breedPlaceholder": "Choose breeds...",
@@ -84,7 +87,14 @@
       "Medium Dogs": "Medium Dogs",
       "Large Dogs": "Large Dogs",
       "Giant Dogs": "Giant Dogs",
-      "Cats": "Cats"
+      "Cats": "Cats",
+      "description": {
+        "Small Dogs": "Dogs (up to 10 kgs). Compact, lively, and great for apartments or small homes.",
+        "Medium Dogs": "Dogs (10-25 kgs). Balanced mix of energy and adaptability, great companions for both families and active owners.",
+        "Large Dogs": "Dogs (25-50 kgs). Strong and athletic, requiring exercise and space. Excel in companionship, work and protection.",
+        "Giant Dogs": "Dogs (50+ kgs). Massive yet gentle, often serving as protectors or rescue dogs. They need space and care.",
+        "Cats": "Cats. Small, cozy and friendly partners."
+      }
     },
     "breed": {
       "Chihuahua": "Chihuahua",
@@ -158,8 +168,11 @@
     "Petgarten": "Obdanište",
     "locationTitle": "Gde se nalazi Vaš smeštaj za ljubimce?",
     "locationSubtitle": "Pomozite vlasnicima da pronađu Vaš smeštaj",
+    "petTypesTitle": "Izaberite tipove ljubimaca kojima nudite smeštaj",
+    "petTypesSubtitle": "Izaberite jednu ili više kategorija...",
     "blockedBreedsTitle": "Rase koje ne čuvate!",
     "blockedBreedsSubtitle": "Da li postoje neke rase pasa koje ne čuvate?",
+    "blockBreedsToggle": "Blokirajte neke rase pasa",
     "blockBreedsExplanation": "Blokirani kućni ljubimci su odredjene rase iz prethodno izabrane kategorije koje ne želite u svom smeštaju!",
     "breedLabel": "Rasa ljubimca",
     "breedPlaceholder": "Izaberi rasu ljubimaca...",
@@ -235,7 +248,14 @@
       "Medium Dogs": "Srednji psi",
       "Large Dogs": "Veliki psi",
       "Giant Dogs": "Džinovski psi",
-      "Cats": "Mačke"
+      "Cats": "Mačke",
+      "description": {
+        "Small Dogs": "Psi (do 10 kg). Kompaktni, živahni i odlični za stanove ili manje kuće.",
+        "Medium Dogs": "Psi (10-25 kg). Izbalansiran spoj energije i prilagodljivosti, odlični saputnici za porodice i aktivne vlasnike.",
+        "Large Dogs": "Psi (25-50 kg). Snažni i atletski, zahtevaju prostor i vežbanje. Odlični za druženje, rad i zaštitu.",
+        "Giant Dogs": "Psi (preko 50 kg). Masivni, ali nežni, često služe kao čuvari ili spasilački psi. Potrebno im je mnogo prostora i nege.",
+        "Cats": "Mačke. Male, nežne i prijatne životinje."
+      }
     },
     "breed": {
       "Chihuahua": "Čivava",
