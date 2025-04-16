@@ -241,7 +241,7 @@
       "title": "Rasa ljubimca",
       "subtitle": "Obavesti vlasnika objekta o rasi svog ljubimca",
       "breedLabel": "Rasa ljubimca",
-      "breedPlaceholder": "Izaberi rasu",
+      "breedPlaceholder": "Izaberi rasu ljubimca",
       "breedExplanation": "Ako rasa tvog ljubimca nije na listi, unesi je ručno.",
       "breedDescription": "Opis rase"
     },
