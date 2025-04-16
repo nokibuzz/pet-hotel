@@ -45,6 +45,10 @@ export default async function RootLayout({ children }) {
     currentUser?.locale,
     "petViewModal"
   );
+  const rentModalTranslation = await getTranslations(
+    currentUser?.locale,
+    "rentModal"
+  );
 
   return (
     <html lang="en">
@@ -62,7 +66,10 @@ export default async function RootLayout({ children }) {
               currentUser={currentUser}
               translation={reservationInfoTranslation}
             />
-            <RentModal currentUser={currentUser} />
+            <RentModal
+              currentUser={currentUser}
+              translation={rentModalTranslation}
+            />
             <SetNonWorkingDaysModal currentUser={currentUser} />
             <SearchModal currentUser={currentUser} />
             <AdvancedFiltersModal currentUser={currentUser} />

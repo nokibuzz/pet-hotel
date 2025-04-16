@@ -27,11 +27,14 @@ const ProfileContent = ({
   };
 
   const onRent = useCallback(() => {
-    rentModal.onOpen(translation.RentModal);
+    rentModal.onOpen();
   }, [currentUser, rentModal, translation]);
 
   const onSetNonWorkingDays = useCallback(() => {
-    setNonWorkingDaysModal.onOpen(properties, translation.SetNonWorkingDaysModal);
+    setNonWorkingDaysModal.onOpen(
+      properties,
+      translation.SetNonWorkingDaysModal
+    );
   }, [currentUser, setNonWorkingDaysModal, translation]);
 
   return (
