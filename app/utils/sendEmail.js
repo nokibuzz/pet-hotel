@@ -244,7 +244,7 @@ const sendEmail = {
       const responses = await Promise.all([
         await axios.post("/api/send-email", {
           sender: `"Listing verification for ${title} " <no-reply@furlandapp.com>`,
-          to: userEmail,
+          to: "pet.hotel.official@gmail.com",
           subject: `${title} requires verification`,
           text: `Can you please review and verify ${title} listing with id: ${listingId}.`,
         }),
