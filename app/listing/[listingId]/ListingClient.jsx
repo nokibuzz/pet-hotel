@@ -35,6 +35,7 @@ const ListingClient = ({
             currentUser={currentUser}
             listing={listing}
             translation={translation.ListingClient}
+            verified={listing.verified}
           />
           <div className="grid grid-cols-1 lg:grid-cols-7 lg:gap-10 mt-10">
             {/* Left Content */}

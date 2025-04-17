@@ -4,6 +4,7 @@ import Heading from "../Heading";
 import HeartButton from "../HeartButton";
 import useRentModal from "@/app/hooks/useRentModal";
 import ImageGallery from "../gallery/ImageGallery";
+import VerifiedBanner from "../VerifiedBanner";
 
 const ListingHead = ({
   id,
@@ -13,6 +14,7 @@ const ListingHead = ({
   currentUser,
   listing,
   translation,
+  verified = false,
 }) => {
   const rentModal = useRentModal();
 
@@ -34,6 +36,7 @@ const ListingHead = ({
           </>
         }
       />
+      {verified && <VerifiedBanner translation={translation} />}
       <div className="w-full h-[60vh] overflow-hidden rounded-xl relative">
         <ImageGallery images={imageSrc} />
         {listing &&

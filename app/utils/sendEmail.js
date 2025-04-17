@@ -232,6 +232,33 @@ const sendEmail = {
       throw new Error("Failed to send approved reservation email");
     }
   },
+  /**
+   * Send a request verification of listing to the admin.
+   * @param {string} title - The name of the listing.
+   * @param {uuidv4} listingId - Id of the listing to be verified.
+   * @returns {Promise} - Axios POST request to send the email.
+   */
+  async sendRequestListingVerification(title, listingId) {
+    try {
+      // Transaction logic
+      const responses = await Promise.all([
+        await axios.post("/api/send-email", {
+          sender: `"Listing verification for ${title} " <no-reply@furlandapp.com>`,
+          to: userEmail,
+          subject: `${title} requires verification`,
+          text: `Can you please review and verify ${title} listing with id: ${listingId}.`,
+        }),
+      ]);
+
+      return NextResponse.json(
+        { message: "Sent request verification email successfully!" },
+        { status: 200 }
+      );
+    } catch (error) {
+      console.error("Error sending request verification email:", error);
+      throw new Error("Failed to send request verification email");
+    }
+  },
 };
 
 export default sendEmail;
