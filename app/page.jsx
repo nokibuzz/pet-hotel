@@ -25,6 +25,12 @@ const Home = async ({ searchParams }) => {
   if (listingTypes.length === 0) {
     return (
       <ClientOnly>
+        {
+        currentUser?.isNewUser && 
+        (
+          <AddionalRegistrationModal translations={translation.AddionalRegistrationModal}/>
+        )
+      }
         <EmptyState
           title={translation.EmptyState.title}
           subtitle={translation.EmptyState.subtitle}

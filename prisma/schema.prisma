@@ -89,7 +89,6 @@ model Listing {
     hasVet                Boolean
     addionalInformation   String?
     blockedBreeds         String[]
-    location              Json // Storing location as JSONB or JSON in PostgreSQL
     capacityType          CapacityType   @default(TOTAL) // TOTAL or ADVANCED
     totalPlaces           Int?
     types                 Type[]

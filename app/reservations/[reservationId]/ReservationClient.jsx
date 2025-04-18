@@ -62,7 +62,7 @@ const ReservationClient = ({ reservation, currentUser, translation }) => {
               category={category}
               description={listing.description}
               guestCount={listing.guestCount}
-              location={listing.location.coordinates}
+              location={listing.location}
               houseRules={{
                 checkInTime: listing.checkInTime,
                 checkOutTime: listing.checkOutTime,

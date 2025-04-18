@@ -77,7 +77,7 @@ const ListingClient = ({
                   user={listing.user}
                   category={category}
                   description={listing.description}
-                  location={listing.location.coordinates}
+                  location={listing.location}
                   houseRules={{
                     checkInTime: listing.checkInTime,
                     checkOutTime: listing.checkOutTime,

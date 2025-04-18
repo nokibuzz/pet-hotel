@@ -440,10 +440,17 @@ const RentModal = ({ currentUser, translation }) => {
   };
 
   if (step === STEPS.LOCATION) {
-    const defaultCoordinates = currentUser?.defaultLocation ?? {
-      latitude: locationLatitude,
-      longitude: locationLongitude,
-    };
+    let defaultCoordinates = {
+      latitude: 44.7866,
+      longitude: 20.4489,
+    }; 
+
+    if (rentModal.listing) {
+      defaultCoordinates = {
+        latitude: rentModal.listing.location[1],
+        longitude: rentModal.listing.location[0],
+      };
+    }
 
     bodyContent = (
       <MapSelect

@@ -18,6 +18,16 @@ export default async function getListingById(params) {
       return null;
     }
 
+    const location = await prisma.$queryRaw`
+      SELECT 
+      public.ST_X(location::public.geometry) as lng,
+      public.ST_Y(location::public.geometry) as lat
+      FROM "Listing"
+      WHERE id = ${listingId}
+    `;
+
+    listing.location = location.length > 0 ? [location[0].lng, location[0].lat] : null; 
+
     return {
       ...listing,
       createdAt: listing.createdAt.toISOString(),
