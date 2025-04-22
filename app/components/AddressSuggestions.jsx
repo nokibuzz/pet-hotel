@@ -2,11 +2,11 @@
 
 import React from "react";
 
-const AddressSuggestions = ({ suggestions, onSelect }) => {
+const AddressSuggestions = ({ suggestions, onSelect, className = "" }) => {
   if (suggestions.length === 0) return null;
 
   return (
-    <ul className="border rounded-md mt-2 bg-white shadow-md max-h-60 overflow-y-auto">
+    <ul className={`border rounded-md mt-2 bg-white shadow-md max-h-60 overflow-y-auto ${className}`}>
       {suggestions.map((suggestion, index) => (
         <li
           key={index}
