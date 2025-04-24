@@ -1,4 +1,4 @@
-SET search_path = "\$user", public, extensions, dev;
+SET search_path = "\$user", public, extensions, dev, prod;
 CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA dev;
 CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA prod;
 
