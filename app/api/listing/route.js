@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import { randomUUID } from 'crypto';
 
 export async function POST(request) {
   const currentUser = await getCurrentUser();
@@ -36,41 +37,34 @@ export async function POST(request) {
     blockedBreeds,
   } = body;
 
-  const location = {
-    type: "Point",
-    coordinates: [locationLongitude, locationLatitude],
-  };
+  const newId = randomUUID();
 
   return await prisma.$transaction(
     async (prisma) => {
-      const listing = await prisma.listing.create({
-        data: {
-          title,
-          description,
-          imageSrc,
-          category,
-          totalPlaces: parseInt(totalPlaces),
-          price: 10, // for now, delete in the future and see how to calculate
-          totalPlaces: parseInt(totalPlaces),
-          price: 10, // for now, delete in the future and see how to calculate
-          userId: currentUser.id,
-          checkInTime,
-          checkOutTime,
-          hasCancelation,
-          allowBooking,
-          paymentMethodsCards,
-          paymentMethodsCash,
-          paymentMethodsAccount,
-          hasFood,
-          hasGrooming,
-          hasVet,
-          addionalInformation,
-          location,
-          addressLabel,
-          capacityType, // Store CapacityType (TOTAL or ADVANCED)
-          blockedBreeds,
-        },
-      });
+      await prisma.$queryRaw`
+        INSERT INTO "Listing" (
+          "id", "title", "description", "imageSrc", "category",
+          "totalPlaces", "price", "userId", "checkInTime",
+          "checkOutTime", "hasCancelation", "allowBooking",
+          "paymentMethodsCards", "paymentMethodsCash", "paymentMethodsAccount",
+          "hasFood", "hasGrooming", "hasVet", "addionalInformation",
+          "addressLabel", "capacityType", "blockedBreeds", "location"
+        ) VALUES (
+          ${newId}, ${title}, ${description}, ${imageSrc}, ${category},
+          ${parseInt(totalPlaces)}, 10, ${currentUser.id}, ${checkInTime},
+          ${checkOutTime}, ${hasCancelation}, ${allowBooking},
+          ${paymentMethodsCards}, ${paymentMethodsCash}, ${paymentMethodsAccount},
+          ${hasFood}, ${hasGrooming}, ${hasVet}, ${addionalInformation},
+          ${addressLabel}, ${capacityType}::"CapacityType", ${blockedBreeds},
+          public.ST_SetSRID(
+            public.ST_Point(
+              ${locationLongitude}::double precision,
+              ${locationLatitude}::double precision
+            ),
+            4326
+          )
+        )
+      `;
 
       console.log("Created listing " + title);
 
@@ -78,7 +72,7 @@ export async function POST(request) {
         console.log("Creating type: " + JSON.stringify(type));
         await prisma.type.create({
           data: {
-            listingId: listing.id,
+            listingId: newId,
             name: type.name,
             capacity: type.capacity,
             defaultPrice: type.defaultPrice,
@@ -87,7 +81,7 @@ export async function POST(request) {
         });
       }
 
-      return NextResponse.json(listing);
+      return NextResponse.json(newId);
     },
     {
       timeout: 10000, // 10 seconds timeout (default is 5s)
@@ -125,8 +119,6 @@ export async function PUT(request) {
     locationLatitude,
     addressLabel,
     capacityType,
-    types,
-    pricing,
   } = body;
 
   if (!id) {
@@ -136,43 +128,42 @@ export async function PUT(request) {
     );
   }
 
-  const location =
-    locationLongitude && locationLatitude
-      ? {
-          type: "Point",
-          coordinates: [locationLongitude, locationLatitude],
-        }
-      : undefined;
-
   try {
-    const updatedListing = await prisma.listing.update({
-      where: { id },
-      data: {
-        title,
-        description,
-        imageSrc,
-        category,
-        totalPlaces,
-        checkInTime,
-        checkOutTime,
-        hasCancelation,
-        allowBooking,
-        paymentMethodsCards,
-        paymentMethodsCash,
-        paymentMethodsAccount,
-        hasFood,
-        hasGrooming,
-        hasVet,
-        addionalInformation,
-        location,
-        addressLabel,
-        capacityType,
-        totalPlaces,
-      },
-    });
+    await prisma.$queryRaw`
+      UPDATE dev."Listing"
+      SET
+        "title" = ${title},
+        "description" = ${description},
+        "imageSrc" = ${imageSrc},
+        "category" = ${category},
+        "totalPlaces" =${parseInt(totalPlaces)},
+        "checkInTime" = ${checkInTime},
+        "checkOutTime" = ${checkOutTime},
+        "hasCancelation" = ${hasCancelation},
+        "allowBooking" = ${allowBooking},
+        "paymentMethodsCards" = ${paymentMethodsCards},
+        "paymentMethodsCash" = ${paymentMethodsCash},
+        "paymentMethodsAccount" = ${paymentMethodsAccount},
+        "hasFood" = ${hasFood},
+        "hasGrooming" = ${hasGrooming},
+        "hasVet" = ${hasVet},
+        "addionalInformation" = ${addionalInformation},
+        "location" = public.ST_SetSRID(
+            public.ST_Point(
+              ${locationLongitude}::double precision,
+              ${locationLatitude}::double precision
+            ),
+            4326
+          ),
+        "addressLabel" = ${addressLabel},
+        "capacityType" = ${capacityType}::"CapacityType"
+      WHERE
+        "id" = ${id}
+    `;
 
-    return NextResponse.json(updatedListing);
+    return NextResponse.json(id);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

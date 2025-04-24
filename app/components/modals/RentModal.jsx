@@ -433,17 +433,29 @@ const RentModal = ({ currentUser, translation }) => {
   );
 
   const onLocationSelect = (event) => {
-    const { location, addressLabel } = event;
+    const { location } = event;
     setCustomValue("locationLongitude", location.longitude);
     setCustomValue("locationLatitude", location.latitude);
-    setCustomValue("addressLabel", addressLabel);
+    setCustomValue("addressLabel", location.addressLabel);
   };
 
   if (step === STEPS.LOCATION) {
-    const defaultCoordinates = currentUser?.defaultLocation ?? {
-      latitude: locationLatitude,
-      longitude: locationLongitude,
-    };
+    let defaultCoordinates = {
+      latitude: 44.7866,
+      longitude: 20.4489,
+    }; 
+
+    if (rentModal.listing) {
+      defaultCoordinates = {
+        latitude: rentModal.listing.location[1],
+        longitude: rentModal.listing.location[0],
+      };
+    } else if (locationLatitude && locationLongitude) {
+      defaultCoordinates = {
+        latitude: locationLatitude,
+        longitude: locationLongitude,
+      }; 
+    }
 
     bodyContent = (
       <MapSelect

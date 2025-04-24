@@ -9,6 +9,7 @@ import useAddress from "@/app/hooks/useAddress";
 import { useDebouncedFunction } from "@/app/hooks/useDebouncedFunction";
 
 const MapSelect = ({ title, subtitle, defaultCoordinates, onSelect }) => {
+  const [hasSelectedLocation, setHasSelectedLocation] = useState(false);
   const [markerPosition, setMarkerPosition] = useState([]);
   const [zoomLevel, setZoomLevel] = useState(15);
   const {
@@ -23,7 +24,7 @@ const MapSelect = ({ title, subtitle, defaultCoordinates, onSelect }) => {
   } = useAddress();
 
   useEffect(() => {
-    if (defaultCoordinates) {
+    if (!hasSelectedLocation && defaultCoordinates) {
       setMarkerPosition([
         defaultCoordinates.latitude,
         defaultCoordinates.longitude,
@@ -71,6 +72,8 @@ const MapSelect = ({ title, subtitle, defaultCoordinates, onSelect }) => {
     setMarkerPosition([suggestion.latitude, suggestion.longitude]);
     setCity(suggestion.city);
     setSuggestions([]);
+    setHasSelectedLocation(true); 
+
     onSelect({
       city: suggestion.city,
       location: {
@@ -97,19 +100,18 @@ const MapSelect = ({ title, subtitle, defaultCoordinates, onSelect }) => {
       <Heading title={title} subtitle={subtitle} />
       <div>
         <AddressInput value={address} onChange={handleInputChange} />
-        <AddressSuggestions
-          suggestions={suggestions}
-          onSelect={handleSuggestionSelect}
-        />
-        <div className="rounded-lg overflow-hidden">
-          {address !== "" && (
-            <DraggableMap
-              center={markerPosition}
-              onMarkerDragEnd={handleMarkerDragEnd}
-              zoomLevel={zoomLevel}
-              setZoomLevel={setZoomLevel}
-            />
-          )}
+        <div className="relative w-full h-[500px] mt-4 rounded-lg overflow-hidden">
+          <DraggableMap
+            center={markerPosition}
+            onMarkerDragEnd={handleMarkerDragEnd}
+            zoomLevel={zoomLevel}
+            setZoomLevel={setZoomLevel}
+          />
+          <AddressSuggestions
+            suggestions={suggestions}
+            onSelect={handleSuggestionSelect}
+            className="absolute top-4 left-4 z-50 bg-white shadow-lg rounded-md w-[300px] max-h-[300px] overflow-auto"
+          />
         </div>
       </div>
     </div>

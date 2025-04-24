@@ -19,6 +19,7 @@ import ReservationInfoModal from "./components/modals/ReservationInfoModal";
 import SetNonWorkingDaysModal from "./components/modals/SetNonWorkingDaysModal";
 import { GlobalProvider } from "./hooks/GlobalContext";
 import PetViewModal from "./components/modals/PetViewModal";
+import LocationProvider from "./components/modals/LocationProvider";
 
 const font = Nunito({
   subsets: ["latin", "cyrillic"],
@@ -55,6 +56,7 @@ export default async function RootLayout({ children }) {
       <body className={font.className}>
         <GlobalProvider>
           <ClientOnly>
+            <LocationProvider currentUser={currentUser}/>
             <ToasterProvider />
             <LoginModal />
             <RegisterModal />

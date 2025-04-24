@@ -1,4 +1,5 @@
 import { prisma } from "@/app/libs/prismadb";
+import { Prisma } from "@prisma/client";
 
 export default async function getReservations(params) {
   try {
@@ -40,34 +41,65 @@ export default async function getReservations(params) {
         },
       });
 
-      const listingIds = [...new Set(reservations.map(res => res.type.listingId))];
+      const listingIds = [...new Set(reservations.map(res => res.type.listingId))];      
 
-      const listings = await prisma.listing.findMany({
-        where: {
-          id: {
-            in: listingIds,
+      let enrichedReservations;
+
+      if (listingIds.length > 0) {
+        const listings = await prisma.listing.findMany({
+          where: {
+            id: {
+              in: listingIds,
+            },
           },
-        },
-        include: {
-          user: true,
-          types: true,
-        },
-      });
+          include: {
+            user: true,
+            types: true,
+          },
+        });
+
+        const joinedIds = Prisma.join(listingIds.map(id => Prisma.sql`${id}`), Prisma.raw(', '));
       
-      const listingMap = new Map();
+        const locations = await prisma.$queryRaw`
+          SELECT 
+          id,
+          public.ST_X(location::public.geometry) as lng,
+          public.ST_Y(location::public.geometry) as lat
+          FROM "Listing"
+          WHERE id IN (${joinedIds})
+        `;
+  
+        const locationMap = new Map(
+          locations.map(location => [
+            location.id, 
+            [ location.lng, location.lat ]
+          ])
+        );
+        
+        const listingMap = new Map();
+  
+        listings.forEach(listing => {
+          listing.location = locationMap.get(listing.id);
+          listingMap.set(listing.id, listing);
+        });
 
-      listings.forEach(listing => {
-        listingMap.set(listing.id, listing);
-      });
-
-      const enrichedReservations = reservations.map(reservation => ({
-        ...reservation,
-        type: {
-          ...reservation.type,
-          listing: listingMap.get(reservation.type.listingId),
-        },
-      }));
-
+        enrichedReservations = reservations.map(reservation => ({
+          ...reservation,
+          type: {
+            ...reservation.type,
+            listing: listingMap.get(reservation.type.listingId),
+          },
+        }));
+      } 
+      else {
+        enrichedReservations = reservations.map(reservation => ({
+          ...reservation,
+          type: {
+            ...reservation.type
+          },
+        }));
+      }
+      
       reservations = enrichedReservations;
     }
     else {
@@ -84,6 +116,30 @@ export default async function getReservations(params) {
         orderBy: {
           createdAt: "desc",
         },
+      });
+
+      const listingIds = [...new Set(reservations.map(res => res.type.listingId))];
+
+      const joinedIds = Prisma.join(listingIds.map(id => Prisma.sql`${id}`), Prisma.raw(', '));
+
+      const locations = await prisma.$queryRaw`
+        SELECT 
+        id,
+        public.ST_X(location::public.geometry) as lng,
+        public.ST_Y(location::public.geometry) as lat
+        FROM "Listing"
+        WHERE id IN (${joinedIds})
+      `;
+
+      const locationMap = new Map(
+        locations.map(location => [
+          location.id, 
+          [ location.lng, location.lat ]
+        ])
+      );
+
+      reservations.forEach(reservation => {
+        reservation.type.listing.location = locationMap.get(reservation.type.listingId);
       });
     }
 
