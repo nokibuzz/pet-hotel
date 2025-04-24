@@ -16,7 +16,7 @@ const adClient = "ca-pub-7467390618217637";
 
 const Home = async ({ searchParams }) => {
   const currentUser = await getCurrentUser();
-  const listingTypes = await getTypes({ ...await searchParams, location: currentUser.defaultLocation});
+  const listingTypes = await getTypes({ ...await searchParams, location: currentUser?.defaultLocation});
 
   const translation = await getTranslations(currentUser?.locale, "listings");
 
