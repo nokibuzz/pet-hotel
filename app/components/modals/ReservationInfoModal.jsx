@@ -30,6 +30,11 @@ export const RESERVATION_INFO_STEPS = Object.freeze({
   CONFIRMATION: 2,
 });
 
+const ACTION = Object.freeze({
+  REJECT: 1,
+  APPROVE: 2,
+});
+
 const ReservationInfoModal = ({ currentUser, translation }) => {
   const router = useRouter();
   const reservationInfoModal = useReservationInfoModal();
@@ -38,6 +43,9 @@ const ReservationInfoModal = ({ currentUser, translation }) => {
   const [confirmReservationExecuted, setConfirmReservationExecuted] =
     useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedAction, setSelectedAction] = useState(
+    reservationInfoModal.step
+  );
   const [showFooter, setShowFooter] = useState(false);
   const [totalWorkDays, setTotalWorkDays] = useState(0);
   const [totalWeekendDays, setTotalWeekendDays] = useState(0);
@@ -64,11 +72,9 @@ const ReservationInfoModal = ({ currentUser, translation }) => {
       reservationInfoModal.reservation?.step !== undefined
     ) {
       setStep(reservationInfoModal.reservation.step);
+      setSelectedAction(reservationInfoModal.step);
       if (
-        reservationInfoModal.reservation.step ===
-          RESERVATION_INFO_STEPS.REJECT ||
-        reservationInfoModal.reservation.step ===
-          RESERVATION_INFO_STEPS.CONFIRMATION
+        reservationInfoModal.reservation.step === RESERVATION_INFO_STEPS.REJECT
       ) {
         setShowFooter(true);
       }
@@ -99,11 +105,13 @@ const ReservationInfoModal = ({ currentUser, translation }) => {
 
   const onConfirm = () => {
     setStep(RESERVATION_INFO_STEPS.CONFIRMATION);
-    setShowFooter(true);
+    setSelectedAction(ACTION.APPROVE);
+    setShowFooter(false);
   };
 
   const onReject = () => {
     setStep(RESERVATION_INFO_STEPS.REJECT);
+    setSelectedAction(ACTION.REJECT);
     setShowFooter(true);
   };
 
@@ -152,11 +160,7 @@ const ReservationInfoModal = ({ currentUser, translation }) => {
     }
   };
 
-  const onSubmit = (d) => {
-    setIsLoading(true);
-
-    const reasonOfRejection = d.rejectReason;
-
+  const onRejectReservation = (reasonOfRejection) => {
     const data = {
       reservationId: reservationInfoModal.reservation.id,
       listingId: reservationInfoModal.reservation.listingId,
@@ -202,13 +206,20 @@ const ReservationInfoModal = ({ currentUser, translation }) => {
       });
   };
 
+  const onSubmit = (d) => {
+    setIsLoading(true);
+
+    if (selectedAction === ACTION.APPROVE) {
+      onConfirmReservation();
+    } else {
+      onRejectReservation(d.rejectReason);
+    }
+  };
+
   const isConfirmation = () => {
     return (
-      (reservationInfoModal?.reservation?.paymentMethod ===
-        PAYMENT_OPTION_ACCOUNT_PAYMENT &&
-        !banConfirmed) ||
-      reservationInfoModal?.reservation?.paymentMethod !==
-        PAYMENT_OPTION_ACCOUNT_PAYMENT
+      reservationInfoModal?.reservation?.paymentMethod ===
+        PAYMENT_OPTION_ACCOUNT_PAYMENT && !banConfirmed
     );
   };
 
