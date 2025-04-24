@@ -3,7 +3,12 @@ import { Prisma } from "@prisma/client";
 
 export default async function getReservations(params) {
   try {
-    const { typeId, userId, authorId, reservationId, includeTypes } = await params;
+    const { typeId, userId, authorId, reservationId, includeTypes } =
+      await params;
+
+    await prisma.$executeRawUnsafe(
+      "SET search_path TO " + process.env.SCHEMA_NAME
+    );
 
     const query = {};
 
@@ -41,7 +46,9 @@ export default async function getReservations(params) {
         },
       });
 
-      const listingIds = [...new Set(reservations.map(res => res.type.listingId))];      
+      const listingIds = [
+        ...new Set(reservations.map((res) => res.type.listingId)),
+      ];
 
       let enrichedReservations;
 
@@ -58,8 +65,11 @@ export default async function getReservations(params) {
           },
         });
 
-        const joinedIds = Prisma.join(listingIds.map(id => Prisma.sql`${id}`), Prisma.raw(', '));
-      
+        const joinedIds = Prisma.join(
+          listingIds.map((id) => Prisma.sql`${id}`),
+          Prisma.raw(", ")
+        );
+
         const locations = await prisma.$queryRaw`
           SELECT 
           id,
@@ -68,46 +78,44 @@ export default async function getReservations(params) {
           FROM "Listing"
           WHERE id IN (${joinedIds})
         `;
-  
+
         const locationMap = new Map(
-          locations.map(location => [
-            location.id, 
-            [ location.lng, location.lat ]
+          locations.map((location) => [
+            location.id,
+            [location.lng, location.lat],
           ])
         );
-        
+
         const listingMap = new Map();
-  
-        listings.forEach(listing => {
+
+        listings.forEach((listing) => {
           listing.location = locationMap.get(listing.id);
           listingMap.set(listing.id, listing);
         });
 
-        enrichedReservations = reservations.map(reservation => ({
+        enrichedReservations = reservations.map((reservation) => ({
           ...reservation,
           type: {
             ...reservation.type,
             listing: listingMap.get(reservation.type.listingId),
           },
         }));
-      } 
-      else {
-        enrichedReservations = reservations.map(reservation => ({
+      } else {
+        enrichedReservations = reservations.map((reservation) => ({
           ...reservation,
           type: {
-            ...reservation.type
+            ...reservation.type,
           },
         }));
       }
-      
+
       reservations = enrichedReservations;
-    }
-    else {
+    } else {
       reservations = await prisma.reservation.findMany({
         include: {
           type: {
             include: {
-              listing: true
+              listing: true,
             },
           },
           user: true,
@@ -118,9 +126,14 @@ export default async function getReservations(params) {
         },
       });
 
-      const listingIds = [...new Set(reservations.map(res => res.type.listingId))];
+      const listingIds = [
+        ...new Set(reservations.map((res) => res.type.listingId)),
+      ];
 
-      const joinedIds = Prisma.join(listingIds.map(id => Prisma.sql`${id}`), Prisma.raw(', '));
+      const joinedIds = Prisma.join(
+        listingIds.map((id) => Prisma.sql`${id}`),
+        Prisma.raw(", ")
+      );
 
       const locations = await prisma.$queryRaw`
         SELECT 
@@ -132,14 +145,13 @@ export default async function getReservations(params) {
       `;
 
       const locationMap = new Map(
-        locations.map(location => [
-          location.id, 
-          [ location.lng, location.lat ]
-        ])
+        locations.map((location) => [location.id, [location.lng, location.lat]])
       );
 
-      reservations.forEach(reservation => {
-        reservation.type.listing.location = locationMap.get(reservation.type.listingId);
+      reservations.forEach((reservation) => {
+        reservation.type.listing.location = locationMap.get(
+          reservation.type.listingId
+        );
       });
     }
 
