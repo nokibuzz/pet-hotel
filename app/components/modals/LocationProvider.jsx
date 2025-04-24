@@ -8,7 +8,10 @@ const LocationProvider = ({ currentUser }) => {
 
   const sendLocationToServer = async (latitude, longitude) => {
     try {
-      const userId = currentUser?.id;
+      if (!currentUser) {
+        return;
+      }
+      const userId = currentUser.id;
       await axios
         .post(`/api/location`, { userId, latitude, longitude })
         .catch(() => {
