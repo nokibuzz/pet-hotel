@@ -1,5 +1,6 @@
 {
   "en": {
+    "verifiedObject": "This object is verified by FurLand!",
     "EmptyState": {
       "title": "No matches",
       "subtitle": "Plase change your search and try again!",
@@ -19,6 +20,7 @@
     }
   },
   "sr": {
+    "verifiedObject": "Ovaj smeštaj je verifikovan od strane FurLand aplikacije!",
     "EmptyState": {
       "title": "Nema rezultata",
       "subtitle": "Izmenite pretragu i pokušajte ponovo!",

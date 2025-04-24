@@ -7,6 +7,8 @@ import { useCallback, useMemo } from "react";
 import HeartButton from "../HeartButton";
 import Button from "../Button";
 import qs from "query-string";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCertificate, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const ListingCard = ({
   data,
@@ -98,6 +100,20 @@ const ListingCard = ({
           {typeof data.overallReview === "number" && data.overallReview > 1 && (
             <div className="absolute top-3 left-3 bg-white text-black px-3 py-1 rounded-full border border-gray-300 font-semibold shadow">
               {data.overallReview.toFixed(1)}
+            </div>
+          )}
+          {data.verified === true && (
+            <div className="absolute bottom-3 right-3 bg-white bg-opacity-50 px-2 py-1 rounded-full font-semibold shadow">
+              <FontAwesomeIcon
+                icon={faCertificate}
+                size="lg"
+                className="text-blue-600"
+              />
+              <FontAwesomeIcon
+                icon={faCheck}
+                size="xs"
+                className="fa-stack-1x text-white"
+              />
             </div>
           )}
           {currentUser?.hotelOwner !== true && (
