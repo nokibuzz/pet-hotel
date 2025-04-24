@@ -432,11 +432,11 @@ const RentModal = ({ currentUser, translation }) => {
     </div>
   );
 
-  const onLocationSelect = (event) => {
-    const { location } = event;
+  const onLocationSelect = (event) => { 
+    const { location, addressLabel } = event;
     setCustomValue("locationLongitude", location.longitude);
     setCustomValue("locationLatitude", location.latitude);
-    setCustomValue("addressLabel", location.addressLabel);
+    setCustomValue("addressLabel", location.addressLabel ?? addressLabel);
   };
 
   if (step === STEPS.LOCATION) {
