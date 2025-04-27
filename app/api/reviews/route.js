@@ -2,15 +2,17 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import { logError } from "@/app/libs/logtail.js";
 
 export async function POST(request) {
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser) {
+    return NextResponse.error();
+  }
+
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
-      return NextResponse.error();
-    }
-
+   
     const body = await request.json();
 
     const {
@@ -88,6 +90,6 @@ export async function POST(request) {
 
     return NextResponse.json(review);
   } catch (error) {
-    console.error(error);
+    logError(request, currentUser.id, error);
   }
 }

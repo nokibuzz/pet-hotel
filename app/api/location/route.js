@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
+import { logError } from "@/app/libs/logtail.js";
 
 export async function POST(req) {
   const { userId, latitude, longitude } = await req.json();
 
   let result = {};
-
+  
   try {
-
     result = await prisma.user.update({
         where: {
             id: userId
@@ -18,9 +18,8 @@ export async function POST(req) {
             }
         },
     });
-
   } catch (error) {
-    throw new Error(error);
+    await logError(req, userId, error);
   }
   
   return NextResponse.json(result);
