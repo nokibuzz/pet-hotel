@@ -27,6 +27,7 @@ import ReservationInfoPaymentView from "../reservations/ReservationInfoPaymentVi
 import TypeBreedView from "../TypeBreedView";
 import PetInfoView from "../pets/PetInfoView";
 import sendEmail from "@/app/utils/sendEmail";
+import { logEvent } from "@/app/utils/clientLogger";
 
 const STEPS = Object.freeze({
   PET: 0,
@@ -199,7 +200,7 @@ const ReservationModal = ({ currentUser, translation }) => {
           { typeId, startDate: startBuffer, endDate: endBuffer },
         ]);
       } catch (error) {
-        console.error("Error fetching unavailable dates:", error);
+        logEvent({ message: "Error fetching unavailable dates:", level: 'error', userId: currentUser?.id, error: error });
       }
     }
 

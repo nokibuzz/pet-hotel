@@ -1,6 +1,6 @@
 import { Logtail } from "@logtail/node"; 
 
-const logger = new Logtail(process.env.LOGTAIL_TOKEN, { endpoint: process.env.LOGTAIL_HOST });
+export const logger = new Logtail(process.env.LOGTAIL_TOKEN, { endpoint: process.env.LOGTAIL_HOST });
 
 export async function logError(request, currentUserId, error) {
   try {

@@ -19,6 +19,7 @@ import {
 } from "@/app/utils/PetConstants";
 import Dropdown from "../inputs/Dropdown";
 import ExplanationInfo from "../ExplanationInfo";
+import { logEvent } from "@/app/utils/clientLogger";
 
 const STEPS = Object.freeze({
   BASIC: 0,
@@ -134,7 +135,7 @@ const PetModal = () => {
           "All images uploaded successfully!"
       );
     } catch (error) {
-      console.error(error);
+      logEvent({ message: "Error uploading images!", level: 'error', userId: currentUser?.id, error: error });
       toast.error(
         petModal.translation.imageUploadError || "Error uploading images!"
       );
@@ -155,9 +156,9 @@ const PetModal = () => {
 
       uploadImages()
         .then((response) => {
-          console.log("Uploaded successfully");
+          logEvent({ message: "Uploaded successfully", level: 'info' });
         })
-        .catch((e) => console.error("Woof, woof, images not uploaded!", e))
+        .catch((error) => logEvent({ message: 'Woof, woof, images not uploaded!', level: 'error', userId: currentUser?.id, error: error }))
         .finally(() => setIsLoading(false));
     }
 

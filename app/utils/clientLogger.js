@@ -1,11 +1,9 @@
-export async function logEvent({ level = "info", message, context = {} }) {
+import axios from "axios";
+
+export async function logEvent({ message, level = "info", userId = undefined , error = undefined }) {
     try {
-        await fetch("/api/log", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ level, message, context }),
-        });
+        axios.post(`/api/log`, { message: message, level: level, userId: userId, error: error });
     } catch (error) {
-     console.error(error);   
+        console.error('Fatal error for sending log to server:', error); 
     }
 }

@@ -25,6 +25,7 @@ import MapSelect from "../MapSelect";
 import CustomInput from "../inputs/CustomInput";
 import { faOtter } from "@fortawesome/free-solid-svg-icons";
 import ExplanationInfo from "../ExplanationInfo";
+import { logEvent } from "@/app/utils/clientLogger";
 
 const STEPS = Object.freeze({
   CATEGORY: 0,
@@ -229,7 +230,7 @@ const RentModal = ({ currentUser, translation }) => {
           "All images uploaded successfully!"
       );
     } catch (error) {
-      console.error(error);
+      logEvent({ message: "Error uploading images!", level: 'error', userId: currentUser?.id, error: error });
       toast.error(
         translation?.error?.imagesNotUploaded || "Error uploading images!"
       );
@@ -253,7 +254,7 @@ const RentModal = ({ currentUser, translation }) => {
 
       uploadImages()
         .then((response) => {})
-        .catch((e) => console.error("Woof, woof, images not uploaded!", e));
+        .catch((error) => logEvent({ message: "Woof, woof, images not uploaded!", level: 'error', userId: currentUser?.id, error: error }));
     }
 
     if (step === STEPS.PET_TYPES) {
