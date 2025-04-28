@@ -6,11 +6,6 @@ export default async function getReservations(params) {
     const { typeId, userId, authorId, reservationId, includeTypes } =
       await params;
 
-    // temp solution, till change to different dbs
-    await prisma.$executeRawUnsafe(
-      "SET search_path TO " + process.env.SCHEMA_NAME
-    );
-
     const query = {};
 
     if (typeId) {
