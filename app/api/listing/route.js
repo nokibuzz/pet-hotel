@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { randomUUID } from 'crypto';
+import { logError, logInfo } from "@/app/libs/logtail.js";
 
 export async function POST(request) {
   const currentUser = await getCurrentUser();
@@ -66,10 +67,10 @@ export async function POST(request) {
         )
       `;
 
-      console.log("Created listing " + title);
+      logInfo(request, currentUser.id, 'Created listing with title' + title);
 
       for (const type of types) {
-        console.log("Creating type: " + JSON.stringify(type));
+        logInfo(request, currentUser.id, "Creating type: " + JSON.stringify(type));
         await prisma.type.create({
           data: {
             listingId: newId,
@@ -163,7 +164,7 @@ export async function PUT(request) {
 
     return NextResponse.json(id);
   } catch (error) {
-    console.error(error);
+    logError(request, currentUser.id, error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

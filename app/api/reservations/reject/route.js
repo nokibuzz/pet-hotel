@@ -1,9 +1,8 @@
-// export const dynamic = "force-dynamic";
-
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import { logInfo } from "@/app/libs/logtail.js";
 
 export async function PUT(request) {
   const currentUser = await getCurrentUser();
@@ -45,7 +44,7 @@ export async function PUT(request) {
     },
   });
 
-  console.log("Owner of the listing: ", JSON.stringify(listingOwner));
+  logInfo(request, currentUser.id, 'Owner of the listing:' + JSON.stringify(listingOwner));
   if (currentUser.id !== listingOwner.userId) {
     return NextResponse.error();
   }
@@ -63,7 +62,7 @@ export async function PUT(request) {
         },
       });
 
-      console.log("Making reservation from dateTime available again!");
+      logInfo(request, currentUser.id, "Making reservation from dateTime available again!");
       const start = new Date(startDate);
       const end = new Date(endDate);
 
@@ -78,7 +77,7 @@ export async function PUT(request) {
         },
       });
 
-      console.log("availability", JSON.stringify(availabilities));
+      logInfo(request, currentUser.id, "availability", availabilities);
 
       // Prepare the promises for the operations (delete, update, or reactivate)
       const availabilityUpdates = availabilities.map((availability) => {
@@ -105,10 +104,7 @@ export async function PUT(request) {
 
       // Execute all updates in parallel
       const avUpdates = await Promise.all(availabilityUpdates);
-      console.log(
-        "Availabilities updated, deleted or reactivated",
-        JSON.stringify(avUpdates)
-      );
+      logInfo(request, currentUser.id, "Availabilities updated, deleted or reactivated", avUpdates);
 
       return NextResponse.json(reservation);
     },

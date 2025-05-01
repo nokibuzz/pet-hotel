@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import nodemailer from "nodemailer";
+import { logError, logInfo } from "@/app/libs/logtail.js";
 
 export async function POST(request) {
   const body = await request.json();
@@ -25,12 +26,12 @@ export async function POST(request) {
       html,
     });
 
-    console.log("Email sent: ", info.messageId);
+    logInfo(request, 'system', "Email sent: " + info.messageId);
     return NextResponse.json({
       message: "Email sent successfully!",
     });
   } catch (error) {
-    console.error("Email error: ", error);
+    logError(request, 'system', "Email error: " + error);
     return NextResponse.json({ status: 500, error: "Email sending failed!" });
   }
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { logEvent } from '@/app/utils/clientLogger';
 import axios from 'axios';
 import { useEffect } from 'react';
 import toast from "react-hot-toast";
@@ -15,7 +16,7 @@ const LocationProvider = ({ currentUser }) => {
       .post(`/api/location`, { userId, latitude, longitude })
       .catch((error) => {
           toast.error("Woof, woof, something went wrong!")
-          console.error('Error saving user location:', error);
+          logEvent({ message: 'Error saving user location:', level: 'error', userId: userId, error: error });
       });
   };
 
@@ -28,8 +29,8 @@ const LocationProvider = ({ currentUser }) => {
                   sendLocationToServer(latitude, longitude); 
                 }
             },
-            (err) => {
-              console.error(err);
+            (error) => {
+              logEvent({ message: 'Error saving user location:', level: 'error', userId: currentUser?.id, error: error });
             },
             {
               enableHighAccuracy: true,

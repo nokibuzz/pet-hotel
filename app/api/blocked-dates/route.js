@@ -1,6 +1,7 @@
 import { prisma } from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import { logInfo } from "@/app/libs/logtail.js";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -78,7 +79,7 @@ export async function PUT(request) {
       if (removedDates.length > 0) {
         const deletedDates = removedDates.map(date => date.id);
 
-        console.log('Delete blocked dates: ', deletedDates);
+        logInfo(request, currentUser.id, 'Deleting blocked dates', deletedDates);
 
         dbUpdates.push(
           prisma.blockedDate.deleteMany({
@@ -97,7 +98,7 @@ export async function PUT(request) {
         });
 
         addedDates.forEach((date) => {
-          console.log('Add new blocked date: ', date);
+          logInfo(request, currentUser.id, 'Adding new blocked date', date);
 
           dbUpdates.push(
             prisma.blockedDate.create({
@@ -115,7 +116,7 @@ export async function PUT(request) {
 
       if (updatedDates.length > 0) {
         updatedDates.forEach((date) => {
-          console.log('Update existing blocked date: ', date);
+          logInfo(request, currentUser.id, 'Updating existing blocked date', date);
 
           dbUpdates.push(
             prisma.blockedDate.update({

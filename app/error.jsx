@@ -2,10 +2,11 @@
 
 import { useEffect } from "react";
 import EmptyState from "./components/EmptyState";
+import { logEvent } from '@/app/utils/clientLogger';
 
 const ErrorState = ({ error }) => {
   useEffect(() => {
-    console.error(error);
+    logEvent({ message: "Fatal error occured", level: 'error', error: error });
   }, [error]);
 
   return <EmptyState title="Woofoo" subtitle="Something went wrong!" />;

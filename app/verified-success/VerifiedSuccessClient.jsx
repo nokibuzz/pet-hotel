@@ -5,6 +5,7 @@ import Container from "../components/Container";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
+import { logEvent } from "../utils/clientLogger";
 
 const VerifiedSuccessClient = ({ currentUser, translation }) => {
   const router = useRouter();
@@ -18,9 +19,9 @@ const VerifiedSuccessClient = ({ currentUser, translation }) => {
         .get(`/api/verify-email?token=${token}`)
         .then(() => {
           setVerified(true);
-          console.log("Successfully verified");
+          logEvent({ message: "Successfully verified", level: 'info', userId: currentUser?.id });
         })
-        .catch((e) => console.error(e));
+        .catch((error) => logEvent({ message: "Error in user verfication", level: 'error', userId: currentUser?.id, error: error }));
     } else {
       router.push("/");
       setVerified(true);

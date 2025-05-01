@@ -1,7 +1,10 @@
 import { prisma } from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
+import { logError } from "@/app/libs/logtail.js";
 
 export async function GET(req) {
+  let user;
+
   try {
     const { searchParams } = new URL(req.url);
     const token = searchParams.get("token");
@@ -11,7 +14,7 @@ export async function GET(req) {
     }
 
     // Find user by token
-    const user = await prisma.user.findFirst({
+    user = await prisma.user.findFirst({
       where: { token },
     });
 
@@ -30,7 +33,7 @@ export async function GET(req) {
 
     return NextResponse.json("Verified email");
   } catch (error) {
-    console.error("Verification error:", error);
+    logError(req, user?.id, error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

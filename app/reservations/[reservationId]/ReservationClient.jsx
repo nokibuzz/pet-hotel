@@ -8,6 +8,7 @@ import { options } from "@/app/components/navbar/BasicFilters";
 import React, { useMemo, useEffect, useState } from "react";
 import Conversation from "@/app/components/conversation/Conversation";
 import CustomContainer from "@/app/components/CustomContainer";
+import axios from "axios";
 
 const ReservationClient = ({ reservation, currentUser, translation }) => {
   const user = reservation.type.user;
@@ -33,7 +34,7 @@ const ReservationClient = ({ reservation, currentUser, translation }) => {
         const user = await response.json();
         setOtherUser(user);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        axios.post(`/api/log`, { message: "Error fetching data:", level: 'error', userId: user.id, error: error });
       }
     };
 
