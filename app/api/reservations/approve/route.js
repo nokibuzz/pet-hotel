@@ -1,9 +1,8 @@
-// export const dynamic = "force-dynamic";
-
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import { logInfo } from "@/app/libs/logtail.js";
 
 export async function PUT(request) {
   const currentUser = await getCurrentUser();
@@ -29,7 +28,7 @@ export async function PUT(request) {
     },
   });
 
-  console.log("Owner of the listing: ", JSON.stringify(listingOwner));
+  logInfo(request, currentUser.id, 'Owner of the listing:' + JSON.stringify(listingOwner));
   if (currentUser.id !== listingOwner.userId) {
     return NextResponse.error();
   }

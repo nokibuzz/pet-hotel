@@ -6,6 +6,7 @@ import Message from "./Message";
 import { pusherClient } from "./../../libs/pusher";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { logEvent } from "@/app/utils/clientLogger";
 
 const Conversation = ({
   reservationId,
@@ -22,7 +23,7 @@ const Conversation = ({
       const response = await axios.get(`/api/messages?chatId=${chatId}`);
       setMessages(response.data);
     } catch (error) {
-      console.error("Error loading messages", error);
+      logEvent({ message: 'Error loading messages', level: 'error', userId: currentUser?.id, error: error });
     }
   };
 

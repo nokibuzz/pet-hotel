@@ -76,7 +76,6 @@ const ProfileContent = ({
                   age: pet.age,
                 }))}
                 onHeaderClick={() => router.push("/pets")}
-                onItemClick={(id) => console.log("Not yet implemented")}
                 renderTextContent={(item) => (
                   <>
                     <div className="font-semibold text-sm">{item.title}</div>

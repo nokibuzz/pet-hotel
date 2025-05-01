@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import useUploadImageModal from "@/app/hooks/useUploadImageModal";
 import SingleImageUpload from "../inputs/SingleImageUpload";
 import { useRouter } from "next/navigation";
+import { logEvent } from "@/app/utils/clientLogger";
 
 const UploadImageModal = () => {
   const router = useRouter();
@@ -45,7 +46,7 @@ const UploadImageModal = () => {
 
       return data.secure_url;
     } catch (error) {
-      console.error(error);
+      logEvent({ message: "Error uploading images!", level: 'error', error: error });
       toast.error("Error uploading images!");
     }
   };
@@ -63,7 +64,7 @@ const UploadImageModal = () => {
         toast.success("Successfully updated!");
       });
     } catch (error) {
-      console.error("Woof, woof, image not uploaded!", error);
+      logEvent({ message: "Woof, woof, image not uploaded!", level: 'error', error: error });
     }
   };
 

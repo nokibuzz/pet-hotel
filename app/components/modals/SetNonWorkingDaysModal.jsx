@@ -155,8 +155,6 @@ const SetNonWorkingDaysModal = ({ currentUser }) => {
   const sendRequest = () => {
     setIsLoading(true);
 
-    console.log(request);
-
     axios
       .put("/api/blocked-dates", request)
       .then(() => {

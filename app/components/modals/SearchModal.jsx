@@ -9,7 +9,6 @@ import { formatISO } from "date-fns";
 import Heading from "../Heading";
 import Calendar from "../inputs/Calendar";
 import Counter from "../inputs/Counter";
-import axios from "axios";
 import MapSelect from "../MapSelect";
 
 const STEPS = Object.freeze({
@@ -109,39 +108,6 @@ const SearchModal = ({ currentUser }) => {
 
     return "Back";
   }, [step]);
-
-  const sendLocationToServer = async (latitude, longitude) => {
-    try {
-      const userId = currentUser?.id;
-      await axios
-        .post(`/api/location`, { userId, latitude, longitude })
-        .catch(() => {
-            toast.error("Woof, woof, something went wrong!")
-        })
-        .finally(() => {
-        });
-    } catch (error) {
-      console.error('Error saving user location:', error);
-    }
-  };
-
-  useEffect(() => {
-    if (navigator.geolocation && searchModal.isOpen) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLocation({ latitude: latitude, longitude: longitude });
-          if (currentUser){
-            sendLocationToServer(latitude, longitude); 
-          }
-        },
-        (err) => {
-          console.error("Failed to retrieve location");
-        },
-        { enableHighAccuracy: true }
-      );
-    }
-  }, [searchModal.isOpen]);
 
   const onLocationSelect = (event) => {
     const { city, location } = event;

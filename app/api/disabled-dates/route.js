@@ -1,5 +1,6 @@
 import { prisma } from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
+import { logError } from "@/app/libs/logtail.js";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -59,7 +60,7 @@ export async function GET(request) {
 
     return NextResponse.json({ disabledDates: Array.from(unavailableDates) });
   } catch (error) {
-    console.error("Error fetching disabled dates:", error);
+    logError(request, undefined, error);
     return NextResponse.json(
       { error: "Failed to fetch disabled dates" },
       { status: 500 }
