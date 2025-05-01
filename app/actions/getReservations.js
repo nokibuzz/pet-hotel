@@ -126,29 +126,31 @@ export default async function getReservations(params) {
         ...new Set(reservations.map((res) => res.type.listingId)),
       ];
 
-      const joinedIds = Prisma.join(
-        listingIds.map((id) => Prisma.sql`${id}`),
-        Prisma.raw(", ")
-      );
-
-      const locations = await prisma.$queryRaw`
-        SELECT 
-        id,
-        public.ST_X(location::public.geometry) as lng,
-        public.ST_Y(location::public.geometry) as lat
-        FROM "Listing"
-        WHERE id IN (${joinedIds})
-      `;
-
-      const locationMap = new Map(
-        locations.map((location) => [location.id, [location.lng, location.lat]])
-      );
-
-      reservations.forEach((reservation) => {
-        reservation.type.listing.location = locationMap.get(
-          reservation.type.listingId
+      if (listingIds.length > 0) {
+        const joinedIds = Prisma.join(
+          listingIds.map((id) => Prisma.sql`${id}`),
+          Prisma.raw(", ")
         );
-      });
+  
+        const locations = await prisma.$queryRaw`
+          SELECT 
+          id,
+          public.ST_X(location::public.geometry) as lng,
+          public.ST_Y(location::public.geometry) as lat
+          FROM "Listing"
+          WHERE id IN (${joinedIds})
+        `;
+  
+        const locationMap = new Map(
+          locations.map((location) => [location.id, [location.lng, location.lat]])
+        );
+  
+        reservations.forEach((reservation) => {
+          reservation.type.listing.location = locationMap.get(
+            reservation.type.listingId
+          );
+        });
+      }
     }
 
     const safeReservations = reservations.map((reservation) => ({
