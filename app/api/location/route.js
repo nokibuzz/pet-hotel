@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { logError } from "@/app/libs/logtail.js";
+import { prisma } from "@/app/libs/prismadb";
+
 
 export async function POST(req) {
   const { userId, latitude, longitude } = await req.json();
