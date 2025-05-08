@@ -135,7 +135,12 @@ const PetModal = () => {
           "All images uploaded successfully!"
       );
     } catch (error) {
-      logEvent({ message: "Error uploading images!", level: 'error', userId: currentUser?.id, error: error });
+      logEvent({
+        message: "Error uploading images!",
+        level: "error",
+        userId: currentUser?.id,
+        error: error,
+      });
       toast.error(
         petModal.translation.imageUploadError || "Error uploading images!"
       );
@@ -156,9 +161,16 @@ const PetModal = () => {
 
       uploadImages()
         .then((response) => {
-          logEvent({ message: "Uploaded successfully", level: 'info' });
+          logEvent({ message: "Uploaded successfully", level: "info" });
         })
-        .catch((error) => logEvent({ message: 'Woof, woof, images not uploaded!', level: 'error', userId: currentUser?.id, error: error }))
+        .catch((error) =>
+          logEvent({
+            message: "Woof, woof, images not uploaded!",
+            level: "error",
+            userId: currentUser?.id,
+            error: error,
+          })
+        )
         .finally(() => setIsLoading(false));
     }
 
@@ -254,7 +266,10 @@ const PetModal = () => {
 
   const changeBreed = (value) => {
     setCustomValue("breed", value);
-    const breedDescriptionPh = PET_DESCRIPTIONS[value] || "Breed Description";
+    const breedDescriptionPh =
+      petModal.translation.breedDescription?.[value] ||
+      PET_DESCRIPTIONS[value] ||
+      "Breed Description";
     setBreedDescriptionPlaceholder(breedDescriptionPh);
   };
 
@@ -271,7 +286,7 @@ const PetModal = () => {
         <div className="flex flex-row gap-4 items-center">
           <Dropdown
             id="breed"
-            label={petModal.translation.breed || "Breed"}
+            label={petModal.translation.breedLabel || "Breed"}
             placeholder={
               petModal.translation.breedPlaceholder || "Choose breed"
             }
@@ -279,6 +294,7 @@ const PetModal = () => {
             errors={errors}
             required
             options={breedOptions}
+            translate={petModal.translation}
             onChange={(value) => changeBreed(value)}
           />
           <ExplanationInfo
@@ -292,7 +308,9 @@ const PetModal = () => {
           <div className="flex flex-row gap-4 items-center">
             <Input
               id="description"
-              label={petModal.translation.breedDescription || "Pet description"}
+              label={
+                petModal.translation.breedDescriptionLabel || "Pet description"
+              }
               placeholder={breedDescriptionPlaceholder}
               register={register}
             />

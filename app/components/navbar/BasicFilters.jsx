@@ -19,12 +19,13 @@ export const options = [
   {
     label: "Hotel",
     icon: faHotel,
-    description: "This is a verified hotel, that will take care of your pets",
+    description: "This is a licenced hotel, that will take care of your pets",
   },
   {
     label: "Petgarten",
     icon: faPerson,
-    description: "This is a petgarten, for your pets",
+    description:
+      "This is a petgarten, that take care of your pets while you can finish your stuff",
   },
 ];
 

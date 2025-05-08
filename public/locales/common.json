@@ -85,7 +85,16 @@
         "Grooming": "Grooming",
         "Veterinarian": "Veterinarian",
         "locale": "en",
-        "disableDates": "Clear date range"
+        "disableDates": "Clear date range",
+        "yourPets": "Your Pets",
+        "petType": "Pet Type",
+        "type": {
+          "Small Dogs": "Small Dogs",
+          "Medium Dogs": "Medium Dogs",
+          "Large Dogs": "Large Dogs",
+          "Giant Dogs": "Giant Dogs",
+          "Cats": "Cats"
+        }
       }
     }
   },
@@ -174,7 +183,16 @@
         "Grooming": "Timarenje",
         "Veterinarian": "Veterinar",
         "locale": "sr",
-        "disableDates": "Očisti izabrani period"
+        "disableDates": "Očisti izabrani period",
+        "yourPets": "Vaši ljubimci",
+        "petType": "Tip ljubimaca",
+        "type": {
+          "Small Dogs": "Mali psi",
+          "Medium Dogs": "Srednji psi",
+          "Large Dogs": "Veliki psi",
+          "Giant Dogs": "Džinovski psi",
+          "Cats": "Mačke"
+        }
       }
     }
   }

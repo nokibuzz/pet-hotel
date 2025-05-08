@@ -38,11 +38,18 @@ const ListingReservation = ({
           }`;
 
           return (
-            <div key={name} className="flex flex-row items-center gap-1">
+            <div
+              key={name}
+              className="flex flex-col items-center gap-0.5 text-center"
+            >
               {showName && (
-                <span className="font-light text-neutral-600">{name}: </span>
+                <span className="text-sm text-neutral-600 font-light">
+                  {translation.type[name] || name}:
+                </span>
               )}
-              <span className="text-sm text-neutral-800">{priceText}</span>
+              <span className="text-sm text-neutral-800 font-medium">
+                {priceText}
+              </span>
             </div>
           );
         })}

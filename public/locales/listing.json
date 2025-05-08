@@ -16,7 +16,14 @@
       "onWeekend": "on weekend",
       "reserve": "Reserve",
       "total": "Total",
-      "locale": "en"
+      "locale": "en",
+      "type": {
+        "Small Dogs": "Small Dogs",
+        "Medium Dogs": "Medium Dogs",
+        "Large Dogs": "Large Dogs",
+        "Giant Dogs": "Giant Dogs",
+        "Cats": "Cats"
+      }
     },
     "ListingAddionalInformation": {
       "food": "Food",
@@ -30,7 +37,17 @@
       "cancelationPolicy": "Cancelation policy",
       "hasFreeCancelation": "Has free cancelation",
       "cancelationNotPossible": "Cancelation not possible",
-      "paymentMethods": "Payment methods"
+      "paymentMethods": "Payment methods",
+      "ListingCategory": {
+        "Private": "Private",
+        "Hotel": "Hotel",
+        "Petgarten": "Petgarden",
+        "description": {
+          "Private": "This is private home, that takes care of pets",
+          "Hotel": "This is a licenced hotel, that will take care of your pets",
+          "Petgarten": "This is a petgarten, that take care of your pets while you can finish your stuff"
+        }
+      }
     },
     "Review": {
       "title": "Your review",
@@ -81,7 +98,14 @@
       "onWeekend": "vikendom",
       "reserve": "Rezerviši",
       "total": "Ukupno",
-      "locale": "sr"
+      "locale": "sr",
+      "type": {
+        "Small Dogs": "Mali psi",
+        "Medium Dogs": "Srednji psi",
+        "Large Dogs": "Veliki psi",
+        "Giant Dogs": "Džinovski psi",
+        "Cats": "Mačke"
+      }
     },
     "ListingAddionalInformation": {
       "food": "Hrana",
@@ -95,7 +119,17 @@
       "cancelationPolicy": "Pravila otkazivanja",
       "hasFreeCancelation": "Moguće otkazivanje",
       "cancelationNotPossible": "Otkazivanje nije moguće",
-      "paymentMethods": "Metode plaćanja"
+      "paymentMethods": "Metode plaćanja",
+      "ListingCategory": {
+        "Private": "Samostalni",
+        "Hotel": "Hotel",
+        "Petgarten": "Obdanište",
+        "description": {
+          "Private": "Privatni objekat, koji vodi računa o Vašim ljubimcima",
+          "Hotel": "Licencirani hotel, koji vodi računa o Vašim ljubimcima",
+          "Petgarten": "Obdanište koje čuva Vaše ljudimce, dok Vi završavate obaveze"
+        }
+      }
     },
     "Review": {
       "title": "Vaš utisak",

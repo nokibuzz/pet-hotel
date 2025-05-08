@@ -50,12 +50,12 @@ const ProfileCard = ({ currentUser, translation }) => {
           <div className="text-gray-400">{currentUser?.email ?? ""}</div>
         </div>
       </div>
-      <div>
+      {/* <div>
         <div className="text-lg font-semibold mb-2 text-gray-600">
           {translation.ProfileCard.address || "Address"}
         </div>
         <div className="text-gray-600">TODO: add to user db table</div>
-      </div>
+      </div> */}
       <div className="mt-2 flex justify-end">
         <Button
           label={translation.ChangePasswordModal?.onOpen || "Change password"}
