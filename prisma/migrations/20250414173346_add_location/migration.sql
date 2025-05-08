@@ -1,6 +1,5 @@
-SET search_path = "\$user", public, extensions, dev, prod;
-CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA dev;
-CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA prod;
+SET search_path = "\$user", public, extensions;
+CREATE EXTENSION IF NOT EXISTS postgis;
 
 ALTER TABLE "Listing" DROP COLUMN "location", 
 ADD COLUMN "location" geography(Point, 4326);

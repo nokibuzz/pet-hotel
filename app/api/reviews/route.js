@@ -12,7 +12,6 @@ export async function POST(request) {
   }
 
   try {
-   
     const body = await request.json();
 
     const {
@@ -62,34 +61,28 @@ export async function POST(request) {
       data: { totalReviews: { increment: 1 } },
     });
 
-    const overallReview = await prisma.$runCommandRaw({
-      aggregate: "Review",
-      pipeline: [
-        {
-          $match: {
-            $expr: { $eq: ["$listingId", { $toObjectId: listingId }] },
-          },
-        },
-        {
-          $group: {
-            _id: "$listingId",
-            averageReview: { $avg: "$overallRating" },
-          },
-        },
-      ],
-      cursor: {},
-    });
+    // 1. Get average overallRating for the listing
+    const [overallReviewResult] = await prisma.$queryRaw`
+      SELECT 
+        AVG("overallRating") AS "averageReview"
+      FROM "Review"
+      WHERE "listingId" = ${listingId}
+    `;
 
+    const averageReview = overallReviewResult?.averageReview ?? 0;
+
+    // 2. Update the listing with the average review and increment total reviews
     await prisma.listing.update({
       where: { id: listingId },
-      data: { 
-        overallReview: overallReview.cursor?.firstBatch[0]?.averageReview || 0,
-        totalReviews: { increment: 1 } 
+      data: {
+        overallReview: averageReview,
+        totalReviews: { increment: 1 },
       },
     });
 
     return NextResponse.json(review);
   } catch (error) {
     logError(request, currentUser.id, error);
+    return NextResponse.error();
   }
 }

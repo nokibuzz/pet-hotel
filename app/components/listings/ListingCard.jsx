@@ -138,15 +138,11 @@ const ListingCard = ({
           {reservationDate || data.category}
         </div>
         <div className="flex flex-row items-center gap-1">
-          <div className="font-semibold">
-            {reservation ? "" : "from "}
-            {price} RSD
+          <div className="font-light">
+            {reservation ? "" : translation.from || "from "}
+            <span className="font-semibold">{price} RSD</span>
+            {!reservation && <>{translation.perDay || " per day"}</>}
           </div>
-          {!reservation && (
-            <div className="font-light">
-              {translation.perDay || "per night"}
-            </div>
-          )}
         </div>
         {onAction && actionLabel && (
           <Button

@@ -51,12 +51,15 @@ const ReservationGroupInfo = ({ reservations, currentUser, translation }) => {
                 <span>{ress[0].type.listing.title}</span>
                 <span>Num of reservations: {ress.length}</span>
               </button>
-              
-              <button 
-              className="p-2 rounded-md bg-gray-200 hover:bg-gray-300"
-              onClick={() => openModal(ress[0].type.listing)}>
-                <FaPlus className="text-gray-600" />
-              </button>
+
+              {ress[0].type.listing.userId === currentUser.id && (
+                <button
+                  className="p-2 rounded-md bg-gray-200 hover:bg-gray-300"
+                  onClick={() => openModal(ress[0].type.listing)}
+                >
+                  <FaPlus className="text-gray-600" />
+                </button>
+              )}
             </div>
             {openStates[listingId] && (
               <div className="mt-2 space-y-2">

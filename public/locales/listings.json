@@ -7,7 +7,8 @@
       "resetFilters": "Reset filters"
     },
     "ListingCard": {
-      "perDay": "per day",
+      "perDay": " per day",
+      "from": "from ",
       "onWeekend": "on weekend"
     },
     "AddionalRegistrationModal": {
@@ -27,7 +28,8 @@
       "resetFilters": "Poništi filtere"
     },
     "ListingCard": {
-      "perDay": "po danu",
+      "perDay": " po danu",
+      "from": "od ",
       "onWeekend": "vikendom"
     },
     "AddionalRegistrationModal": {
