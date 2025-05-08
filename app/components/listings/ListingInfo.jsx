@@ -27,6 +27,7 @@ const ListingInfo = ({
             icon={category.icon}
             label={category.label}
             description={category.description}
+            translation={translation.ListingCategory}
           />
           <hr />
         </>

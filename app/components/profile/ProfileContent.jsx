@@ -132,7 +132,7 @@ const ProfileContent = ({
 
       <div className="shadow-md rounded-lg p-6 mt-6 hover:bg-gray-50">
         <div className="text-xl font-semibold text-gray-700">
-          New Full-Width Section - Not used for now
+          New Full-Width Section
         </div>
         <div className="text-gray-600 mt-4">Content of the section</div>
       </div>

@@ -46,7 +46,7 @@ const AdvancedFiltersModal = ({ currentUser }) => {
     endDate: new Date(),
     key: "selection",
   });
-  const [priceRange, setPriceRange] = useState([0, 1000000]);
+  const [priceRange, setPriceRange] = useState([0, 20000]);
   const [category, setCategory] = useState("");
   const [petType, setPetType] = useState("");
   const [nearMe, setNearMe] = useState("");
@@ -328,7 +328,9 @@ const AdvancedFiltersModal = ({ currentUser }) => {
 
       {pets?.length > 0 && (
         <div className="border-b pb-4">
-          <h3 className="font-semibold text-lg mb-2">Your pets</h3>
+          <h3 className="font-semibold text-lg mb-2">
+            {advancedFiltersModal.translation.Advanced?.yourPets || "Your Pets"}
+          </h3>
           <div className="flex flex-row overflow-x-auto gap-3 justify-around hide-scrollbar">
             {pets.map((item) => (
               <AdvancedFiltersOption
@@ -345,12 +347,17 @@ const AdvancedFiltersModal = ({ currentUser }) => {
       )}
 
       <div className="border-b pb-4">
-        <h3 className="font-semibold text-lg mb-2">Pet Type</h3>
+        <h3 className="font-semibold text-lg mb-2">
+          {advancedFiltersModal.translation.Advanced?.petType || "Pet Type"}
+        </h3>
         <div className="flex flex-row overflow-x-auto gap-3 justify-around hide-scrollbar">
           {PET_TYPES.map((item) => (
             <AdvancedFiltersOption
               key={item.label}
-              label={item.label}
+              label={
+                advancedFiltersModal.translation.Advanced?.type?.[item.label] ||
+                item.label
+              }
               value={item.label}
               selected={petType === item.label}
               icon={item.icon}
@@ -367,10 +374,10 @@ const AdvancedFiltersModal = ({ currentUser }) => {
         </h3>
         <RangeInput
           min={0}
-          max={1000000}
+          max={20000}
           value={priceRange}
           onChange={setPriceRange}
-          rangeElementLabel={"$"}
+          rangeElementLabel={"RSD"}
         />
       </div>
 

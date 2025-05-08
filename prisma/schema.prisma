@@ -37,7 +37,7 @@ model User {
     negativeFeedback Int              @default(0)
     reactions        ReviewReaction[]
 
-    verified Boolean? @default(true)
+    verified Boolean? @default(false)
     // TODO: replace this token in cache
     token    String?
 

@@ -1,15 +1,15 @@
-generator client {
+generator mongo_client {
     provider = "prisma-client-js"
     output   = "../generated/mongo"
 }
 
-datasource db {
+datasource mongodb {
     provider = "mongodb"
     url      = env("MONGO_DATABASE_URL")
 }
 
 model Message {
-    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    id         String   @id @default(auto()) @map("_id") @mongodb.ObjectId
     senderId   String
     receiverId String
     content    String
