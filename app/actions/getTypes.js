@@ -171,8 +171,8 @@ export default async function getTypes(params) {
         l."overallReview", 
         l."addressLabel"
         ${distanceSelect}
-      FROM "Type" t
-      JOIN "Listing" l ON t."listingId" = l.id
+      FROM "public"."Type" t
+      JOIN "public"."Listing" l ON t."listingId" = l.id
       ${whereClause}
       ORDER BY ${orderClause}
     `;
