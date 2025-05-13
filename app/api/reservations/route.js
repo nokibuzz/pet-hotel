@@ -23,10 +23,10 @@ export async function POST(request) {
     breed,
     breedDescription,
     paymentMethod,
-    usedForBlocking
+    usedForBlocking,
   } = body;
 
-  let payment = !usedForBlocking ? paymentMethod : 'Cash';
+  let payment = !usedForBlocking ? paymentMethod : "Cash";
 
   if (
     !typeId ||
@@ -48,12 +48,20 @@ export async function POST(request) {
     },
   });
 
-  logInfo(request, currentUser.id, "existingAvailability" + JSON.stringify(existingAvailability));
+  logInfo(
+    request,
+    currentUser.id,
+    "existingAvailability" + JSON.stringify(existingAvailability)
+  );
   const hasNoSlotsLeft = existingAvailability.some(
     (item) => item.totalSlots <= 0
   );
   if (hasNoSlotsLeft) {
-    logInfo(request, currentUser.id, "There are availability slots with no remaining slots available to book!");
+    logInfo(
+      request,
+      currentUser.id,
+      "There are availability slots with no remaining slots available to book!"
+    );
     return NextResponse.error();
   }
 
@@ -73,22 +81,22 @@ export async function POST(request) {
         status: !usedForBlocking ? "pending" : "approved",
       };
 
-      logInfo(request, currentUser.id, "reservationData" + JSON.stringify(reservationData));
+      logInfo(
+        request,
+        currentUser.id,
+        "reservationData" + JSON.stringify(reservationData)
+      );
 
       const reservation = await prisma.reservation.create({
         data: reservationData,
       });
 
-      // Determine Capacity if No Existing Availability
+      // Determine Capacity for the type
       let totalCapacity =
-        existingAvailability?.length > 0
-          ? null
-          : (
-              await prisma.type.findUnique({
-                where: { id: typeId },
-                select: { capacity: true },
-              })
-            )?.capacity || 0;
+        (await prisma.type.findUnique({
+          where: { id: typeId },
+          select: { capacity: true },
+        })?.capacity) || 0;
 
       logInfo(request, currentUser.id, "totalCapacity" + totalCapacity);
 
@@ -96,8 +104,10 @@ export async function POST(request) {
       const availabilityUpdates = [];
 
       let currentDate = new Date(startDate);
+      const normalizedEndDate = new Date(endDate);
+      normalizedEndDate.setHours(0, 0, 0, 0);
 
-      while (currentDate <= new Date(endDate)) {
+      while (currentDate <= normalizedEndDate) {
         const dateKey = currentDate.toISOString().split("T")[0];
         const existingEntry = existingAvailability.find(
           (a) => a.date.toISOString().split("T")[0] === dateKey
@@ -117,7 +127,11 @@ export async function POST(request) {
           );
         } else {
           // Create new availability entry
-          logInfo(request, currentUser.id, "creating new availability, totalCapacity" + totalCapacity);
+          logInfo(
+            request,
+            currentUser.id,
+            "creating new availability, totalCapacity" + totalCapacity
+          );
           availabilityUpdates.push(
             prisma.availability.create({
               data: {
@@ -137,7 +151,11 @@ export async function POST(request) {
 
       // Execute all updates in parallel
       const avUpdates = await Promise.all(availabilityUpdates);
-      logInfo(request, currentUser.id, "Availability updated" + JSON.stringify(avUpdates));
+      logInfo(
+        request,
+        currentUser.id,
+        "Availability updated" + JSON.stringify(avUpdates)
+      );
 
       return NextResponse.json(reservation);
     },

@@ -44,7 +44,9 @@ const ReservationModal = ({ currentUser, translation }) => {
   const reservationModal = useReservationModal();
   const searchParams = useSearchParams();
 
-  const [step, setStep] = useState(!reservationModal.usedForBlocking ? STEPS.PET : STEPS.TYPE);
+  const [step, setStep] = useState(
+    !reservationModal.usedForBlocking ? STEPS.PET : STEPS.TYPE
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -200,7 +202,12 @@ const ReservationModal = ({ currentUser, translation }) => {
           { typeId, startDate: startBuffer, endDate: endBuffer },
         ]);
       } catch (error) {
-        logEvent({ message: "Error fetching unavailable dates:", level: 'error', userId: currentUser?.id, error: error });
+        logEvent({
+          message: "Error fetching unavailable dates:",
+          level: "error",
+          userId: currentUser?.id,
+          error: error,
+        });
       }
     }
 
@@ -229,8 +236,7 @@ const ReservationModal = ({ currentUser, translation }) => {
         setStep(STEPS.PET);
       }
       setStep((value) => value - 1);
-    } 
-    else {
+    } else {
       if (step == STEPS.BREED) {
         setStep(STEPS.PET);
       }
@@ -265,7 +271,6 @@ const ReservationModal = ({ currentUser, translation }) => {
       }
 
       setStep((value) => value + 1);
-
     } else {
       if (step == STEPS.PET) {
         setStep(STEPS.BREED);
@@ -297,7 +302,7 @@ const ReservationModal = ({ currentUser, translation }) => {
         breedDescription: breedDescription === "" ? null : breedDescription,
         paymentMethod,
         petId: pet?.id,
-        usedForBlocking: reservationModal.usedForBlocking
+        usedForBlocking: reservationModal.usedForBlocking,
       })
       .then(() => {
         toast.success(
@@ -318,6 +323,7 @@ const ReservationModal = ({ currentUser, translation }) => {
         setDateRange(initialDateRange);
         reset();
         setStep(STEPS.PET);
+        setPet({});
         reservationModal.onClose();
       })
       .catch(() => {
@@ -376,7 +382,11 @@ const ReservationModal = ({ currentUser, translation }) => {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title={!reservationModal.usedForBlocking ? translation.Type.title : translation.Type.blockingTitle}
+          title={
+            !reservationModal.usedForBlocking
+              ? translation.Type.title
+              : translation.Type.blockingTitle
+          }
           subtitle={translation.Type?.subtitle || "Pick one"}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
@@ -410,7 +420,7 @@ const ReservationModal = ({ currentUser, translation }) => {
         </div>
       </div>
     );
-  }
+  };
 
   let bodyContent;
 
@@ -445,8 +455,7 @@ const ReservationModal = ({ currentUser, translation }) => {
         </div>
       </div>
     );
-  } 
-  else {
+  } else {
     setTypeContent();
   }
 
@@ -711,8 +720,10 @@ const ReservationModal = ({ currentUser, translation }) => {
   }
 
   const getTitle = () => {
-    return !reservationModal.usedForBlocking ? translation.title : translation.blockingTitle
-  }
+    return !reservationModal.usedForBlocking
+      ? translation.title
+      : translation.blockingTitle;
+  };
 
   return (
     <Modal
@@ -722,6 +733,7 @@ const ReservationModal = ({ currentUser, translation }) => {
         setType(null);
         setDateRange(initialDateRange);
         setStep(STEPS.PET);
+        setPet({});
         reservationModal.onClose();
       }}
       onSubmit={handleSubmit(onSubmit)}

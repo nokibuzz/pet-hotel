@@ -12,7 +12,7 @@ const PetInfoView = ({ pet }) => {
           alt={pet?.name}
           width={50}
           height={50}
-          className="rounded-full"
+          className="w-16 h-16 rounded-full object-cover flex-shrink-0"
         />
         <div>
           <p className="font-semibold text-gray-800">{pet?.name}</p>
