@@ -92,9 +92,9 @@ const Logo = ({ currentUser }) => {
           >
             <Image
               alt="Pet"
-              height="40"
-              width="40"
-              className="rounded-full object-cover flex-shrink-0"
+              height="1000"
+              width="1000"
+              className="w-6 h-4 rounded-xl object-cover flex-shrink-0"
               src={selectedPet?.imageSrc?.[0]}
             />
             {/* Name is hidden on smaller screens */}
@@ -124,9 +124,9 @@ const Logo = ({ currentUser }) => {
                   <div className="flex items-center gap-2">
                     <Image
                       alt={p.name}
-                      height="24"
-                      width="24"
-                      className="rounded-full object-cover"
+                      height="1000"
+                      width="1000"
+                      className="w-6 h-6 object-cover"
                       src={p?.imageSrc?.[0]}
                     />
                     <span className="truncate max-w-[100px]">{p.name}</span>

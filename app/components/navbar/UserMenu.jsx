@@ -62,12 +62,12 @@ const UserMenu = ({ currentUser, translation }) => {
         >
           <AiOutlineMenu />
           <div
-            className="max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
+            className="hidden md:block max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
             title={currentUser?.name}
           >
             {currentUser?.name}
           </div>
-          <div className="hidden md:block">
+          <div className="h-6 w-6">
             <Avatar src={currentUser?.image} />
           </div>
         </div>

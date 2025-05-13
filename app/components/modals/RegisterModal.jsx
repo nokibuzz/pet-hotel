@@ -58,7 +58,7 @@ const RegisterModal = () => {
             "Successfully registered!"
         );
         registerModal.onClose();
-        // sendEmail.sendRegistrationVerificationMail(email);
+        sendEmail.sendRegistrationVerificationMail(email);
         // loginModal.onOpen();
         // TODO: redirect to go to your email address
       })
